@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V I B E</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; background-color: #1a1a1a; font-family: serif; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('fond.png') no-repeat center center; background-size: cover; z-index: -1; }
+        .lang-switch { position: absolute; top: 20px; right: 20px; color: #d4af37; cursor: pointer; border: 1px solid #d4af37; padding: 5px 10px; border-radius: 5px; z-index: 10; font-size: 14px; text-transform: uppercase; }
+        .phone-overlay { width: 280px; height: 530px; background: rgba(0, 0, 0, 0.85); border: 1px solid #333; border-radius: 40px; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; box-shadow: 0 0 50px #000; position: relative; }
+        .logo { font-size: 32px; letter-spacing: 12px; color: #d4af37; margin-top: 40px; font-weight: bold; text-align: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-top: 50px; }
+        .city { border: 1px solid #333; padding: 15px 0; text-align: center; font-size: 10px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
+        .active { border: 1.5px solid #d4af37; color: #d4af37; }
+        .input-box { margin-top: auto; width: 100%; border-bottom: 1px solid #444; display: flex; justify-content: space-between; padding-bottom: 10px; margin-bottom: 30px; }
+        .input-box span { color: #555; font-size: 14px; }
+        .arrow { color: #d4af37; font-size: 20px; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="lang-switch" onclick="toggleLang()" id="btn-lang">EN</div>
+    <div class="phone-overlay">
+        <div class="logo">V I B E</div>
+        <div class="grid">
+            <div class="city active">MONTREAL</div>
+            <div class="city" id="qc">QUEBEC</div>
+            <div class="city">OTTAWA</div>
+            <div class="city">TORONTO</div>
+        </div>
+        <div class="input-box">
+            <span id="name">Votre Prénom</span>
+            <a href="#" class="arrow">➔</a>
+        </div>
+    </div>
+    <script>
+        function toggleLang() {
+            const btn = document.getElementById('btn-lang');
+            const name = document.getElementById('name');
+            const qc = document.getElementById('qc');
+            if (btn.innerText === "EN") {
+                name.innerText = "Your First Name";
+                qc.innerText = "QUEBEC CITY";
+                btn.innerText = "FR";
+            } else {
+                name.innerText = "Votre Prénom";
+                qc.innerText = "QUEBEC";
+                btn.innerText = "EN";
+            }
+        }
+    </script>
+</body>
+</html>
