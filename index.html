@@ -1,207 +1,129 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V I B E - Forfaits</title>
+    <title>V I B E - Officiel</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            background: #000;
-            font-family: 'Playfair Display', serif;
-            color: #fff;
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            background: #000; 
+            font-family: 'Playfair Display', serif; 
+            color: #fff; 
+            overflow: hidden; 
+        }
+        
+        .main-container {
+            width: 100%;
+            height: 100vh;
+            background: url('fond.png') center center no-repeat;
+            background-size: cover;
             display: flex;
-            justify-content: center;
+            justify-content: flex-end;
             align-items: center;
-            min-height: 100vh;
+            padding-right: 8%;
         }
 
-        .pricing-container {
-            display: flex;
-            gap: 20px;
-            max-width: 1000px;
-            padding: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .card {
-            background: #0a0a0a;
-            border: 1px solid #333;
-            border-radius: 20px;
-            padding: 30px;
-            width: 280px;
+        .phone-frame {
+            width: 300px;
+            height: 620px;
+            background: #000;
+            border-radius: 40px;
+            border: 2px solid #1a1a1a;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            padding: 20px;
             position: relative;
         }
 
-        .card-voyageur {
-            border-color: #c19a6b;
-            box-shadow: 0 0 30px rgba(193, 154, 107, 0.15);
-            transform: scale(1.05);
-            z-index: 10;
-        }
-
-        /* CODE VIBE MASTER - CACHÉ AU PUBLIC */
-        .card-master {
-            display: none; /* Rendre invisible au public */
-            border-color: #DC143C; /* Rouge VIBE */
-        }
-
-        .tier-name {
-            font-size: 18px;
-            letter-spacing: 4px;
-            color: #aaa;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .card-voyageur .tier-name {
+        .logo {
+            font-size: 34px;
+            letter-spacing: 15px;
             color: #c19a6b;
-            font-weight: bold;
-        }
-
-        .price {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .price-sub {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 25px;
-            font-family: sans-serif;
-        }
-
-        .card-voyageur .price { color: #c19a6b; }
-
-        .feature-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-            font-family: sans-serif;
-            font-size: 13px;
-            color: #ccc;
-            line-height: 1.8;
-        }
-
-        .feature-list li {
-            margin-bottom: 12px;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .feature-list li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #555;
-        }
-
-        .card-voyageur .feature-list li::before { color: #c19a6b; }
-        .card-voyageur .highlight { color: #fff; font-weight: bold; }
-
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 15px 0;
-            margin-top: 25px;
             text-align: center;
-            border-radius: 10px;
-            text-decoration: none;
+            margin-top: 40px;
+            margin-bottom: 50px;
             font-weight: bold;
+        }
+
+        .hub-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .hub-button {
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 11px;
             letter-spacing: 2px;
-            text-transform: uppercase;
-            font-family: sans-serif;
-            font-size: 12px;
+            color: #666;
             transition: 0.3s;
         }
 
-        .btn-standard { background: #1a1a1a; color: #fff; border: 1px solid #333; }
-        .btn-premium { background: #333; color: #fff; border: none; }
-        .btn-voyageur { background: transparent; border: 1px solid #c19a6b; color: #c19a6b; }
-        .btn-voyageur:hover { background: #c19a6b; color: #000; }
+        .hub-active {
+            border-color: #c19a6b;
+            color: #c19a6b;
+            box-shadow: inset 0 0 10px rgba(193, 154, 107, 0.2), 0 0 15px rgba(193, 154, 107, 0.2);
+        }
 
-        .badge-limited {
-            position: absolute;
-            top: -12px;
-            right: 20px;
-            background: #c19a6b;
-            color: #000;
-            font-family: sans-serif;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 20px;
-            letter-spacing: 1px;
+        .input-group {
+            margin-top: auto;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            width: 80%;
+            outline: none;
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        .arrow-btn {
+            color: #c19a6b;
+            font-size: 24px;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
+    <div class="main-container">
+        <div class="phone-frame">
+            <div class="logo">V I B E</div>
+            
+            <div class="hub-grid">
+                <div class="hub-button hub-active">MONTREAL</div>
+                <div class="hub-button hub-active">QUEBEC</div>
+                <div class="hub-button">OTTAWA</div>
+                <div class="hub-button">TORONTO</div>
+            </div>
 
-    <div class="pricing-container">
-        
-        <div class="card">
-            <div class="tier-name">Standard</div>
-            <div class="price">0 $</div>
-            <div class="price-sub">Accès de base</div>
-            <ul class="feature-list">
-                <li>Radar limité à <strong>25 km</strong></li>
-                <li>Sécurité : Bouclier Ange (Profils vérifiés)</li>
-                <li>Traducteur vocal inclus</li>
-                <li>Accès restreint à la Roadmap</li>
-            </ul>
-            <a href="#" class="btn btn-standard">Créer un compte</a>
+            <div class="input-group">
+                <input type="text" placeholder="Votre Prénom">
+                <a href="page_forfaits.html" class="arrow-btn">➔</a>
+            </div>
         </div>
-
-        <div class="card card-voyageur">
-            <div class="badge-limited">250 PLACES / VILLE</div>
-            <div class="tier-name">Fondateur Voyageur</div>
-            <div class="price">299 $</div>
-            <div class="price-sub">Passeport 3 ans illimité</div>
-            <ul class="feature-list">
-                <li class="highlight">Radar sans frontière (Entre Hubs)</li>
-                <li class="highlight">Effet WOW : Carte de chaleur (Heatmap)</li>
-                <li>Contrôle : Ange Boost & Mode Ombre</li>
-                <li>Traducteur vocal inclus</li>
-                <li>Priorité Roadmap : Événements & Cadeaux</li>
-            </ul>
-            <a href="LIEN_STRIPE_299" class="btn btn-voyageur">Devenir Voyageur</a>
-        </div>
-
-        <div class="card">
-            <div class="tier-name">Premium VIP</div>
-            <div class="price">39,99 $</div>
-            <div class="price-sub">Par mois</div>
-            <ul class="feature-list">
-                <li>Radar étendu à <strong>125 km</strong></li>
-                <li>Contrôle : Ange Boost & Mode Ombre</li>
-                <li>Traducteur vocal inclus</li>
-                <li>Accès Roadmap : Événements & Cadeaux</li>
-            </ul>
-            <a href="LIEN_STRIPE_39" class="btn btn-premium">Passer VIP</a>
-        </div>
-
-        <div class="card card-master">
-            <div class="tier-name" style="color: #DC143C;">Vibe Master</div>
-            <div class="price">Invitation</div>
-            <div class="price-sub">Accès absolu (500 billets globaux)</div>
-            <ul class="feature-list">
-                <li>Déblocage total des frontières</li>
-                <li>Accès VIP à tous les événements</li>
-                <li>Cadeaux surprises exclusifs</li>
-                <li>Toutes les fonctions incluses</li>
-            </ul>
-            <a href="#" class="btn" style="background: #DC143C; color: #fff;">Activer le sésame</a>
-        </div>
-
     </div>
-
 </body>
 </html>
