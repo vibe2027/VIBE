@@ -1,129 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V I B E - Officiel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            background: #000; 
-            font-family: 'Playfair Display', serif; 
-            color: #fff; 
-            overflow: hidden; 
-        }
-        
-        .main-container {
-            width: 100%;
-            height: 100vh;
-            background: url('fond.png') center center no-repeat;
-            background-size: cover;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            padding-right: 8%;
-        }
-
-        .phone-frame {
-            width: 300px;
-            height: 620px;
-            background: #000;
-            border-radius: 40px;
-            border: 2px solid #1a1a1a;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            position: relative;
-        }
-
-        .logo {
-            font-size: 34px;
-            letter-spacing: 15px;
-            color: #c19a6b;
-            text-align: center;
-            margin-top: 40px;
-            margin-bottom: 50px;
-            font-weight: bold;
-        }
-
-        .hub-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .hub-button {
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 25px 0;
-            text-align: center;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: #666;
-            transition: 0.3s;
-        }
-
-        .hub-active {
-            border-color: #c19a6b;
-            color: #c19a6b;
-            box-shadow: inset 0 0 10px rgba(193, 154, 107, 0.2), 0 0 15px rgba(193, 154, 107, 0.2);
-        }
-
-        .input-group {
-            margin-top: auto;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 10px;
-        }
-
-        input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-family: 'Playfair Display', serif;
-            font-size: 16px;
-            width: 80%;
-            outline: none;
-        }
-
-        input:focus {
-            outline: none;
-        }
-
-        .arrow-btn {
-            color: #c19a6b;
-            font-size: 24px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{background:#000;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}
+.c{border:1px solid #d4af37;padding:30px;border-radius:20px;width:280px;text-align:center}
+.v{font-size:3rem;font-weight:900;color:#d4af37;letter-spacing:10px;margin-bottom:20px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:30px}
+.b{border:1px solid #d4af37;padding:10px;font-size:10px;text-transform:uppercase}
+.i{border-bottom:1px solid #fff;display:flex;align-items:center}
+input{background:0 0;border:none;color:#fff;padding:10px;width:80%;outline:0;font-size:18px}
+#go{background:0 0;border:none;color:#d4af37;font-size:35px;cursor:pointer;width:20%}
+</style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="phone-frame">
-            <div class="logo">V I B E</div>
-            
-            <div class="hub-grid">
-                <div class="hub-button hub-active">MONTREAL</div>
-                <div class="hub-button hub-active">QUEBEC</div>
-                <div class="hub-button">OTTAWA</div>
-                <div class="hub-button">TORONTO</div>
-            </div>
-
-            <div class="input-group">
-                <input type="text" placeholder="Votre Prénom">
-                <a href="page_forfaits.html" class="arrow-btn">➔</a>
-            </div>
-        </div>
-    </div>
+<div class="c">
+<div class="v">VIBE</div>
+<div class="g"><div class="b">MTL</div><div class="b">QC</div><div class="b">OTT</div><div class="b">TOR</div></div>
+<div class="i"><input type="text" id="p" placeholder="Prénom"><button id="go" onclick="var n=document.getElementById('p').value;if(n.trim()!==''){window.location.href='https://buy.stripe.com/5kA9D0g1P8Mh0p28ww'}else{alert('Prénom requis')}">→</button></div>
+</div>
 </body>
 </html>
