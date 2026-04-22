@@ -1,12 +1,47 @@
-
-<div style="margin-top: 20px; display: flex; justify-content: space-around; width: 100%;">
-   <a href="TON_LIEN_FACEBOOK" target="_blank" style="color:white; text-decoration:none; font-size:10px; text-align:center;">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" width="30"><br>Facebook</a>
-   <a href="TON_LIEN_INSTA" target="_blank" style="color:white; text-decoration:none; font-size:10px; text-align:center;">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="30"><br>Instagram</a>
-   <a href="TON_LIEN_SNAP" target="_blank" style="color:white; text-decoration:none; font-size:10px; text-align:center;">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733576.png" width="30"><br>Snapchat</a>
-</div>
-</div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V I B E</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; background: #000; font-family: serif; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .phone { width: 300px; height: 550px; background: rgba(0,0,0,0.9); border: 2px solid #333; border-radius: 40px; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .logo { color: #d4af37; font-size: 24px; letter-spacing: 8px; margin: 30px 0; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+        .city { border: 1px solid #fff; color: #fff; padding: 10px; text-align: center; font-size: 10px; cursor: pointer; }
+        .city.active { background: #fff; color: #000; }
+        .input-box { width: 100%; border-bottom: 1px solid #fff; margin: 40px 0; display: flex; }
+        input { background: none; border: none; color: #fff; width: 85%; padding: 10px; font-size: 16px; outline: none; }
+        .arrow { color: #d4af37; font-size: 24px; text-decoration: none; }
+        .socials { display: flex; justify-content: space-around; width: 100%; margin-top: 10px; }
+        .social-item { color: #fff; text-decoration: none; font-size: 9px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <div class="logo">V I B E</div>
+        <div class="grid">
+            <div class="city active" onclick="sel(this)">MONTREAL</div>
+            <div class="city" onclick="sel(this)">QUEBEC</div>
+            <div class="city" onclick="sel(this)">OTTAWA</div>
+            <div class="city" onclick="sel(this)">TORONTO</div>
+        </div>
+        <div class="input-box">
+            <input type="text" placeholder="Votre Prénom">
+            <a href="https://www.tiktok.com/@vibe2027" class="arrow">→</a>
+        </div>
+        <div class="socials">
+            <a href="https://facebook.com" class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" width="25"><br>Facebook</a>
+            <a href="https://instagram.com" class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="25"><br>Instagram</a>
+            <a href="https://snapchat.com" class="social-item"><img src="https://cdn-icons-png.flaticon.com/512/733/733576.png" width="25"><br>Snapchat</a>
+        </div>
+    </div>
+    <script>
+        function sel(e) {
+            document.querySelectorAll('.city').forEach(c => c.classList.remove('active'));
+            e.classList.add('active');
+        }
+    </script>
 </body>
 </html>
