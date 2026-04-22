@@ -2,63 +2,69 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>V I B E</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIBE</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; background: #000; font-family: 'Times New Roman', serif; display: flex; justify-content: center; align-items: center; color: white; overflow: hidden; }
-        
-        /* L'image de fond (Mannequin) 
-.bg-image {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&fm=jpg&w=1600&fit=max') no-repeat center center;
-  background-size: cover;
-  filter: brightness(40%);
-  z-index: -1;
-}
-        .container { 
-            width: 85%; max-width: 320px; text-align: center; 
-            border: 1px solid rgba(255,255,255,0.2); padding: 30px; 
-            border-radius: 40px; background: rgba(0,0,0,0.7); 
-            backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(212,175,55,0.2); 
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
         }
 
-        .logo { color: #d4af37; font-size: 26px; letter-spacing: 10px; margin-bottom: 35px; text-transform: uppercase; }
-        
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 35px; }
-        
-        .btn { border: 1px solid #fff; padding: 12px; font-size: 10px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .btn.active { background: #fff; color: #000; font-weight: bold; }
-
-        .input-box { border-bottom: 1px solid #fff; margin-bottom: 25px; display: flex; align-items: center; }
-        input { 
-            background: none; border: none; color: #fff; width: 85%; 
-            padding: 12px; font-size: 18px; outline: none; font-family: serif;
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* URL SIMPLIFIÉE : C'est la clé pour que ça fonctionne enfin */
+            background: url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1600') no-repeat center center;
+            background-size: cover;
+            filter: brightness(40%);
+            z-index: -1;
         }
 
-        .arrow { color: #d4af37; font-size: 30px; text-decoration: none; cursor: pointer; }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 { font-size: 3rem; letter-spacing: 5px; margin-bottom: 20px; }
+        .city { font-size: 1.5rem; margin: 10px 0; letter-spacing: 2px; }
+        
+        input {
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .arrow { margin-top: 15px; font-size: 2rem; color: blue; }
     </style>
 </head>
 <body>
+
     <div class="bg-image"></div>
+
     <div class="container">
-        <div class="logo">V I B E</div>
-        <div class="grid">
-            <div class="btn active" onclick="sel(this)">MONTREAL</div>
-            <div class="btn" onclick="sel(this)">QUEBEC</div>
-            <div class="btn" onclick="sel(this)">OTTAWA</div>
-            <div class="btn" onclick="sel(this)">TORONTO</div>
-        </div>
-        <div class="input-box">
-            <input type="text" placeholder="Votre Prénom" id="user-name">
-            <a href="https://www.tiktok.com/@vibe2027" class="arrow">→</a>
-        </div>
+        <h1>VIBE</h1>
+        <div class="city">MONTRÉAL</div>
+        <div class="city">QUÉBEC</div>
+        <div class="city">OTTAWA</div>
+        <div class="city">TORONTO</div>
+        
+        <input type="text" placeholder="Votre Prénom">
+        <div class="arrow">→</div>
     </div>
 
-    <script>
-        function sel(e) {
-            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-            e.classList.add('active');
-        }
-    </script>
 </body>
 </html>
