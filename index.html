@@ -1,37 +1,108 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIBE</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Arial', sans-serif; color: white; overflow: hidden; background-color: #000; }
-        .bg-image {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* LIEN MIRACLE : Il utilise ton propre site pour charger l'image */
-            background: url('https://vibegay.ca/AMBIANCE/fond.png') no-repeat center center;
-            background-size: cover;
-            filter: brightness(60%);
-            z-index: -1;
-        }
-        .container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; }
-        h1 { font-size: 3.5rem; letter-spacing: 8px; margin-bottom: 20px; color: #D4AF37; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .city { font-size: 1.2rem; margin: 8px 0; letter-spacing: 3px; text-transform: uppercase; border: 1px solid #D4AF37; padding: 10px; width: 220px; background: rgba(0,0,0,0.5); }
-        input { margin-top: 30px; padding: 12px; border: none; border-radius: 2px; width: 220px; text-align: center; font-size: 1rem; }
-        .arrow { margin-top: 20px; font-size: 3rem; color: #D4AF37; cursor: pointer; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); transition: 0.3s; }
-        .arrow:hover { transform: scale(1.2); }
-    </style>
-</head>
-<body>
-    <div class="bg-image"></div>
-    <div class="container">
-        <h1>VIBE</h1>
-        <div class="city">MONTRÉAL</div>
-        <div class="city">QUÉBEC</div>
-        <div class="city">OTTAWA</div>
-        <div class="city">TORONTO</div>
-        <input type="text" placeholder="Votre Prénom">
-        <div class="arrow" onclick="window.location.href='https://vibe-2027.myshopify.com'">→</div>
-    </div>
-</body>
-</html>
+import React, { useState } from "react";
+
+var IMG = "https://raw.githubusercontent.com/VIBE2026appli/VIBE/main/src/bg.png";
+var gold = "#D4AF37";
+var goldBorder = "rgba(212,175,55,0.6)";
+
+export default function App() {
+  var prenom = useState("")[0];
+  var setPrenom = useState("")[1];
+  var hover = useState(null)[0];
+  var setHover = useState(null)[1];
+
+  return React.createElement("div", {
+    style: {
+      position: "relative",
+      minHeight: "100vh",
+      background: "#080808",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      fontFamily: "Georgia, serif",
+      overflow: "hidden"
+    }
+  },
+    React.createElement("div", {
+      style: {
+        position: "absolute",
+        inset: 0,
+        backgroundImage: "url(" + IMG + ")",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        opacity: 0.85
+      }
+    }),
+    React.createElement("div", {
+      style: {
+        position: "relative",
+        zIndex: 10,
+        width: "260px",
+        background: "rgba(10,10,10,0.75)",
+        borderRadius: "36px",
+        border: "2px solid rgba(212,175,55,0.3)",
+        padding: "28px 20px 32px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        boxShadow: "0 30px 80px rgba(0,0,0,0.9)"
+      }
+    },
+      React.createElement("div", {
+        style: { width: "80px", height: "6px", borderRadius: "3px", background: "#222", marginBottom: "24px" }
+      }),
+      React.createElement("h1", {
+        style: { margin: "0 0 6px", fontSize: "28px", fontWeight: 400, letterSpacing: "10px", color: gold, textShadow: "0 0 20px rgba(212,175,55,0.5)" }
+      }, "V I B E"),
+      React.createElement("div", {
+        style: { width: "100%", height: "1px", background: "linear-gradient(to right, transparent, " + goldBorder + ", transparent)", marginBottom: "20px" }
+      }),
+      React.createElement("div", {
+        style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", width: "100%", marginBottom: "24px" }
+      },
+        ["MONTRÉAL", "QUÉBEC", "OTTAWA", "TORONTO"].map(function(city) {
+          return React.createElement("a", {
+            key: city,
+            href: "https://vibegay.ca/" + city.toLowerCase().replace("é","e").replace("é","e"),
+            style: {
+              border: "1px solid " + goldBorder,
+              padding: "14px 8px",
+              textDecoration: "none",
+              color: gold,
+              textAlign: "center",
+              fontSize: "11px",
+              letterSpacing: "2px",
+              borderRadius: "2px",
+              background: "transparent",
+              display: "block"
+            }
+          }, city);
+        })
+      ),
+      React.createElement("div", {
+        style: { width: "100%", height: "1px", background: "linear-gradient(to right, transparent, " + goldBorder + ", transparent)", marginBottom: "20px" }
+      }),
+      React.createElement("div", { style: { width: "100%", position: "relative" } },
+        React.createElement("input", {
+          type: "text",
+          placeholder: "Votre Prénom",
+          style: {
+            background: "transparent",
+            border: "none",
+            borderBottom: "1px solid " + goldBorder,
+            color: gold,
+            width: "100%",
+            padding: "8px 0",
+            outline: "none",
+            fontSize: "12px",
+            letterSpacing: "2px",
+            fontFamily: "Georgia, serif"
+          }
+        }),
+        React.createElement("div", {
+          style: { position: "absolute", right: 0, bottom: "8px", color: goldBorder, fontSize: "14px" }
+        }, "→")
+      )
+    )
+  );
+}
