@@ -1,108 +1,152 @@
-import React, { useState } from "react";
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIBE | Vanadium Edition</title>
+    <style>
+        :root { --gold: #d4af37; --black: #050505; --gray: #111; --ruby: #9b111e; }
+        body { background: var(--black); color: var(--gold); font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
+        
+        /* NAVIGATION DES 4 VILLES */
+        nav { display: flex; justify-content: space-around; background: #000; padding: 20px 0; border-bottom: 1px solid var(--gold); sticky; top: 0; z-index: 100; }
+        nav span { cursor: pointer; font-size: 0.7rem; letter-spacing: 2px; color: #555; font-weight: bold; transition: 0.3s; }
+        nav span.active { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
 
-var IMG = "https://raw.githubusercontent.com/VIBE2026appli/VIBE/main/src/bg.png";
-var gold = "#D4AF37";
-var goldBorder = "rgba(212,175,55,0.6)";
+        /* RADAR */
+        .radar-header { text-align: center; padding: 15px; font-weight: bold; letter-spacing: 4px; }
+        .radar-area { height: 45vh; position: relative; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); overflow: hidden; border-bottom: 1px solid #222; }
+        
+        /* PROFILS & EFFETS */
+        .dot { width: 50px; height: 50px; border-radius: 50%; position: absolute; background-size: cover; border: 1px solid var(--gold); transition: 0.5s; }
+        .blurred { filter: blur(15px); }
+        .founder-dot { border: 2px solid var(--ruby) !important; box-shadow: 0 0 20px var(--gold); z-index: 99; }
+        .clan-dot { border: 2px solid var(--gold); box-shadow: 0 0 10px var(--gold); }
 
-export default function App() {
-  var prenom = useState("")[0];
-  var setPrenom = useState("")[1];
-  var hover = useState(null)[0];
-  var setHover = useState(null)[1];
+        /* SALLE MIROIR */
+        .section-title { padding: 20px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #222; }
+        .mirror-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; }
+        .visitor { text-align: center; font-size: 0.6rem; }
+        .visitor img { width: 65px; height: 65px; border-radius: 50%; border: 1px solid #333; margin-bottom: 5px; }
 
-  return React.createElement("div", {
-    style: {
-      position: "relative",
-      minHeight: "100vh",
-      background: "#080808",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      fontFamily: "Georgia, serif",
-      overflow: "hidden"
+        /* CHAT & TRANSLATE */
+        .chat-box { height: 25vh; background: var(--gray); margin: 15px; border-radius: 10px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
+        .msg { margin-bottom: 15px; font-size: 0.85rem; border-left: 2px solid var(--gold); padding-left: 10px; }
+        .trad { color: #fff; font-style: italic; opacity: 0.8; font-size: 0.75rem; margin-top: 4px; display: block; }
+        input { background: #222; border: 1px solid var(--gold); color: white; padding: 12px; width: calc(100% - 26px); border-radius: 25px; margin: 0 13px; }
+
+        .btn-pay { background: var(--gold); color: #000; border: none; padding: 15px; width: 90%; margin: 20px 5%; border-radius: 30px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<nav id="city-nav">
+    <span onclick="setCity('MONTREAL')" id="MTL" class="active">MONTREAL</span>
+    <span onclick="setCity('QUEBEC')" id="QC">QUEBEC</span>
+    <span onclick="setCity('OTTAWA')" id="OTT">OTTAWA</span>
+    <span onclick="setCity('TORONTO')" id="TOR">TORONTO</span>
+</nav>
+
+<div class="radar-header" id="current-hub">HUB: MONTREAL</div>
+<div class="radar-area" id="radar"></div>
+
+<div class="section-title">Salle Miroir (Visiteurs)</div>
+<div class="mirror-grid" id="mirror"></div>
+<div id="pay-area"></div>
+
+<div class="section-title">Salon Privé - Translate Actif</div>
+<div class="chat-box" id="chat"></div>
+<input type="text" id="chatInput" placeholder="Envoyer un message (Traduction auto)...">
+
+<script>
+    // --- CONFIGURATION MAÎTRE ---
+    const IS_GOD_MODE = true; // Ton accès illimité
+    let userRank = "FREE"; // Pour tester le mode payant, change en "CLAN"
+    let currentCity = "MONTREAL";
+
+    const members = [
+        { city: "MONTREAL", name: "User1", rank: "FREE", img: "https://i.pravatar.cc/100?u=1", pos: [20, 30] },
+        { city: "MONTREAL", name: "ClanMember", rank: "CLAN", img: "https://i.pravatar.cc/100?u=2", pos: [60, 50] },
+        { city: "TORONTO", name: "TO_Boss", rank: "CLAN", img: "https://i.pravatar.cc/100?u=3", pos: [40, 40] },
+        { city: "OTTAWA", name: "Gov_Secret", rank: "CLAN", img: "https://i.pravatar.cc/100?u=4", pos: [50, 20] },
+        { city: "QUEBEC", name: "OldCity_VIP", rank: "FREE", img: "https://i.pravatar.cc/100?u=5", pos: [30, 70] }
+    ];
+
+    // --- LOGIQUE RADAR & VILLES ---
+    function setCity(city) {
+        currentCity = city;
+        document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
+        document.getElementById(city.substring(0,3)).classList.add('active');
+        document.getElementById('current-hub').innerText = "HUB: " + city;
+        render();
     }
-  },
-    React.createElement("div", {
-      style: {
-        position: "absolute",
-        inset: 0,
-        backgroundImage: "url(" + IMG + ")",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        opacity: 0.85
-      }
-    }),
-    React.createElement("div", {
-      style: {
-        position: "relative",
-        zIndex: 10,
-        width: "260px",
-        background: "rgba(10,10,10,0.75)",
-        borderRadius: "36px",
-        border: "2px solid rgba(212,175,55,0.3)",
-        padding: "28px 20px 32px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        boxShadow: "0 30px 80px rgba(0,0,0,0.9)"
-      }
-    },
-      React.createElement("div", {
-        style: { width: "80px", height: "6px", borderRadius: "3px", background: "#222", marginBottom: "24px" }
-      }),
-      React.createElement("h1", {
-        style: { margin: "0 0 6px", fontSize: "28px", fontWeight: 400, letterSpacing: "10px", color: gold, textShadow: "0 0 20px rgba(212,175,55,0.5)" }
-      }, "V I B E"),
-      React.createElement("div", {
-        style: { width: "100%", height: "1px", background: "linear-gradient(to right, transparent, " + goldBorder + ", transparent)", marginBottom: "20px" }
-      }),
-      React.createElement("div", {
-        style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", width: "100%", marginBottom: "24px" }
-      },
-        ["MONTRÉAL", "QUÉBEC", "OTTAWA", "TORONTO"].map(function(city) {
-          return React.createElement("a", {
-            key: city,
-            href: "https://vibegay.ca/" + city.toLowerCase().replace("é","e").replace("é","e"),
-            style: {
-              border: "1px solid " + goldBorder,
-              padding: "14px 8px",
-              textDecoration: "none",
-              color: gold,
-              textAlign: "center",
-              fontSize: "11px",
-              letterSpacing: "2px",
-              borderRadius: "2px",
-              background: "transparent",
-              display: "block"
-            }
-          }, city);
-        })
-      ),
-      React.createElement("div", {
-        style: { width: "100%", height: "1px", background: "linear-gradient(to right, transparent, " + goldBorder + ", transparent)", marginBottom: "20px" }
-      }),
-      React.createElement("div", { style: { width: "100%", position: "relative" } },
-        React.createElement("input", {
-          type: "text",
-          placeholder: "Votre Prénom",
-          style: {
-            background: "transparent",
-            border: "none",
-            borderBottom: "1px solid " + goldBorder,
-            color: gold,
-            width: "100%",
-            padding: "8px 0",
-            outline: "none",
-            fontSize: "12px",
-            letterSpacing: "2px",
-            fontFamily: "Georgia, serif"
-          }
-        }),
-        React.createElement("div", {
-          style: { position: "absolute", right: 0, bottom: "8px", color: goldBorder, fontSize: "14px" }
-        }, "→")
-      )
-    )
-  );
-}
+
+    function render() {
+        const radar = document.getElementById('radar');
+        const mirror = document.getElementById('mirror');
+        const payArea = document.getElementById('pay-area');
+        radar.innerHTML = "";
+        mirror.innerHTML = "";
+
+        // 1. Rendu Radar
+        members.filter(m => m.city === currentCity).forEach(m => {
+            let d = document.createElement('div');
+            d.className = "dot";
+            if (m.rank === "CLAN") d.classList.add('clan-dot');
+            
+            // Appliquer Brouillard sauf si c'est Toi (God Mode)
+            if (!IS_GOD_MODE && userRank === "FREE") d.classList.add('blurred');
+            
+            d.style.left = m.pos[0] + "%";
+            d.style.top = m.pos[1] + "%";
+            d.style.backgroundImage = `url(${m.img})`;
+            radar.appendChild(d);
+        });
+
+        // 2. Rendu Miroir
+        members.slice(0, 3).forEach(m => {
+            let isBlurred = (userRank === "FREE" && !IS_GOD_MODE);
+            mirror.innerHTML += `
+                <div class="visitor">
+                    <img src="${m.img}" class="${isBlurred ? 'blurred' : ''}">
+                    <p>${isBlurred ? 'MEMBRE CLAN' : m.name}</p>
+                </div>`;
+        });
+
+        // 3. Bouton Payant
+        if (userRank === "FREE" && !IS_GOD_MODE) {
+            payArea.innerHTML = `<button class="btn-pay" onclick="upgrade()">Dissiper le Brouillard (299$)</button>`;
+        } else {
+            payArea.innerHTML = `<p style="text-align:center; font-size:0.7rem; color:gray;">✓ ACCÈS VANADIUM ILLIMITÉ</p>`;
+        }
+    }
+
+    function upgrade() {
+        alert("Connexion Stripe... Paiement de 299$ accepté.");
+        userRank = "CLAN";
+        render();
+    }
+
+    // --- LOGIQUE CHAT & TRANSLATE ---
+    const input = document.getElementById('chatInput');
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && input.value !== "") {
+            const box = document.getElementById('chat');
+            const val = input.value;
+            // Simulation de traduction instantanée
+            const trad = "[VIBE Translate: " + val + " (Auto-detected)]";
+            
+            box.innerHTML += `
+                <div class="msg">
+                    <strong>Moi:</strong> ${val}
+                    <span class="trad">${trad}</span>
+                </div>`;
+            input.value = "";
+            box.scrollTop = box.scrollHeight;
+        }
+    });
+
+    render();
+</script>
+</body>
+</html>
