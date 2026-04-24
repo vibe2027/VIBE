@@ -8,23 +8,23 @@
         :root { --gold: #d4af37; --black: #050505; --gray: #111; }
         body { background: var(--black); color: var(--gold); font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
         
-        /* BARRE DE RARETÉ PAR VILLE */
         .status-bar { background: linear-gradient(to right, #000, #222, #000); padding: 25px 15px; text-align: center; border-bottom: 2px solid var(--gold); }
         .city-title { font-size: 1.4rem; font-weight: bold; letter-spacing: 3px; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
         .progress-container { width: 85%; background: #333; height: 14px; border-radius: 7px; margin: 10px auto; border: 1px solid var(--gold); overflow: hidden; }
         #city-progress { width: 0%; height: 100%; background: var(--gold); transition: 1.5s ease-in-out; }
         .ticket-info { font-size: 0.9rem; letter-spacing: 1px; color: var(--gold); }
 
-        /* NAVIGATION VILLES */
         nav { display: flex; justify-content: space-around; background: #000; padding: 15px 0; border-bottom: 1px solid #222; }
         nav span { cursor: pointer; font-size: 0.75rem; letter-spacing: 2px; color: #555; font-weight: bold; transition: 0.3s; }
         nav span.active { color: var(--gold); border-bottom: 1px solid var(--gold); padding-bottom: 5px; }
 
-        /* RADAR ET INTERFACE */
-        .radar-area { height: 45vh; position: relative; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); overflow: hidden; }
+        .radar-area { height: 40vh; position: relative; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); overflow: hidden; }
         .dot { width: 50px; height: 50px; border-radius: 50%; position: absolute; background-size: cover; border: 1px solid var(--gold); filter: blur(18px); }
         
-        .btn-pay { background: var(--gold); color: #000; border: none; padding: 20px; width: 90%; margin: 25px 5%; border-radius: 40px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1rem; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+        .btn-pay { background: var(--gold); color: #000; border: none; padding: 20px; width: 90%; margin: 25px 5% 10px 5%; border-radius: 40px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1rem; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); display: block; text-decoration: none; text-align: center; }
+        
+        .contact-footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
+        .contact-footer a { color: var(--gold); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -46,10 +46,13 @@
 
 <div class="radar-area" id="radar"></div>
 
-<button class="btn-pay" onclick="alert('Lien vers Stripe : 299$')">Réserver mon billet (299$)</button>
+<a href="mailto:Vibe.mtl.2026@hotmail.com?subject=Réservation Billet Clan VIBE" class="btn-pay">Réserver mon billet (299$)</a>
+
+<div class="contact-footer">
+    Pour toute question : <a href="mailto:Vibe.mtl.2026@hotmail.com">Vibe.mtl.2026@hotmail.com</a>
+</div>
 
 <script>
-    // --- CONFIGURATION DES VENTES PAR VILLE ---
     const cityData = {
         'MONTREAL': { sold: 184, members: 8 },
         'QUEBEC': { sold: 92, members: 5 },
@@ -58,18 +61,12 @@
     };
 
     function updateUI(city) {
-        // Mettre à jour la navigation
         document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
         document.getElementById('nav-' + city).classList.add('active');
-
-        // Mettre à jour les chiffres
         document.getElementById('display-city').innerText = city;
         document.getElementById('sold-count').innerText = cityData[city].sold;
-        
-        // Mettre à jour la barre de progression (sur 250)
         const percent = (cityData[city].sold / 250) * 100;
         document.getElementById('city-progress').style.width = percent + "%";
-
         renderRadar(city);
     }
 
@@ -77,7 +74,6 @@
         const radar = document.getElementById('radar');
         radar.innerHTML = "";
         const count = cityData[city].members;
-        
         for(let i=0; i<count; i++) {
             let d = document.createElement('div');
             d.className = "dot";
@@ -87,8 +83,6 @@
             radar.appendChild(d);
         }
     }
-
-    // Initialisation
     updateUI('MONTREAL');
 </script>
 </body>
