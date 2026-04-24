@@ -8,8 +8,8 @@
         body { background: var(--b); color: var(--g); font-family: sans-serif; margin: 0; text-align: center; }
         .bar { padding: 20px; border-bottom: 2px solid var(--g); background: #111; }
         .prog { width: 80%; background: #333; height: 12px; border-radius: 6px; margin: 10px auto; border: 1px solid var(--g); overflow: hidden; }
-        #fill { width: 5%; height: 100%; background: var(--g); transition: 1s; }
-        nav { display: flex; justify-content: space-around; padding: 15px; background: #000; font-weight: bold; }
+        #f { width: 5%; height: 100%; background: var(--g); transition: 1s; }
+        nav { display: flex; justify-content: space-around; padding: 15px; background: #000; font-weight: bold; cursor: pointer; }
         .active { color: #fff; border-bottom: 2px solid var(--g); }
         .radar { height: 45vh; position: relative; background-size: cover; background-position: center; border-bottom: 1px solid #222; }
         .m { width: 65px; height: 65px; border-radius: 50%; position: absolute; background-size: cover; border: 2px solid var(--g); box-shadow: 0 0 10px var(--g); }
@@ -17,9 +17,9 @@
     </style>
 </head>
 <body>
-<div class="bar"><h2 id="cty">MONTRÉAL</h2><div class="prog"><div id="fill"></div></div><div><span id="sold">12</span> / 250 PLACES</div></div>
+<div class="bar"><h2 id="c">MONTRÉAL</h2><div class="prog"><div id="f"></div></div><div><span id="s">12</span> / 250 PLACES</div></div>
 <nav><span onclick="up('MTL')" id="n-MTL" class="active">MTL</span><span onclick="up('QC')" id="n-QC">QC</span><span onclick="up('TOR')" id="n-TOR">TOR</span></nav>
-<div class="radar" id="rad"></div>
+<div class="radar" id="r"></div>
 <a href="https://buy.stripe.com/bJe28rcdM5c43yu8ww" class="btn">ACCÈS CLAN - 2 ANS (299$)</a>
 <script>
     const d = {
@@ -27,18 +27,18 @@
         'QC': { s: 5, bg: 'https://images.unsplash.com/photo-1536412595952-6b9409029141?w=800', p: ['https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200'] },
         'TOR': { s: 18, bg: 'https://images.unsplash.com/photo-1503192856419-44d7acc29c01?w=800', p: ['https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200'] }
     };
-    function up(c) {
-        document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
-        document.getElementById('n-'+c).classList.add('active');
-        document.getElementById('cty').innerText = c;
-        document.getElementById('sold').innerText = d[c].s;
-        document.getElementById('fill').style.width = (d[c].s / 2.5) + "%";
-        const r = document.getElementById('rad');
-        r.style.backgroundImage = `url(${d[c].bg})`; r.innerHTML = '';
-        d[c].p.forEach(img => {
+    function up(city) {
+        document.querySelectorAll('nav span').forEach(el => el.classList.remove('active'));
+        document.getElementById('n-'+city).classList.add('active');
+        document.getElementById('c').innerText = city;
+        document.getElementById('s').innerText = d[city].s;
+        document.getElementById('f').style.width = (d[city].s / 2.5) + "%";
+        const rad = document.getElementById('r');
+        rad.style.backgroundImage = `url(${d[city].bg})`; rad.innerHTML = '';
+        d[city].p.forEach(img => {
             let div = document.createElement('div'); div.className = "m";
             div.style.left = Math.random() * 70 + 10 + "%"; div.style.top = Math.random() * 60 + 10 + "%";
-            div.style.backgroundImage = `url(${img})`; r.appendChild(div);
+            div.style.backgroundImage = `url(${img})`; rad.appendChild(div);
         });
     }
     up('MTL');
