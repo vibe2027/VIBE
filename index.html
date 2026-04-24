@@ -7,16 +7,42 @@
     <style>
         :root { --gold: #d4af37; --black: #050505; --gray: #111; }
         body { background: var(--black); color: var(--gold); font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
+        
         .status-bar { background: linear-gradient(to right, #000, #222, #000); padding: 25px 15px; text-align: center; border-bottom: 2px solid var(--gold); }
         .city-title { font-size: 1.4rem; font-weight: bold; letter-spacing: 3px; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
         .progress-container { width: 85%; background: #333; height: 14px; border-radius: 7px; margin: 10px auto; border: 1px solid var(--gold); overflow: hidden; }
         #city-progress { width: 0%; height: 100%; background: var(--gold); transition: 1.5s ease-in-out; }
         .ticket-info { font-size: 0.9rem; letter-spacing: 1px; color: var(--gold); }
+
         nav { display: flex; justify-content: space-around; background: #000; padding: 15px 0; border-bottom: 1px solid #222; }
         nav span { cursor: pointer; font-size: 0.75rem; letter-spacing: 2px; color: #555; font-weight: bold; transition: 0.3s; }
         nav span.active { color: var(--gold); border-bottom: 1px solid var(--gold); padding-bottom: 5px; }
-        .radar-area { height: 40vh; position: relative; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); overflow: hidden; }
-        .dot { width: 50px; height: 50px; border-radius: 50%; position: absolute; background-size: cover; border: 1px solid var(--gold); filter: blur(18px); }
+
+        /* RADAR AVEC FOND DE VILLE */
+        .radar-area { 
+            height: 45vh; 
+            position: relative; 
+            background-size: cover; 
+            background-position: center;
+            transition: background 1s ease-in-out;
+            border-bottom: 1px solid #222;
+        }
+        .radar-overlay { 
+            position: absolute; width: 100%; height: 100%; 
+            background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%); 
+        }
+        
+        .dot { 
+            width: 70px; height: 70px; 
+            border-radius: 50%; 
+            position: absolute; 
+            background-size: cover; 
+            border: 2px solid var(--gold); 
+            box-shadow: 0 0 15px var(--gold);
+            z-index: 2;
+            transition: 0.5s;
+        }
+        
         .btn-pay { background: var(--gold); color: #000; border: none; padding: 20px; width: 90%; margin: 25px 5% 10px 5%; border-radius: 40px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1rem; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); display: block; text-decoration: none; text-align: center; }
         .contact-footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
     </style>
@@ -26,7 +52,9 @@
 <div class="status-bar">
     <div id="display-city" class="city-title">MONTRÉAL</div>
     <div class="progress-container"><div id="city-progress"></div></div>
-    <div class="ticket-info"><span id="sold-count">0</span> / 250 BILLETS DISPONIBLES</div>
+    <div class="ticket-info">
+        <span id="sold-count">0</span> / 250 PLACES RESTANTES
+    </div>
 </div>
 
 <nav>
@@ -36,7 +64,9 @@
     <span onclick="updateUI('TORONTO')" id="nav-TORONTO">TOR</span>
 </nav>
 
-<div class="radar-area" id="radar"></div>
+<div class="radar-area" id="radar">
+    <div class="radar-overlay"></div>
+</div>
 
 <a href="https://buy.stripe.com/bJe28rcdM5c43yu8ww" class="btn-pay">ACCÈS CLAN - 2 ANS (299$)</a>
 
@@ -44,10 +74,26 @@
 
 <script>
     const cityData = {
-        'MONTREAL': { sold: 184, members: 8 },
-        'QUEBEC': { sold: 92, members: 5 },
-        'OTTAWA': { sold: 45, members: 3 },
-        'TORONTO': { sold: 212, members: 12 }
+        'MONTREAL': { 
+            sold: 12, 
+            bg: 'https://images.unsplash.com/photo-1519178140742-5f68f8670868?auto=format&fit=crop&w=800',
+            mannequins: ['https://images.unsplash.com/photo-1617137968427-85924c800a22?w=200', 'https://images.unsplash.com/photo-1618331835717-801e976710b2?w=200']
+        },
+        'QUEBEC': { 
+            sold: 5, 
+            bg: 'https://images.unsplash.com/photo-1536412595952-6b9409029141?auto=format&fit=crop&w=800',
+            mannequins: ['https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200', 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=200']
+        },
+        'OTTAWA': { 
+            sold: 3, 
+            bg: 'https://images.unsplash.com/photo-1580637251080-60f1c4800366?auto=format&fit=crop&w=800',
+            mannequins: ['https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200']
+        },
+        'TORONTO': { 
+            sold: 18, 
+            bg: 'https://images.unsplash.com/photo-1503192856419-44d7acc29c01?auto=format&fit=crop&w=800',
+            mannequins: ['https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200']
+        }
     };
 
     function updateUI(city) {
@@ -55,23 +101,29 @@
         document.getElementById('nav-' + city).classList.add('active');
         document.getElementById('display-city').innerText = city;
         document.getElementById('sold-count').innerText = cityData[city].sold;
+        
         const percent = (cityData[city].sold / 250) * 100;
         document.getElementById('city-progress').style.width = percent + "%";
-        renderRadar(city);
+        
+        const radar = document.getElementById('radar');
+        radar.style.backgroundImage = `url(${cityData[city].bg})`;
+        
+        renderDots(city);
     }
 
-    function renderRadar(city) {
+    function renderDots(city) {
         const radar = document.getElementById('radar');
-        radar.innerHTML = "";
-        const count = cityData[city].members;
-        for(let i=0; i<count; i++) {
+        // On garde l'overlay
+        radar.innerHTML = '<div class="radar-overlay"></div>';
+        
+        cityData[city].mannequins.forEach(img => {
             let d = document.createElement('div');
             d.className = "dot";
-            d.style.left = Math.random() * 80 + 10 + "%";
-            d.style.top = Math.random() * 80 + 10 + "%";
-            d.style.backgroundImage = `url(https://i.pravatar.cc/100?u=${city}${i})`;
+            d.style.left = Math.random() * 70 + 10 + "%";
+            d.style.top = Math.random() * 60 + 10 + "%";
+            d.style.backgroundImage = `url(${img})`;
             radar.appendChild(d);
-        }
+        });
     }
     updateUI('MONTREAL');
 </script>
