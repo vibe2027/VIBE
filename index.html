@@ -8,37 +8,37 @@
         :root { --gold: #d4af37; --black: #050505; --gray: #111; --ruby: #9b111e; }
         body { background: var(--black); color: var(--gold); font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
         
-        /* NAVIGATION DES 4 VILLES */
-        nav { display: flex; justify-content: space-around; background: #000; padding: 20px 0; border-bottom: 1px solid var(--gold); position: sticky; top: 0; z-index: 100; }
-        nav span { cursor: pointer; font-size: 0.7rem; letter-spacing: 2px; color: #555; font-weight: bold; transition: 0.3s; }
-        nav span.active { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+        /* BARRE DE LANCEMENT & COMPTE À REBOURS */
+        .launch-bar { background: linear-gradient(to right, #000, #400, #000); padding: 20px; text-align: center; border-bottom: 2px solid var(--gold); }
+        #countdown { font-size: 1.8rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--gold); margin: 10px 0; }
+        .progress-container { width: 80%; background: #222; height: 12px; border-radius: 6px; margin: 10px auto; border: 1px solid var(--gold); overflow: hidden; }
+        #ticket-progress { width: 0%; height: 100%; background: var(--gold); transition: 2s ease-in-out; }
 
-        /* RADAR */
-        .radar-header { text-align: center; padding: 15px; font-weight: bold; letter-spacing: 4px; border-bottom: 1px solid #222; }
-        .radar-area { height: 45vh; position: relative; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); overflow: hidden; }
+        /* NAVIGATION VILLES */
+        nav { display: flex; justify-content: space-around; background: #000; padding: 15px 0; border-bottom: 1px solid #222; }
+        nav span { cursor: pointer; font-size: 0.7rem; letter-spacing: 2px; color: #555; transition: 0.3s; }
+        nav span.active { color: var(--gold); font-weight: bold; }
+
+        /* RADAR (L'APERÇU) */
+        .radar-area { height: 40vh; position: relative; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); overflow: hidden; }
+        .dot { width: 50px; height: 50px; border-radius: 50%; position: absolute; background-size: cover; border: 1px solid var(--gold); filter: blur(15px); transition: 0.5s; }
         
-        /* POINTS DE PROFIL */
-        .dot { width: 55px; height: 55px; border-radius: 50%; position: absolute; background-size: cover; background-position: center; border: 1px solid var(--gold); transition: 0.5s; }
-        .blurred { filter: blur(18px); }
-        .founder-dot { border: 2px solid var(--ruby) !important; box-shadow: 0 0 20px var(--gold); z-index: 100; }
-        .clan-dot { border: 2px solid var(--gold); box-shadow: 0 0 10px var(--gold); }
-
-        /* SALLE MIROIR */
-        .section-title { padding: 15px 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; background: #000; border-bottom: 1px solid #222; margin-top: 10px; }
-        .mirror-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; }
-        .visitor { text-align: center; font-size: 0.6rem; }
-        .visitor img { width: 65px; height: 65px; border-radius: 50%; border: 1px solid #333; margin-bottom: 8px; }
-
-        /* CHAT & TRANSLATE */
-        .chat-box { height: 25vh; background: var(--gray); margin: 15px; border-radius: 12px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; border: 1px solid #222; }
-        .msg { margin-bottom: 15px; font-size: 0.85rem; border-left: 2px solid var(--gold); padding-left: 10px; }
-        .trad { color: #fff; font-style: italic; opacity: 0.8; font-size: 0.75rem; margin-top: 4px; display: block; }
-        input { background: #222; border: 1px solid var(--gold); color: white; padding: 12px; width: calc(100% - 26px); border-radius: 25px; margin: 0 13px; outline: none; }
-
-        .btn-pay { background: var(--gold); color: #000; border: none; padding: 15px; width: 90%; margin: 20px 5%; border-radius: 30px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
+        /* SALLE MIROIR & CHAT */
+        .section-title { padding: 15px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #222; }
+        .mirror-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; }
+        .visitor img { width: 60px; height: 60px; border-radius: 50%; border: 1px solid #333; filter: blur(10px); }
+        
+        .btn-pay { background: var(--gold); color: #000; border: none; padding: 18px; width: 90%; margin: 20px 5%; border-radius: 35px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
     </style>
 </head>
 <body>
+
+<div class="launch-bar">
+    <div style="letter-spacing: 4px; font-size: 0.7rem;">OUVERTURE DU RIDEAU</div>
+    <div id="countdown">00d 00h 00m 00s</div>
+    <div class="progress-container"><div id="ticket-progress"></div></div>
+    <div style="font-size: 0.8rem;">BILLETS CLAN : <span id="tickets-sold">0</span> / 1000</div>
+</div>
 
 <nav>
     <span onclick="setCity('MONTREAL')" id="nav-MTL" class="active">MONTREAL</span>
@@ -47,101 +47,78 @@
     <span onclick="setCity('TORONTO')" id="nav-TOR">TORONTO</span>
 </nav>
 
-<div class="radar-header" id="current-hub">HUB: MONTREAL</div>
 <div class="radar-area" id="radar"></div>
 
-<div class="section-title">Salle Miroir</div>
+<div class="section-title">Aperçu : Qui vous observe ?</div>
 <div class="mirror-grid" id="mirror"></div>
-<div id="pay-area"></div>
 
-<div class="section-title">Salon Privé - Translate</div>
-<div class="chat-box" id="chat"></div>
-<input type="text" id="chatInput" placeholder="Écrire un message...">
+<button class="btn-pay" onclick="upgrade()">Réserver mon Billet Clan (299$)</button>
 
 <script>
-    // CONFIGURATION MAÎTRE
-    const IS_GOD_MODE = true; // Toi : vision totale
-    let userRank = "FREE"; 
+    // --- CONFIGURATION ---
+    const launchDate = new Date("May 1, 2026 00:00:00").getTime();
+    let soldTickets = 246; // Change ce chiffre ici chaque jour !
+    const totalTickets = 1000;
     let currentCity = "MONTREAL";
 
-    // Tes données (Simulation)
     const members = [
-        { city: "MONTREAL", name: "Toi (Fondateur)", rank: "FOUNDER", img: "https://i.ibb.co/screenshot.jpg", pos: [45, 40] },
-        { city: "MONTREAL", name: "Clan_Member", rank: "CLAN", img: "https://via.placeholder.com/100", pos: [20, 60] },
-        { city: "TORONTO", name: "TO_Power", rank: "CLAN", img: "https://via.placeholder.com/101", pos: [50, 30] },
-        { city: "OTTAWA", name: "Diplomat_X", rank: "CLAN", img: "https://via.placeholder.com/102", pos: [30, 20] },
-        { city: "QUEBEC", name: "Capitale_VIP", rank: "FREE", img: "https://via.placeholder.com/103", pos: [70, 50] }
+        { city: "MONTREAL", pos: [20, 30], img: "https://i.pravatar.cc/100?u=1" },
+        { city: "MONTREAL", pos: [60, 50], img: "https://i.pravatar.cc/100?u=2" },
+        { city: "TORONTO", pos: [40, 40], img: "https://i.pravatar.cc/100?u=3" },
+        { city: "OTTAWA", pos: [50, 20], img: "https://i.pravatar.cc/100?u=4" },
+        { city: "QUEBEC", pos: [30, 70], img: "https://i.pravatar.cc/100?u=5" }
     ];
 
+    // --- LOGIQUE COMPTEUR ---
+    function updateLaunch() {
+        const now = new Date().getTime();
+        const diff = launchDate - now;
+        
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        document.getElementById("countdown").innerHTML = `${d}d ${h}h ${m}m ${s}s`;
+        
+        const percent = (soldTickets / totalTickets) * 100;
+        document.getElementById("ticket-progress").style.width = percent + "%";
+        document.getElementById("tickets-sold").innerText = soldTickets;
+    }
+    setInterval(updateLaunch, 1000);
+    updateLaunch();
+
+    // --- LOGIQUE RADAR ---
     function setCity(city) {
         currentCity = city;
         document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
         document.getElementById('nav-' + (city === "TORONTO" ? "TOR" : city.substring(0,3))).classList.add('active');
-        document.getElementById('current-hub').innerText = "HUB: " + city;
         render();
     }
 
     function render() {
         const radar = document.getElementById('radar');
         const mirror = document.getElementById('mirror');
-        const payArea = document.getElementById('pay-area');
         radar.innerHTML = "";
         mirror.innerHTML = "";
 
-        // Radar
         members.filter(m => m.city === currentCity).forEach(m => {
             let d = document.createElement('div');
             d.className = "dot";
-            if (m.rank === "FOUNDER") d.classList.add('founder-dot');
-            if (m.rank === "CLAN") d.classList.add('clan-dot');
-            
-            // Logique Brouillard
-            if (!IS_GOD_MODE && userRank === "FREE" && m.rank !== "FOUNDER") d.classList.add('blurred');
-            
-            d.style.left = m.pos[0] + "%";
-            d.style.top = m.pos[1] + "%";
+            d.style.left = m.pos[0] + "%"; d.style.top = m.pos[1] + "%";
             d.style.backgroundImage = `url(${m.img})`;
             radar.appendChild(d);
         });
 
-        // Miroir
-        members.slice(1, 4).forEach(m => {
-            let isBlurred = (userRank === "FREE" && !IS_GOD_MODE);
-            mirror.innerHTML += `
-                <div class="visitor">
-                    <img src="${m.img}" class="${isBlurred ? 'blurred' : ''}">
-                    <p style="color:white; margin-top:5px;">${isBlurred ? 'MEMBRE CLAN' : m.name}</p>
-                </div>`;
-        });
-
-        // CTA Payant
-        if (userRank === "FREE" && !IS_GOD_MODE) {
-            payArea.innerHTML = `<button class="btn-pay" onclick="upgrade()">Dissiper le Brouillard (299$)</button>`;
-        } else {
-            payArea.innerHTML = `<p style="text-align:center; font-size:0.7rem; color:gray; padding:10px;">✓ ACCÈS VANADIUM ACTIVÉ</p>`;
+        for(let i=0; i<3; i++) {
+            mirror.innerHTML += `<div class="visitor"><img src="https://i.pravatar.cc/100?u=${i+10}"></div>`;
         }
     }
 
     function upgrade() {
-        alert("Redirection vers Stripe... 299$");
-        userRank = "CLAN";
-        render();
+        alert("Lien vers Stripe : 299$ pour l'Axe Vanadium.");
+        // window.location.href = "TON_LIEN_STRIPE";
     }
-
-    const input = document.getElementById('chatInput');
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && input.value !== "") {
-            const chat = document.getElementById('chat');
-            const val = input.value;
-            chat.innerHTML += `
-                <div class="msg">
-                    <strong>Moi:</strong> ${val}
-                    <span class="trad">[VIBE Translate: Traduction auto active...]</span>
-                </div>`;
-            input.value = "";
-            chat.scrollTop = chat.scrollHeight;
-        }
-    });
 
     render();
 </script>
