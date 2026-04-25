@@ -1,47 +1,60 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIBE</title>
-    <style>
-        :root { --g: #d4af37; --b: #050505; }
-        body { background: var(--b); color: var(--g); font-family: sans-serif; margin: 0; text-align: center; }
-        .bar { padding: 20px; border-bottom: 2px solid var(--g); background: #111; }
-        .prog { width: 80%; background: #333; height: 12px; border-radius: 6px; margin: 10px auto; border: 1px solid var(--g); overflow: hidden; }
-        #f { width: 5%; height: 100%; background: var(--g); transition: 1s; }
-        nav { display: flex; justify-content: space-around; padding: 15px; background: #000; font-weight: bold; cursor: pointer; }
-        .active { color: #fff; border-bottom: 2px solid var(--g); }
-        .radar { height: 45vh; position: relative; background-size: cover; background-position: center; border-bottom: 1px solid #222; }
-        .m { width: 65px; height: 65px; border-radius: 50%; position: absolute; background-size: cover; border: 2px solid var(--g); box-shadow: 0 0 10px var(--g); }
-        .btn { background: var(--g); color: #000; padding: 20px; width: 90%; margin: 20px auto; border-radius: 40px; font-weight: bold; display: block; text-decoration: none; }
-    </style>
-</head>
-<body>
-<div class="bar"><h2 id="c">MONTRÉAL</h2><div class="prog"><div id="f"></div></div><div><span id="s">12</span> / 250 PLACES</div></div>
-<nav><span onclick="up('MTL')" id="n-MTL" class="active">MTL</span><span onclick="up('QC')" id="n-QC">QC</span><span onclick="up('TOR')" id="n-TOR">TOR</span></nav>
-<div class="radar" id="r"></div>
-<a href="https://buy.stripe.com/bJe28rcdM5c43yu8ww" class="btn">ACCÈS CLAN - 2 ANS (299$)</a>
-<script>
-    const d = {
-        'MTL': { s: 12, bg: 'https://images.unsplash.com/photo-1519178140742-5f68f8670868?w=800', p: ['https://images.unsplash.com/photo-1617137968427-85924c800a22?w=200','https://images.unsplash.com/photo-1618331835717-801e976710b2?w=200'] },
-        'QC': { s: 5, bg: 'https://images.unsplash.com/photo-1536412595952-6b9409029141?w=800', p: ['https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200'] },
-        'TOR': { s: 18, bg: 'https://images.unsplash.com/photo-1503192856419-44d7acc29c01?w=800', p: ['https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200'] }
-    };
-    function up(city) {
-        document.querySelectorAll('nav span').forEach(el => el.classList.remove('active'));
-        document.getElementById('n-'+city).classList.add('active');
-        document.getElementById('c').innerText = city;
-        document.getElementById('s').innerText = d[city].s;
-        document.getElementById('f').style.width = (d[city].s / 2.5) + "%";
-        const rad = document.getElementById('r');
-        rad.style.backgroundImage = `url(${d[city].bg})`; rad.innerHTML = '';
-        d[city].p.forEach(img => {
-            let div = document.createElement('div'); div.className = "m";
-            div.style.left = Math.random() * 70 + 10 + "%"; div.style.top = Math.random() * 60 + 10 + "%";
-            div.style.backgroundImage = `url(${img})`; rad.appendChild(div);
-        });
-    }
-    up('MTL');
-</script>
-</body>
-</html>
+import { Button } from "@/components/ui/button";
+
+export const Hero = () => {
+  const cities = [
+    { name: "QUÉBEC", spots: 212 },
+    { name: "MONTRÉAL", spots: 189 },
+    { name: "OTTAWA", spots: 234 },
+    { name: "TORONTO", spots: 241 },
+  ];
+
+  return (
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050505]">
+      {/* EFFET DE MAGIE : Particules dorées animées */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-50" />
+        {/* On peut imaginer ici tes particules dorées en overlay */}
+        <div className="particles-overlay opacity-30" /> 
+      </div>
+
+      <div className="container relative z-10 px-6 text-center">
+        <div className="inline-block px-4 py-1 mb-8 border border-gold/30 rounded-full bg-black/50 backdrop-blur-md text-primary text-[10px] font-bold tracking-[0.3em] uppercase animate-pulse">
+          Accès Exclusif — Membres Fondateurs
+        </div>
+        
+        <h1 className="text-7xl md:text-9xl font-bold tracking-tighter mb-4 text-white">
+          VIBE<span className="text-primary font-light">2026</span>
+        </h1>
+        
+        <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-16 font-light leading-relaxed">
+          Le réseau privé des décideurs. <br/>
+          <span className="text-white">Une adhésion à vie.</span> Quatre métropoles. <span className="text-primary font-bold underline decoration-1">250 places par ville.</span>
+        </p>
+
+        {/* STATUT DES VILLES - Le moteur de vente */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-5xl mx-auto mb-16">
+          {cities.map((city) => (
+            <div key={city.name} className="group p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-primary/50 transition-all duration-500 hover:bg-white/[0.05]">
+              <div className="text-[9px] text-zinc-500 mb-3 tracking-[0.2em]">{city.name}</div>
+              <div className="text-2xl font-semibold text-white mb-3">{city.spots}<span className="text-[10px] text-zinc-600">/250</span></div>
+              <div className="h-[2px] w-full bg-zinc-900 rounded-full overflow-hidden">
+                <div className="h-full bg-primary animate-width-grow" style={{ width: `${(city.spots / 250) * 100}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-col items-center gap-4">
+          <Button 
+            size="lg"
+            className="h-16 px-12 bg-primary hover:bg-white hover:text-black text-white font-bold text-lg rounded-full transition-all duration-300 shadow-[0_0_40px_rgba(255,0,0,0.2)]"
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            RÉSERVER MON RANG — 299$
+          </Button>
+          <span className="text-[10px] text-zinc-500 tracking-widest uppercase">Identité protégée • Paiement chiffré</span>
+        </div>
+      </div>
+    </section>
+  );
+};
