@@ -27,3 +27,34 @@
 @keyframes fadeOut {
   to { opacity: 0; visibility: hidden; }
 }
+import { useEffect, useState } from "react";
+
+export const Curtain = () => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 2500); // Disparaît complètement après l'animation
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex pointer-events-none">
+      {/* Rideau Gauche */}
+      <div className="w-1/2 h-full bg-[#050505] animate-curtain-left border-r border-white/5" />
+      
+      {/* Rideau Droite */}
+      <div className="w-1/2 h-full bg-[#050505] animate-curtain-right border-l border-white/5" />
+
+      {/* Logo Central qui s'efface */}
+      <div className="absolute inset-0 flex items-center justify-center animate-logo-fade">
+        <h1 className="text-4xl font-bold tracking-[0.5em] text-white">
+          VIBE<span className="text-primary">2026</span>
+        </h1>
+      </div>
+    </div>
+  );
+};
