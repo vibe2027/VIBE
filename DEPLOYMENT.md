@@ -45,7 +45,7 @@ CNAME | www  | vibegay.ca               | ✅
 ### Option A: Let's Encrypt (Gratuit, Recommandé)
 
 ```bash
-# Installer Certbot
+# yInstaller Certbot
 sudo apt-get update
 sudo apt-get install certbot python3-certbot-nginx
 
@@ -80,7 +80,7 @@ REACT_APP_FOUNDER_EMAIL=vibeqbc2026@hotmail.com
 # Stripe Payment Link
 REACT_APP_STRIPE_FOUNDER_LINK=https://buy.stripe.com/28E3cx85P6UI9YM6xm3wQ01
 
-# Configuration Serveur
+# tConfiguration Serveur
 WDS_SOCKET_PORT=443
 ENABLE_HEALTH_CHECK=false
 ```
