@@ -111,7 +111,7 @@ const AngeSection = () => {
         <div className="flex gap-1 h-11 items-end mb-6">
           {[10, 16, 24, 34, 42, 34, 24, 16, 10].map((height, i) => (
             <div
-              key={i}
+              key={`feather-${i}-${height}`}
               className="w-0.5 rounded-sm bg-[#D4AF37]"
               style={{
                 height: `${height}px`,
@@ -143,8 +143,8 @@ const AngeSection = () => {
           { icon: '☽', title: 'Gardien 24/7', text: 'Surveille tes interactions. Alerte discrète dès qu\'un comportement suspect est détecté.' },
           { icon: '⚡', title: 'Alerte 60 sec', text: 'Signale un inconfort. L\'équipe VIBE intervient en moins de 60 secondes.' },
           { icon: '◎', title: 'Code sécurité', text: 'Code secret envoyé toutes les 30 minutes lors d\'un rendez-vous en personne.' },
-        ].map((card, i) => (
-          <div key={i} className="p-7 bg-black hover:bg-[rgba(212,175,55,0.03)] transition-colors">
+        ].map((card) => (
+          <div key={card.title} className="p-7 bg-black hover:bg-[rgba(212,175,55,0.03)] transition-colors">
             <span className="text-2xl mb-3 block">{card.icon}</span>
             <div className="text-[0.72rem] text-[#D4AF37] tracking-[3px] uppercase mb-2 font-bold">{card.title}</div>
             <p className="text-[0.68rem] text-[rgba(255,255,255,0.28)] leading-[1.9]">{card.text}</p>
@@ -248,40 +248,40 @@ const TribunalSection = () => {
   );
 };
 
-// Salon Section
+// Salon Section - constants outside component for stable references
+const SALON_TRACKS = [
+  { title: 'Nuit de Québec', artist: 'VIBE Ambient · Salon Flottant' },
+  { title: 'Brouillard d\'hiver', artist: 'VIBE Chill · Mode Fantôme' },
+  { title: 'Lumière de la fierté', artist: 'VIBE Pride · 2026' },
+  { title: 'Âmes connectées', artist: 'VIBE Deep · Salon Flottant' },
+];
+
+const SALON_CHAT_MESSAGES = [
+  'Bienvenue dans le salon ✦',
+  'Quelqu\'un veut danser ? ◉',
+  'Ce brouillard est magnifique',
+  'Je suis fantôme mais je vous entends ☽',
+  'L\'ange gardien veille sur nous tous',
+];
+
+const SALON_PROFILES = [
+  { name: 'Alexandre', age: '28 · Québec', trait: 'Artiste · Libre', hue: 45 },
+  { name: 'Maxime', age: '32 · Montréal', trait: 'Musicien · Rêveur', hue: 280 },
+  { name: 'Jordan', age: '25 · Gatineau', trait: 'Photo · Voyageur', hue: 160 },
+];
+
 const SalonSection = () => {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [liveMessage, setLiveMessage] = useState('');
 
-  const tracks = [
-    { title: 'Nuit de Québec', artist: 'VIBE Ambient · Salon Flottant' },
-    { title: 'Brouillard d\'hiver', artist: 'VIBE Chill · Mode Fantôme' },
-    { title: 'Lumière de la fierté', artist: 'VIBE Pride · 2026' },
-    { title: 'Âmes connectées', artist: 'VIBE Deep · Salon Flottant' },
-  ];
-
-  const chatMessages = [
-    'Bienvenue dans le salon ✦',
-    'Quelqu\'un veut danser ? ◉',
-    'Ce brouillard est magnifique',
-    'Je suis fantôme mais je vous entends ☽',
-    'L\'ange gardien veille sur nous tous',
-  ];
-
-  const profiles = [
-    { name: 'Alexandre', age: '28 · Québec', trait: 'Artiste · Libre', hue: 45 },
-    { name: 'Maxime', age: '32 · Montréal', trait: 'Musicien · Rêveur', hue: 280 },
-    { name: 'Jordan', age: '25 · Gatineau', trait: 'Photo · Voyageur', hue: 160 },
-  ];
-
   useEffect(() => {
     const trackInterval = setInterval(() => {
-      setCurrentTrack((prev) => (prev + 1) % tracks.length);
+      setCurrentTrack((prev) => (prev + 1) % SALON_TRACKS.length);
     }, 8000);
 
     let messageIndex = 0;
     const messageInterval = setInterval(() => {
-      setLiveMessage(chatMessages[messageIndex % chatMessages.length]);
+      setLiveMessage(SALON_CHAT_MESSAGES[messageIndex % SALON_CHAT_MESSAGES.length]);
       messageIndex++;
     }, 5000);
 
@@ -289,7 +289,6 @@ const SalonSection = () => {
       clearInterval(trackInterval);
       clearInterval(messageInterval);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -299,13 +298,13 @@ const SalonSection = () => {
         <div className="flex items-center gap-3.5 py-3.5 px-4 bg-[rgba(212,175,55,0.03)] border border-[rgba(212,175,55,0.1)] mb-5">
           <div className="text-2xl animate-spin">♪</div>
           <div className="flex-1">
-            <div className="text-[0.72rem] text-[#D4AF37] tracking-[2px]">{tracks[currentTrack].title}</div>
-            <div className="text-[0.54rem] text-[rgba(255,255,255,0.25)] tracking-[2px] mt-0.5">{tracks[currentTrack].artist}</div>
+            <div className="text-[0.72rem] text-[#D4AF37] tracking-[2px]">{SALON_TRACKS[currentTrack].title}</div>
+            <div className="text-[0.54rem] text-[rgba(255,255,255,0.25)] tracking-[2px] mt-0.5">{SALON_TRACKS[currentTrack].artist}</div>
           </div>
           <div className="flex gap-0.5 items-end h-5">
-            {[0, 0.12, 0.24, 0.36, 0.48].map((delay, i) => (
+            {[0, 0.12, 0.24, 0.36, 0.48].map((delay) => (
               <div
-                key={i}
+                key={`eqbar-${delay}`}
                 className="w-0.5 bg-[#D4AF37] rounded-sm"
                 style={{
                   animation: 'eqpulse 0.8s ease-in-out infinite',
@@ -317,8 +316,8 @@ const SalonSection = () => {
         </div>
 
         <div className="grid grid-cols-3 gap-3 mb-5">
-          {profiles.map((profile, i) => (
-            <div key={i} className="relative bg-[rgba(20,10,40,0.95)] border border-[rgba(212,175,55,0.15)] rounded-lg p-4 px-3 text-center min-h-[140px] overflow-hidden">
+          {SALON_PROFILES.map((profile) => (
+            <div key={profile.name} className="relative bg-[rgba(20,10,40,0.95)] border border-[rgba(212,175,55,0.15)] rounded-lg p-4 px-3 text-center min-h-[140px] overflow-hidden">
               <FloatingProfileCanvas hue={profile.hue} />
               <div className="relative z-[2]">
                 <div className="text-[0.7rem] text-[#D4AF37] tracking-[2px] mb-0.5">{profile.name}</div>

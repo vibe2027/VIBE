@@ -1,37 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
+const NAV_LINKS = [
+  { id: 'accueil', label: 'Accueil' },
+  { id: 'ange-section', label: 'Ange gardien' },
+  { id: 'globe-section', label: 'Globe' },
+  { id: 'tribunal-section', label: 'Tribunal' },
+  { id: 'salon-section', label: 'Salon' },
+  { id: 'inscription', label: 'Rejoindre' },
+];
+
+const formatTime = () => {
+  const n = new Date();
+  const hours = n.getHours().toString().padStart(2, '0');
+  const minutes = n.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
+
+const scrollToSection = (id) => {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+};
+
 export const HUD = ({ onLoginClick, onAdminClick }) => {
-  const [time, setTime] = useState('00:00');
+  const [time, setTime] = useState(formatTime);
   const { user, signOut } = useAuth();
 
   useEffect(() => {
-    const updateTime = () => {
-      const n = new Date();
-      const hours = n.getHours().toString().padStart(2, '0');
-      const minutes = n.getMinutes().toString().padStart(2, '0');
-      setTime(`${hours}:${minutes}`);
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
+    const interval = setInterval(() => setTime(formatTime()), 1000);
     return () => clearInterval(interval);
   }, []);
-
-  const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <div className="hud">
       <div className="hud-brand">✦ VIBE</div>
       <nav className="hud-mid">
-        <a onClick={() => scrollTo('accueil')}>Accueil</a>
-        <a onClick={() => scrollTo('ange-section')}>Ange gardien</a>
-        <a onClick={() => scrollTo('globe-section')}>Globe</a>
-        <a onClick={() => scrollTo('tribunal-section')}>Tribunal</a>
-        <a onClick={() => scrollTo('salon-section')}>Salon</a>
-        <a onClick={() => scrollTo('inscription')}>Rejoindre</a>
+        {NAV_LINKS.map((link) => (
+          <a key={link.id} onClick={() => scrollToSection(link.id)}>
+            {link.label}
+          </a>
+        ))}
       </nav>
       <div className="hud-right">
         <div className="pulse-dot"></div>

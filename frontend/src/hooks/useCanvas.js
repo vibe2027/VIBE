@@ -1,8 +1,17 @@
 import { useEffect, useRef } from 'react';
 
-export const useCanvas = (draw, options = {}) => {
+/**
+ * Hook to manage canvas animation lifecycle.
+ * The draw function is called on every frame with (context, frameCount).
+ */
+export const useCanvas = (draw) => {
   const canvasRef = useRef(null);
-  const animationRef = useRef(null);
+  const drawRef = useRef(draw);
+
+  // Keep the latest draw function without re-running the effect
+  useEffect(() => {
+    drawRef.current = draw;
+  }, [draw]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -10,21 +19,20 @@ export const useCanvas = (draw, options = {}) => {
 
     const context = canvas.getContext('2d');
     let frameCount = 0;
+    let animationId;
 
     const render = () => {
       frameCount++;
-      draw(context, frameCount);
-      animationRef.current = requestAnimationFrame(render);
+      drawRef.current(context, frameCount);
+      animationId = requestAnimationFrame(render);
     };
 
     render();
 
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      if (animationId) cancelAnimationFrame(animationId);
     };
-  }, [draw]);
+  }, []);
 
   return canvasRef;
 };
