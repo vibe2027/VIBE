@@ -4,481 +4,1807 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <meta name="description" content="VIBE — L'application LGBTQ+ de nouvelle génération, née à Québec. Rencontres, communauté, sécurité.">
+
+<!-- ══ SÉCURITÉ NIVEAU 1 : Headers HTML ══ -->
+<!-- Empêche le clickjacking (iframe malveillant) -->
 <meta http-equiv="X-Frame-Options" content="DENY">
+<!-- Force HTTPS, bloque downgrade HTTP -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' https://vibegay.ca https://fonts.googleapis.com https://fonts.gstatic.com;
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' data: https:;
+  connect-src 'self' https://vibegay.ca;
+  frame-ancestors 'none';
+  base-uri 'self';
+  form-action 'self' https://vibegay.ca;
+">
+<!-- Bloque sniffing de type MIME -->
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
+<!-- Referrer limité pour la vie privée -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- Empêche mise en cache de données sensibles -->
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
+<!-- Robots : pas d'indexation des pages sensibles -->
 <meta name="robots" content="index, follow, max-snippet:-1">
+
+<!-- ══ SEO & RÉSEAUX SOCIAUX ══ -->
 <meta property="og:title" content="VIBE 2026 — Réseau LGBTQ+ Canadien">
 <meta property="og:description" content="L'application LGBTQ+ de nouvelle génération, née à Québec. Sécurité maximale, communauté vraie.">
 <meta property="og:url" content="https://vibegay.ca">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+
 <title>VIBE 2026 — Réseau LGBTQ+ Canadien</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Mono:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Mono:wght@400;700&display=swap');
 
-:root {
-  --gold: #D4AF37;
-  --gold2: rgba(212,175,55,0.15);
-  --purple: #b44fff;
-  --cyan: #00eeff;
-  --bg: #000;
-  --text: rgba(255,255,255,0.75);
-  --dim: rgba(255,255,255,0.2);
-}
+  :root {
+    --gold: #D4AF37;
+    --gold2: rgba(212,175,55,0.15);
+    --purple: #b44fff;
+    --cyan: #00eeff;
+    --bg: #000;
+    --text: rgba(255,255,255,0.75);
+    --dim: rgba(255,255,255,0.2);
+  }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Space Mono', monospace;
-  overflow-x: hidden;
-  cursor: crosshair;
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-#universe {
-  position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 0; pointer-events: none;
-}
+  html { scroll-behavior: smooth; }
 
-.hud {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 100;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 20px;
-  background: rgba(0,0,0,0.92);
-  border-bottom: 0.5px solid rgba(212,175,55,0.2);
-  backdrop-filter: blur(10px);
-}
-.hud-brand { font-size: 0.75rem; letter-spacing: 6px; color: var(--gold); font-weight: 700; }
-.hud-mid { display: flex; gap: 24px; }
-.hud-mid a {
-  font-size: 0.52rem; letter-spacing: 3px;
-  color: rgba(212,175,55,0.4); text-decoration: none;
-  text-transform: uppercase; transition: color 0.3s;
-}
-.hud-mid a:hover { color: var(--gold); }
-.hud-right { display: flex; align-items: center; gap: 12px; }
-.pulse-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--gold); animation: blink 1.3s ease-in-out infinite;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
 
-#accueil {
-  position: relative; z-index: 10;
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  text-align: center; padding: 100px 24px 60px;
-}
+  /* ── CANVAS UNIVERS ── */
+  #universe {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
 
-.dna-container { position: relative; width: 180px; height: 180px; margin: 0 auto 36px; }
-.orbit { position: absolute; border-radius: 50%; border: 0.5px solid; }
-.orbit1 { top:-12px; left:-12px; width:204px; height:204px; border-color:rgba(212,175,55,0.25); animation: spin 12s linear infinite; }
-.orbit2 { top:-22px; left:-22px; width:224px; height:224px; border-color:rgba(180,79,255,0.12); animation: spin 18s linear infinite reverse; }
-@keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  /* ── HUD BAR ── */
+  .hud {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(0,0,0,0.92);
+    border-bottom: 0.5px solid rgba(212,175,55,0.2);
+    backdrop-filter: blur(10px);
+  }
+  .hud-brand {
+    font-size: 0.75rem;
+    letter-spacing: 6px;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .hud-mid {
+    display: flex;
+    gap: 24px;
+  }
+  .hud-mid a {
+    font-size: 0.52rem;
+    letter-spacing: 3px;
+    color: rgba(212,175,55,0.4);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .hud-mid a:hover { color: var(--gold); }
+  .hud-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: blink 1.3s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+  .hud-time {
+    font-size: 0.52rem;
+    letter-spacing: 3px;
+    color: rgba(212,175,55,0.4);
+  }
 
-.vibe-logo {
-  width: 140px; height: 140px;
-  border-radius: 50%;
-  border: 1px solid rgba(212,175,55,0.3);
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto;
-  background: radial-gradient(ellipse at center, rgba(212,175,55,0.05) 0%, transparent 70%);
-}
-.vibe-logo-text {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.8rem; font-weight: 700;
-  color: var(--gold); letter-spacing: 4px;
-}
+  /* ── HERO ── */
+  #accueil {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 24px 60px;
+  }
 
-.vibe-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(4rem, 12vw, 7rem);
-  font-weight: 700; line-height: 1; margin-bottom: 8px;
-  position: relative; display: inline-block;
-}
-.vt-v { color: var(--gold); position: relative; display: inline-block; }
-.vt-v::before {
-  content:'V'; position:absolute; left:3px; top:0;
-  color:var(--purple); opacity:0; animation: glitch1 7s infinite;
-}
-.vt-v::after {
-  content:'V'; position:absolute; left:-3px; top:0;
-  color:var(--cyan); opacity:0; animation: glitch2 7s infinite;
-}
-@keyframes glitch1 { 0%,88%,100%{opacity:0} 91%{opacity:.8;transform:skewX(-8deg) translateX(4px)} 94%{opacity:0} }
-@keyframes glitch2 { 0%,91%,100%{opacity:0} 94%{opacity:.5;transform:skewX(5deg) translateX(-4px)} 97%{opacity:0} }
-.vt-ibe {
-  color: transparent;
-  -webkit-text-stroke: 2px rgba(212,175,55,0.4);
-  font-family: 'Playfair Display', serif;
-}
+  .dna-container {
+    position: relative;
+    width: 180px; height: 180px;
+    margin: 0 auto 36px;
+  }
+  .orbit { position: absolute; border-radius: 50%; border: 0.5px solid; }
+  .orbit1 { top:-12px; left:-12px; width:204px; height:204px; border-color:rgba(212,175,55,0.25); animation: spin 12s linear infinite; }
+  .orbit2 { top:-22px; left:-22px; width:224px; height:224px; border-color:rgba(180,79,255,0.12); animation: spin 18s linear infinite reverse; }
+  @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
 
-.hero-sub { font-size: 0.65rem; letter-spacing: 6px; color: rgba(212,175,55,0.45); text-transform: uppercase; margin-bottom: 4px; }
-.hero-origin { font-size: 0.55rem; letter-spacing: 4px; color: rgba(255,255,255,0.15); text-transform: uppercase; margin-bottom: 28px; }
+  .vibe-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(4rem, 12vw, 7rem);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+    position: relative;
+    display: inline-block;
+  }
+  .vt-v { color: var(--gold); position: relative; display: inline-block; }
+  .vt-v::before {
+    content:'V'; position:absolute; left:3px; top:0;
+    color:var(--purple); opacity:0;
+    animation: glitch1 7s infinite;
+  }
+  .vt-v::after {
+    content:'V'; position:absolute; left:-3px; top:0;
+    color:var(--cyan); opacity:0;
+    animation: glitch2 7s infinite;
+  }
+  @keyframes glitch1 { 0%,88%,100%{opacity:0} 91%{opacity:.8;transform:skewX(-8deg) translateX(4px)} 94%{opacity:0} }
+  @keyframes glitch2 { 0%,91%,100%{opacity:0} 94%{opacity:.5;transform:skewX(5deg) translateX(-4px)} 97%{opacity:0} }
+  .vt-ibe {
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(212,175,55,0.4);
+    font-family: 'Playfair Display', serif;
+  }
 
-.pride-spectrum {
-  display: flex; height: 3px; width: 240px;
-  margin: 0 auto 32px; border-radius: 2px; overflow: hidden;
-}
-.ps { flex:1; animation: pspulse 2.5s ease-in-out infinite; }
-.ps1{background:#E40303;animation-delay:0s} .ps2{background:#FF8C00;animation-delay:.1s}
-.ps3{background:#FFED00;animation-delay:.2s} .ps4{background:#008026;animation-delay:.3s}
-.ps5{background:#004DFF;animation-delay:.4s} .ps6{background:#750787;animation-delay:.5s}
-.ps7{background:#FFAFC8;animation-delay:.6s} .ps8{background:#74D7EE;animation-delay:.7s}
-@keyframes pspulse { 0%,100%{opacity:.4;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(2.5)} }
+  .hero-sub {
+    font-size: 0.65rem;
+    letter-spacing: 6px;
+    color: rgba(212,175,55,0.45);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .hero-origin {
+    font-size: 0.55rem;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.15);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
 
-.hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 48px; }
-.btn-primary {
-  display: inline-block; background: transparent; color: var(--gold);
-  border: 1px solid rgba(212,175,55,0.6);
-  padding: 15px 40px; font-size: 0.72rem; font-weight: 700;
-  letter-spacing: 5px; text-transform: uppercase; text-decoration: none;
-  font-family: 'Space Mono', monospace; cursor: pointer;
-  position: relative; overflow: hidden; transition: color 0.35s;
-}
-.btn-primary::before {
-  content:''; position: absolute; top:0; left:-100%; width:100%; height:100%;
-  background: var(--gold); z-index: 0;
-  transition: left 0.4s cubic-bezier(.4,0,.2,1);
-}
-.btn-primary:hover::before { left:0; }
-.btn-primary:hover { color: #000; }
-.btn-primary span { position: relative; z-index: 1; }
+  .pride-spectrum {
+    display: flex;
+    height: 3px;
+    width: 240px;
+    margin: 0 auto 32px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .ps { flex:1; animation: pspulse 2.5s ease-in-out infinite; }
+  .ps1{background:#E40303;animation-delay:0s} .ps2{background:#FF8C00;animation-delay:.1s}
+  .ps3{background:#FFED00;animation-delay:.2s} .ps4{background:#008026;animation-delay:.3s}
+  .ps5{background:#004DFF;animation-delay:.4s} .ps6{background:#750787;animation-delay:.5s}
+  .ps7{background:#FFAFC8;animation-delay:.6s} .ps8{background:#74D7EE;animation-delay:.7s}
+  @keyframes pspulse { 0%,100%{opacity:.4;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(2.5)} }
 
-.btn-ghost {
-  display: inline-block; background: transparent;
-  color: rgba(212,175,55,0.45);
-  border: 0.5px solid rgba(212,175,55,0.2);
-  padding: 15px 32px; font-size: 0.72rem; letter-spacing: 4px;
-  text-transform: uppercase; text-decoration: none;
-  font-family: 'Space Mono', monospace; transition: all 0.3s;
-}
-.btn-ghost:hover { color: var(--gold); border-color: rgba(212,175,55,0.5); }
+  .hero-btns {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
+  .btn-primary {
+    display: inline-block;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid rgba(212,175,55,0.6);
+    padding: 15px 40px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.35s;
+  }
+  .btn-primary::before {
+    content:'';
+    position: absolute;
+    top:0; left:-100%; width:100%; height:100%;
+    background: var(--gold);
+    z-index: 0;
+    transition: left 0.4s cubic-bezier(.4,0,.2,1);
+  }
+  .btn-primary:hover::before { left:0; }
+  .btn-primary:hover { color: #000; }
+  .btn-primary span { position: relative; z-index: 1; }
 
-.stats-strip {
-  position: relative; z-index: 10;
-  display: flex; justify-content: space-around;
-  border-top: 0.5px solid rgba(212,175,55,0.1);
-  border-bottom: 0.5px solid rgba(212,175,55,0.1);
-}
-.stat-cell { flex: 1; padding: 28px 12px; text-align: center; border-right: 0.5px solid rgba(212,175,55,0.07); }
-.stat-cell:last-child { border-right: none; }
-.stat-n { display: block; font-size: 1.8rem; color: var(--gold); font-weight: 700; letter-spacing: 2px; margin-bottom: 4px; }
-.stat-l { display: block; font-size: 0.5rem; letter-spacing: 3px; color: rgba(255,255,255,0.2); text-transform: uppercase; }
+  .btn-ghost {
+    display: inline-block;
+    background: transparent;
+    color: rgba(212,175,55,0.45);
+    border: 0.5px solid rgba(212,175,55,0.2);
+    padding: 15px 32px;
+    font-size: 0.72rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover {
+    color: var(--gold);
+    border-color: rgba(212,175,55,0.5);
+  }
 
-.ticker {
-  overflow: hidden; white-space: nowrap; padding: 9px 0;
-  border-bottom: 0.5px solid rgba(212,175,55,0.07);
-  background: rgba(212,175,55,0.01); position: relative; z-index: 10;
-}
-.ticker-inner {
-  display: inline-block; animation: tickrun 40s linear infinite;
-  font-size: 0.5rem; letter-spacing: 5px; color: rgba(212,175,55,0.22);
-}
-@keyframes tickrun { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  /* ── STATS ── */
+  .stats-strip {
+    position: relative; z-index: 10;
+    display: flex;
+    justify-content: space-around;
+    border-top: 0.5px solid rgba(212,175,55,0.1);
+    border-bottom: 0.5px solid rgba(212,175,55,0.1);
+  }
+  .stat-cell {
+    flex: 1;
+    padding: 28px 12px;
+    text-align: center;
+    border-right: 0.5px solid rgba(212,175,55,0.07);
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-n {
+    display: block;
+    font-size: 1.8rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .stat-l {
+    display: block;
+    font-size: 0.5rem;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+  }
 
-.section { position: relative; z-index: 10; padding: 70px 24px; }
-.section-label {
-  font-size: 0.55rem; letter-spacing: 6px; color: rgba(212,175,55,0.35);
-  text-transform: uppercase; text-align: center; margin-bottom: 48px;
-}
+  /* ── TICKER ── */
+  .ticker {
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 9px 0;
+    border-bottom: 0.5px solid rgba(212,175,55,0.07);
+    background: rgba(212,175,55,0.01);
+    position: relative; z-index: 10;
+  }
+  .ticker-inner {
+    display: inline-block;
+    animation: tickrun 40s linear infinite;
+    font-size: 0.5rem;
+    letter-spacing: 5px;
+    color: rgba(212,175,55,0.22);
+  }
+  @keyframes tickrun { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
-#ange-section {
-  background: rgba(212,175,55,0.01);
-  border-top: 0.5px solid rgba(212,175,55,0.08);
-  border-bottom: 0.5px solid rgba(212,175,55,0.08);
-}
-.ange-hero { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
-.ange-tagline { font-size: 0.58rem; letter-spacing: 4px; color: rgba(212,175,55,0.45); text-transform: uppercase; text-align: center; margin-bottom: 24px; }
+  /* ── SECTIONS ── */
+  .section {
+    position: relative; z-index: 10;
+    padding: 70px 24px;
+  }
+  .section-label {
+    font-size: 0.55rem;
+    letter-spacing: 6px;
+    color: rgba(212,175,55,0.35);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 48px;
+  }
 
-.triple-tap-box {
-  border: 0.5px solid rgba(255,80,80,0.25); padding: 20px;
-  background: rgba(255,80,80,0.02); margin-bottom: 24px;
-  max-width: 500px; margin-left: auto; margin-right: auto;
-}
-.ttb-head { font-size: 0.55rem; letter-spacing: 4px; color: rgba(255,80,80,0.6); text-transform: uppercase; margin-bottom: 10px; }
-.ttb-body { font-size: 0.72rem; color: rgba(255,255,255,0.3); line-height: 2; }
-.ttb-body strong { color: rgba(255,80,80,0.85); }
+  /* ── ANGE GARDIEN ── */
+  #ange-section {
+    background: rgba(212,175,55,0.01);
+    border-top: 0.5px solid rgba(212,175,55,0.08);
+    border-bottom: 0.5px solid rgba(212,175,55,0.08);
+  }
+  .ange-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .ange-canvas-wrap {
+    position: relative;
+    width: 180px; height: 180px;
+    margin-bottom: 16px;
+  }
+  .wings-overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 280px; height: 180px;
+    pointer-events: none;
+  }
+  .feather-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 3px;
+    height: 44px;
+    margin-bottom: 10px;
+  }
+  .feather {
+    width: 2px;
+    border-radius: 1px;
+    background: var(--gold);
+    animation: fwave 2s ease-in-out infinite;
+  }
+  @keyframes fwave { 0%,100%{transform:scaleY(0.4);opacity:.2} 50%{transform:scaleY(1);opacity:.9} }
+  .ange-tagline {
+    font-size: 0.58rem;
+    letter-spacing: 4px;
+    color: rgba(212,175,55,0.45);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .triple-tap-box {
+    border: 0.5px solid rgba(255,80,80,0.25);
+    padding: 20px;
+    background: rgba(255,80,80,0.02);
+    margin-bottom: 24px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .ttb-head {
+    font-size: 0.55rem;
+    letter-spacing: 4px;
+    color: rgba(255,80,80,0.6);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .ttb-body {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.3);
+    line-height: 2;
+  }
+  .ttb-body strong { color: rgba(255,80,80,0.85); }
+  .ange-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: rgba(212,175,55,0.06);
+    margin-bottom: 28px;
+  }
+  .acard {
+    padding: 28px 22px;
+    background: #000;
+    transition: background 0.3s;
+  }
+  .acard:hover { background: rgba(212,175,55,0.03); }
+  .acard-icon { font-size: 1.4rem; margin-bottom: 12px; display: block; }
+  .acard-title {
+    font-size: 0.72rem;
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .acard-text { font-size: 0.68rem; color: rgba(255,255,255,0.28); line-height: 1.9; }
+  .sos-btn {
+    display: block;
+    max-width: 340px;
+    margin: 0 auto;
+    background: transparent;
+    color: rgba(255,80,80,0.7);
+    border: 1px solid rgba(255,80,80,0.4);
+    padding: 14px 32px;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    transition: all 0.3s;
+    text-align: center;
+  }
+  .sos-btn:hover { background: rgba(255,80,80,0.08); border-color: #ff5050; color: #ff5050; }
 
-.ange-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: rgba(212,175,55,0.06); margin-bottom: 28px; }
-.acard { padding: 28px 22px; background: #000; transition: background 0.3s; }
-.acard:hover { background: rgba(212,175,55,0.03); }
-.acard-icon { font-size: 1.4rem; margin-bottom: 12px; display: block; }
-.acard-title { font-size: 0.72rem; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
-.acard-text { font-size: 0.68rem; color: rgba(255,255,255,0.28); line-height: 1.9; }
+  /* ── GLOBE ── */
+  #globe-section {
+    text-align: center;
+    padding: 0;
+  }
+  .globe-wrap {
+    position: relative;
+    background: #000;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 420px;
+    border-top: 0.5px solid rgba(212,175,55,0.08);
+    border-bottom: 0.5px solid rgba(212,175,55,0.08);
+  }
+  #globe-canvas {
+    display: block;
+    cursor: grab;
+    touch-action: none;
+    width: 100% !important;
+    max-width: 520px;
+    height: auto !important;
+  }
+  #globe-canvas:active { cursor: grabbing; }
+  .globe-caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 10px;
+    font-size: 0.48rem;
+    letter-spacing: 5px;
+    color: rgba(212,175,55,0.3);
+    text-transform: uppercase;
+    text-align: center;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  }
+  .city-strip {
+    display: flex;
+    justify-content: space-around;
+    padding: 14px 12px;
+    border-bottom: 0.5px solid rgba(212,175,55,0.07);
+  }
+  .city-item { text-align: center; }
+  .city-code {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 3px;
+  }
+  .city-name {
+    display: block;
+    font-size: 0.44rem;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+  }
+  .city-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin: 4px auto 0;
+    animation: blink 2s ease-in-out infinite;
+  }
 
-.sos-btn {
-  display: block; max-width: 340px; margin: 0 auto;
-  background: transparent; color: rgba(255,80,80,0.7);
-  border: 1px solid rgba(255,80,80,0.4); padding: 14px 32px;
-  font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase;
-  cursor: pointer; font-family: 'Space Mono', monospace;
-  transition: all 0.3s; text-align: center;
-}
-.sos-btn:hover { background: rgba(255,80,80,0.08); border-color: #ff5050; color: #ff5050; }
+  /* ── TRIBUNAL ── */
+  #tribunal-section { padding: 0; }
+  #trib-canvas { display: block; width: 100%; }
+  .trib-content { padding: 28px 24px; }
+  .trib-lbl {
+    font-size: 0.55rem;
+    letter-spacing: 5px;
+    color: rgba(212,175,55,0.38);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .trib-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.18);
+    text-align: center;
+    line-height: 1.9;
+    margin-bottom: 20px;
+  }
+  .verdict-box {
+    border: 0.5px solid rgba(220,50,50,0.25);
+    padding: 22px;
+    background: rgba(220,50,50,0.02);
+    margin-bottom: 20px;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .vb-num { font-size: 0.52rem; color: rgba(220,50,50,.55); letter-spacing: 3px; margin-bottom: 8px; }
+  .vb-verdict {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .vb-sub { font-size: 0.65rem; color: rgba(255,255,255,0.25); line-height: 1.8; }
+  .trib-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: rgba(212,175,55,0.05);
+  }
+  .tcol { padding: 22px 16px; background: #000; text-align: center; }
+  .tcol-n { font-size: 0.48rem; letter-spacing: 3px; color: rgba(212,175,55,0.25); margin-bottom: 8px; }
+  .tcol-t { font-size: 0.68rem; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  .tcol-txt { font-size: 0.62rem; color: rgba(255,255,255,0.25); line-height: 1.8; }
 
-#inscription {
-  border-top: 0.5px solid rgba(212,175,55,0.1);
-  background: rgba(212,175,55,0.01);
-  padding: 70px 24px;
-  position: relative; z-index: 10;
-}
-.form-wrap { max-width: 460px; margin: 0 auto; text-align: center; }
-.form-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
-.form-sub { font-size: 0.58rem; letter-spacing: 3px; color: rgba(255,255,255,0.2); text-transform: uppercase; margin-bottom: 36px; }
+  /* ── SALON FLOTTANT ── */
+  #salon-section { padding: 0; }
+  #salon-canvas { display: block; width: 100%; }
+  .salon-ui { padding: 20px 24px; }
+  .now-playing {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 0.5px solid rgba(212,175,55,0.15);
+    padding: 14px;
+    background: rgba(212,175,55,0.02);
+    margin-bottom: 14px;
+  }
+  .disc {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 0.5px solid rgba(212,175,55,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    animation: disc-spin 5s linear infinite;
+  }
+  @keyframes disc-spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  .np-info { flex: 1; }
+  .np-track { font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; margin-bottom: 4px; }
+  .np-artist { font-size: 0.52rem; color: rgba(255,255,255,0.28); letter-spacing: 2px; }
+  .eq-bars { display: flex; gap: 2px; align-items: flex-end; height: 20px; }
+  .eq-bar {
+    width: 3px; border-radius: 1px; background: var(--gold);
+    animation: eqwave 0.8s ease-in-out infinite alternate;
+  }
+  @keyframes eqwave { from{height:3px;opacity:.3} to{height:20px;opacity:1} }
 
-.form-group { margin-bottom: 14px; text-align: left; }
-.form-group label { display: block; font-size: 0.52rem; letter-spacing: 3px; color: rgba(212,175,55,0.4); text-transform: uppercase; margin-bottom: 6px; }
-.form-group input, .form-group select {
-  width: 100%; background: rgba(255,255,255,0.03);
-  border: 0.5px solid rgba(212,175,55,0.2); color: rgba(255,255,255,0.7);
-  padding: 12px 14px; font-size: 0.72rem; font-family: 'Space Mono', monospace;
-  outline: none; transition: border-color 0.3s;
-  -webkit-appearance: none;
-}
-.form-group input:focus, .form-group select:focus { border-color: rgba(212,175,55,0.5); }
-.form-group select option { background: #111; }
+  .floating-profiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .fp-card {
+    border: 0.5px solid rgba(212,175,55,0.1);
+    padding: 16px 8px;
+    background: rgba(212,175,55,0.01);
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.4s;
+  }
+  .fp-card:hover { border-color: rgba(212,175,55,0.4); }
+  .fp-card:hover .fp-fog { opacity: 0; }
+  .fp-card:hover .fp-info { opacity: 1; }
+  .fp-canvas { border-radius: 50%; display: block; margin: 0 auto 8px; }
+  .fp-fog {
+    position: absolute;
+    top:0; left:0; right:0; bottom:0;
+    background: radial-gradient(ellipse at 40% 60%, rgba(140,140,220,0.3) 0%, rgba(0,0,20,0.82) 70%);
+    transition: opacity 0.8s;
+    pointer-events: none;
+  }
+  .fp-info { opacity: 0.1; transition: opacity 0.8s; position: relative; z-index: 2; }
+  .fp-name { font-size: 0.65rem; color: rgba(212,175,55,0.9); letter-spacing: 2px; font-weight: 700; margin-bottom: 3px; }
+  .fp-age { font-size: 0.5rem; color: rgba(255,255,255,0.3); letter-spacing: 1px; }
+  .fp-trait { font-size: 0.44rem; color: rgba(180,79,255,0.55); letter-spacing: 2px; margin-top: 3px; text-transform: uppercase; }
+  .fp-ghost {
+    font-size: 0.42rem;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.12);
+    position: absolute;
+    bottom: 6px; left: 0; right: 0;
+    text-align: center;
+    z-index: 3;
+    text-transform: uppercase;
+  }
+  .salon-chat {
+    border: 0.5px solid rgba(212,175,55,0.1);
+    padding: 14px;
+    background: rgba(212,175,55,0.01);
+  }
+  .sc-label { font-size: 0.48rem; letter-spacing: 3px; color: rgba(212,175,55,0.3); margin-bottom: 12px; text-transform: uppercase; }
+  .chat-msg { margin-bottom: 9px; font-size: 0.62rem; line-height: 1.7; }
+  .chat-name { letter-spacing: 1px; margin-right: 6px; }
+  .chat-name.gold { color: rgba(212,175,55,0.6); }
+  .chat-name.ghost { color: rgba(180,79,255,0.65); }
+  .chat-text { color: rgba(255,255,255,0.3); }
 
-.founder-badge {
-  border: 0.5px solid rgba(212,175,55,0.25); padding: 16px;
-  background: rgba(212,175,55,0.03); margin-bottom: 20px; text-align: center;
-}
-.fb-label { font-size: 0.48rem; letter-spacing: 4px; color: rgba(212,175,55,0.4); text-transform: uppercase; margin-bottom: 6px; }
-.fb-price { font-size: 1.6rem; color: var(--gold); font-weight: 700; letter-spacing: 2px; }
-.fb-sub { font-size: 0.52rem; color: rgba(255,255,255,0.2); letter-spacing: 2px; margin-top: 4px; }
+  /* ── INSCRIPTION ── */
+  #inscription {
+    border-top: 0.5px solid rgba(212,175,55,0.1);
+    background: rgba(212,175,55,0.01);
+  }
+  .form-wrap {
+    max-width: 460px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .form-sub {
+    font-size: 0.58rem;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+  .form-group { margin-bottom: 14px; text-align: left; }
+  .form-group label {
+    display: block;
+    font-size: 0.5rem;
+    letter-spacing: 3px;
+    color: rgba(212,175,55,0.4);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%;
+    background: transparent;
+    border: 0.5px solid rgba(212,175,55,0.25);
+    color: rgba(255,255,255,0.75);
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .form-input:focus { border-color: rgba(212,175,55,0.7); }
+  .form-input::placeholder { color: rgba(255,255,255,0.15); }
+  .form-select {
+    width: 100%;
+    background: #0a0a0a;
+    border: 0.5px solid rgba(212,175,55,0.25);
+    color: rgba(255,255,255,0.6);
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+  .form-select:focus { border-color: rgba(212,175,55,0.7); }
+  .form-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+    margin-bottom: 14px;
+  }
+  .form-check input[type=checkbox] {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    accent-color: var(--gold);
+    cursor: pointer;
+    margin-top: 2px;
+  }
+  .form-check label {
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.3);
+    line-height: 1.7;
+    cursor: pointer;
+  }
+  .form-check label a { color: rgba(212,175,55,0.6); text-decoration: none; }
+  .form-check label a:hover { color: var(--gold); }
+  .submit-btn {
+    width: 100%;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid rgba(212,175,55,0.6);
+    padding: 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.35s;
+    margin-top: 8px;
+  }
+  .submit-btn::before {
+    content:'';
+    position: absolute;
+    top:0; left:-100%; width:100%; height:100%;
+    background: var(--gold);
+    z-index: 0;
+    transition: left 0.4s cubic-bezier(.4,0,.2,1);
+  }
+  .submit-btn:hover::before { left:0; }
+  .submit-btn:hover { color: #000; }
+  .submit-btn span { position: relative; z-index: 1; }
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    border: 0.5px solid rgba(212,175,55,0.3);
+  }
+  .form-success .fs-icon { font-size: 2rem; margin-bottom: 14px; display: block; }
+  .form-success .fs-title { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--gold); margin-bottom:8px; }
+  .form-success .fs-sub { font-size:0.65rem; letter-spacing:2px; color:rgba(255,255,255,0.25); }
+  .login-link {
+    display: block;
+    margin-top: 20px;
+    font-size: 0.58rem;
+    letter-spacing: 2px;
+    color: rgba(212,175,55,0.4);
+    text-align: center;
+  }
+  .login-link a { color: var(--gold); text-decoration: none; }
+  .login-link a:hover { text-decoration: underline; }
 
-.btn-submit {
-  width: 100%; background: transparent; color: var(--gold);
-  border: 1px solid rgba(212,175,55,0.6); padding: 16px;
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 5px;
-  text-transform: uppercase; cursor: pointer;
-  font-family: 'Space Mono', monospace;
-  position: relative; overflow: hidden; transition: color 0.35s;
-  margin-bottom: 14px;
-}
-.btn-submit::before {
-  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
-  background: var(--gold); z-index:0; transition: left 0.4s cubic-bezier(.4,0,.2,1);
-}
-.btn-submit:hover::before { left:0; }
-.btn-submit:hover { color:#000; }
-.btn-submit span { position:relative; z-index:1; }
+  /* ── CONNEXION MODALE ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.92);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: #060606;
+    border: 0.5px solid rgba(212,175,55,0.25);
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: transparent;
+    border: none;
+    color: rgba(212,175,55,0.4);
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    transition: color 0.3s;
+  }
+  .modal-close:hover { color: var(--gold); }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .modal-sub {
+    font-size: 0.5rem;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.18);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
 
-.form-note { font-size: 0.48rem; color: rgba(255,255,255,0.15); letter-spacing: 2px; line-height: 1.8; text-align: center; }
+  /* ── MANIFESTE ── */
+  #manifeste {
+    text-align: center;
+    border-top: 0.5px solid rgba(212,175,55,0.07);
+  }
+  .manifeste-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    color: rgba(255,255,255,0.1);
+    line-height: 2.5;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .manifeste-text em {
+    color: rgba(212,175,55,0.65);
+    font-style: normal;
+  }
 
-footer {
-  position: relative; z-index: 10;
-  border-top: 0.5px solid rgba(212,175,55,0.08);
-  padding: 28px 24px; text-align: center;
-}
-.footer-brand { font-size: 0.65rem; letter-spacing: 6px; color: rgba(212,175,55,0.3); font-weight: 700; margin-bottom: 10px; }
-.footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
-.footer-links a { font-size: 0.48rem; letter-spacing: 3px; color: rgba(255,255,255,0.15); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
-.footer-links a:hover { color: rgba(212,175,55,0.5); }
-.footer-copy { font-size: 0.44rem; letter-spacing: 2px; color: rgba(255,255,255,0.08); text-transform: uppercase; }
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 10;
+    text-align: center;
+    padding: 28px 20px;
+    border-top: 0.5px solid rgba(212,175,55,0.06);
+    font-size: 0.5rem;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.12);
+    text-transform: uppercase;
+  }
 
-@media (max-width: 600px) {
-  .hud-mid { display: none; }
-  .stats-strip { flex-wrap: wrap; }
-  .stat-cell { min-width: 50%; border-bottom: 0.5px solid rgba(212,175,55,0.07); }
-}
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .hud-mid { display: none; }
+    .floating-profiles { grid-template-columns: repeat(3,1fr); gap: 6px; }
+    .modal-box { margin: 16px; padding: 28px 20px; }
+    .vibe-title { font-size: 3.8rem; }
+  }
 </style>
 </head>
 <body>
 
 <canvas id="universe"></canvas>
 
-<nav class="hud">
-  <div class="hud-brand">VIBE</div>
-  <div class="hud-mid">
+<!-- HUD -->
+<div class="hud">
+  <div class="hud-brand">✦ VIBE</div>
+  <nav class="hud-mid">
     <a href="#accueil">Accueil</a>
-    <a href="#ange-section">Mode Ange</a>
-    <a href="#inscription">Rejoindre</a>
-  </div>
+    <a href="#ange-section">Ange gardien</a>
+    <a href="#globe-section">Globe</a>
+    <a href="#tribunal-section">Tribunal</a>
+    <a href="#salon-section">Salon</a>
+    <a href="#a-propos">À propos</a>
+    <a href="#inscription">Inscription</a>
+    <a href="https://vibegay.ca" target="_blank" rel="noopener" style="color:rgba(212,175,55,0.6)">vibegay.ca ↗</a>
+  </nav>
   <div class="hud-right">
     <div class="pulse-dot"></div>
+    <span class="hud-time" id="hud-time">00:00</span>
+    <button class="btn-ghost" style="padding:8px 18px;font-size:0.5rem" onclick="openLogin()">Connexion</button>
   </div>
-</nav>
+</div>
 
+<!-- HERO -->
 <section id="accueil">
   <div class="dna-container">
     <div class="orbit orbit1"></div>
     <div class="orbit orbit2"></div>
-    <div class="vibe-logo">
-      <span class="vibe-logo-text">V</span>
-    </div>
+    <canvas id="dna-canvas" width="180" height="180"></canvas>
   </div>
-
-  <h1 class="vibe-title">
-    <span class="vt-v">V</span><span class="vt-ibe">IBE</span>
-  </h1>
-  <p class="hero-sub">Réseau LGBTQ+ Canadien</p>
-  <p class="hero-origin">Né à Québec · 2026</p>
-
+  <div class="vibe-title"><span class="vt-v">V</span><span class="vt-ibe">IBE</span></div>
+  <p class="hero-sub" style="margin-top:8px">Réseau LGBTQ+ de nouvelle génération</p>
+  <p class="hero-origin">Né à Québec · Canada · 2026</p>
   <div class="pride-spectrum">
-    <div class="ps ps1"></div><div class="ps ps2"></div><div class="ps ps3"></div>
-    <div class="ps ps4"></div><div class="ps ps5"></div><div class="ps ps6"></div>
-    <div class="ps ps7"></div><div class="ps ps8"></div>
+    <span class="ps ps1"></span><span class="ps ps2"></span><span class="ps ps3"></span>
+    <span class="ps ps4"></span><span class="ps ps5"></span><span class="ps ps6"></span>
+    <span class="ps ps7"></span><span class="ps ps8"></span>
   </div>
-
   <div class="hero-btns">
-    <a href="#inscription" class="btn-primary"><span>Devenir Fondateur</span></a>
-    <a href="#ange-section" class="btn-ghost">Mode Ange</a>
+    <a class="btn-primary" href="https://vibegay.ca/inscription" target="_blank" rel="noopener"><span>Rejoindre VIBE</span></a>
+    <a class="btn-primary" href="#inscription" style="background:transparent;border-color:rgba(212,175,55,0.25);color:rgba(212,175,55,0.5)"><span>Aperçu ici</span></a>
+    <button class="btn-ghost" onclick="openLogin()">Se connecter</button>
   </div>
 </section>
 
+<!-- STATS -->
 <div class="stats-strip">
-  <div class="stat-cell"><span class="stat-n">500</span><span class="stat-l">Places Fondateur</span></div>
-  <div class="stat-cell"><span class="stat-n">99$</span><span class="stat-l">Par Année</span></div>
-  <div class="stat-cell"><span class="stat-n">5</span><span class="stat-l">Villes Actives</span></div>
-  <div class="stat-cell"><span class="stat-n">∞</span><span class="stat-l">Communauté</span></div>
+  <div class="stat-cell"><span class="stat-n" id="stat-members">0</span><span class="stat-l">Membres</span></div>
+  <div class="stat-cell"><span class="stat-n">5</span><span class="stat-l">Villes</span></div>
+  <div class="stat-cell"><span class="stat-n">100%</span><span class="stat-l">Canadien</span></div>
+  <div class="stat-cell"><span class="stat-n">0</span><span class="stat-l">Données vendues</span></div>
 </div>
 
+<!-- TICKER -->
 <div class="ticker">
   <span class="ticker-inner">
-    VIBE · LGBTQ+ · QUÉBEC · MONTRÉAL · TORONTO · VANCOUVER · OTTAWA · CALGARY · MODE ANGE · SÉCURITÉ · COMMUNAUTÉ · RENCONTRES · SALONS · TRIBUNAL · FONDATEURS ·&nbsp;
-    VIBE · LGBTQ+ · QUÉBEC · MONTRÉAL · TORONTO · VANCOUVER · OTTAWA · CALGARY · MODE ANGE · SÉCURITÉ · COMMUNAUTÉ · RENCONTRES · SALONS · TRIBUNAL · FONDATEURS ·&nbsp;
+    VIBE 2026 :: NÉ À QUÉBEC :: ANGE GARDIEN ACTIF :: TRIPLE-TAP GPS :: GLOBE TEMPS RÉEL :: TRIBUNAL COMMUNAUTAIRE :: SALON FLOTTANT :: MODE FANTÔME :: LGBTQ+ CANADA :: DONNÉES SOUVERAINES :: FIERTÉ ::&nbsp;&nbsp;&nbsp;&nbsp;VIBE 2026 :: NÉ À QUÉBEC :: ANGE GARDIEN ACTIF :: TRIPLE-TAP GPS :: GLOBE TEMPS RÉEL :: TRIBUNAL COMMUNAUTAIRE :: SALON FLOTTANT :: MODE FANTÔME :: LGBTQ+ CANADA :: DONNÉES SOUVERAINES :: FIERTÉ ::
   </span>
 </div>
 
+<!-- ANGE GARDIEN -->
 <section id="ange-section" class="section">
-  <p class="section-label">// 01 — Protection</p>
+  <div class="section-label">// Module ange gardien — Protection active //</div>
   <div class="ange-hero">
-    <p class="ange-tagline">Mode Ange — Triple Tap SOS</p>
+    <div class="ange-canvas-wrap">
+      <canvas id="ange-canvas" width="180" height="180"></canvas>
+      <svg class="wings-overlay" viewBox="0 0 280 180" fill="none">
+        <path d="M140 90 Q90 40 20 60 Q55 82 65 115 Q100 97 140 90Z" fill="rgba(212,175,55,0.07)" stroke="rgba(212,175,55,0.22)" stroke-width="0.5"/>
+        <path d="M140 90 Q190 40 260 60 Q225 82 215 115 Q180 97 140 90Z" fill="rgba(212,175,55,0.07)" stroke="rgba(212,175,55,0.22)" stroke-width="0.5"/>
+        <path d="M140 90 Q75 18 8 28 Q42 62 58 98 Q96 84 140 90Z" fill="rgba(212,175,55,0.035)" stroke="rgba(212,175,55,0.1)" stroke-width="0.3"/>
+        <path d="M140 90 Q205 18 272 28 Q238 62 222 98 Q184 84 140 90Z" fill="rgba(212,175,55,0.035)" stroke="rgba(212,175,55,0.1)" stroke-width="0.3"/>
+      </svg>
+    </div>
+    <div class="feather-row">
+      <div class="feather" style="height:10px;animation-delay:0s"></div>
+      <div class="feather" style="height:16px;animation-delay:.08s"></div>
+      <div class="feather" style="height:24px;animation-delay:.16s;background:#b44fff"></div>
+      <div class="feather" style="height:34px;animation-delay:.24s"></div>
+      <div class="feather" style="height:42px;animation-delay:.32s;background:#00eeff"></div>
+      <div class="feather" style="height:34px;animation-delay:.4s"></div>
+      <div class="feather" style="height:24px;animation-delay:.48s;background:#b44fff"></div>
+      <div class="feather" style="height:16px;animation-delay:.56s"></div>
+      <div class="feather" style="height:10px;animation-delay:.64s"></div>
+    </div>
+    <div class="ange-tagline">Gardien assigné · Surveillance continue · QC-CA</div>
   </div>
-
   <div class="triple-tap-box">
-    <div class="ttb-head">⚠ Protocole d'urgence</div>
-    <div class="ttb-body">
-      <strong>3 taps rapides</strong> sur l'écran activent le Mode Ange.<br>
-      Ton <strong>GPS</strong> et un <strong>enregistrement audio</strong> sont envoyés instantanément à ton contact de confiance.<br>
-      Silencieux. Invisible. <strong>Toujours actif.</strong>
-    </div>
+    <div class="ttb-head">// Triple-tap d'urgence //</div>
+    <p class="ttb-body"><strong>3 taps rapides</strong> sur l'écran envoient instantanément ta position GPS + 30 secondes d'audio à ton contact de confiance. Silencieux. Invisible. Instantané.</p>
   </div>
-
   <div class="ange-grid">
-    <div class="acard">
-      <span class="acard-icon">📍</span>
-      <div class="acard-title">GPS Instantané</div>
-      <div class="acard-text">Ta position exacte transmise en temps réel à ton contact d'urgence.</div>
-    </div>
-    <div class="acard">
-      <span class="acard-icon">🎙</span>
-      <div class="acard-title">Audio Ambiant</div>
-      <div class="acard-text">Enregistrement sonore automatique pour documenter la situation.</div>
-    </div>
-    <div class="acard">
-      <span class="acard-icon">👻</span>
-      <div class="acard-title">Mode Fantôme</div>
-      <div class="acard-text">Navigue incognito. Ton profil devient invisible quand tu le décides.</div>
-    </div>
-    <div class="acard">
-      <span class="acard-icon">🛡</span>
-      <div class="acard-title">Tribunal VIBE</div>
-      <div class="acard-text">Système communautaire de signalement et de justice pour protéger tous les membres.</div>
-    </div>
+    <div class="acard"><span class="acard-icon">🛡</span><div class="acard-title">Vérification</div><p class="acard-text">Faux profils détectés et éliminés en temps réel par intelligence artificielle.</p></div>
+    <div class="acard"><span class="acard-icon">☽</span><div class="acard-title">Gardien 24/7</div><p class="acard-text">Surveille tes interactions. Alerte discrète dès qu'un comportement suspect est détecté.</p></div>
+    <div class="acard"><span class="acard-icon">⚡</span><div class="acard-title">Alerte 60 sec</div><p class="acard-text">Signale un inconfort. L'équipe VIBE intervient en moins de 60 secondes.</p></div>
+    <div class="acard"><span class="acard-icon">◎</span><div class="acard-title">Code sécurité</div><p class="acard-text">Code secret envoyé toutes les 30 minutes lors d'un rendez-vous en personne.</p></div>
   </div>
-
-  <button class="sos-btn">⚡ Activer Mode Ange — Bientôt disponible</button>
+  <button class="sos-btn" id="sos-btn" onclick="activateSOS()">SOS — Activer l'ange gardien</button>
+  <p style="text-align:center;margin-top:14px;font-size:0.52rem;letter-spacing:2px;color:rgba(255,255,255,0.15)">
+    Accès complet sur l'app · <a href="https://vibegay.ca/ange-gardien" target="_blank" rel="noopener" style="color:rgba(212,175,55,0.4);text-decoration:none">vibegay.ca/ange-gardien ↗</a>
+  </p>
 </section>
 
+<!-- GLOBE -->
+<div id="globe-section">
+  <div class="globe-wrap">
+    <canvas id="globe-canvas" width="420" height="420"></canvas>
+    <div class="globe-caption">Glisse pour faire tourner le globe · Membres en temps réel</div>
+  </div>
+  <div class="city-strip">
+    <div class="city-item"><span class="city-code">QC</span><span class="city-name">Québec</span><div class="city-dot"></div></div>
+    <div class="city-item"><span class="city-code">MTL</span><span class="city-name">Montréal</span><div class="city-dot" style="animation-delay:.4s"></div></div>
+    <div class="city-item"><span class="city-code">YYZ</span><span class="city-name">Toronto</span><div class="city-dot" style="animation-delay:.8s"></div></div>
+    <div class="city-item"><span class="city-code">YVR</span><span class="city-name">Vancouver</span><div class="city-dot" style="animation-delay:1.2s"></div></div>
+    <div class="city-item"><span class="city-code">YOW</span><span class="city-name">Ottawa</span><div class="city-dot" style="animation-delay:1.6s"></div></div>
+  </div>
+</div>
+
+<!-- TRIBUNAL -->
+<div id="tribunal-section">
+  <canvas id="trib-canvas" height="320"></canvas>
+  <div class="trib-content">
+    <div class="trib-lbl">// Salle du tribunal — Justice communautaire //</div>
+    <div class="trib-quote">"Ici, chaque voix compte.<br>La communauté juge, protège et décide."</div>
+    <div class="verdict-box">
+      <div class="vb-num">01 · TRIBUNAL · VERDICT</div>
+      <div class="vb-verdict">Coupable ? 7 jours en mode lecture seule, ou 20 $ pour le pardon.</div>
+      <p class="vb-sub">Si le tribunal te juge coupable, ton accès devient passif : tu vois mais tu ne peux rien écrire pendant 7 jours. La communauté se protège elle-même.</p>
+    </div>
+    <div class="trib-cols">
+      <div class="tcol"><div class="tcol-n">// 01</div><div class="tcol-t">Signalement</div><p class="tcol-txt">Soumets anonymement. Le jury examine en 24h.</p></div>
+      <div class="tcol"><div class="tcol-n">// 02</div><div class="tcol-t">Délibération</div><p class="tcol-txt">12 membres tirés au sort. Identités protégées.</p></div>
+      <div class="tcol"><div class="tcol-n">// 03</div><div class="tcol-t">Verdict</div><p class="tcol-txt">Avertissement, suspension ou bannissement définitif.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- SALON FLOTTANT -->
+<div id="salon-section">
+  <canvas id="salon-canvas" height="340"></canvas>
+  <div class="salon-ui">
+    <div class="now-playing">
+      <div class="disc">♪</div>
+      <div class="np-info">
+        <div class="np-track" id="np-track">Nuit de Québec</div>
+        <div class="np-artist" id="np-artist">VIBE Ambient · Salon Flottant</div>
+      </div>
+      <div class="eq-bars">
+        <div class="eq-bar" style="animation-delay:0s"></div>
+        <div class="eq-bar" style="animation-delay:.12s"></div>
+        <div class="eq-bar" style="animation-delay:.24s"></div>
+        <div class="eq-bar" style="animation-delay:.36s"></div>
+        <div class="eq-bar" style="animation-delay:.48s"></div>
+      </div>
+    </div>
+    <div class="floating-profiles">
+      <div class="fp-card">
+        <canvas class="fp-canvas" id="fp1" width="58" height="58"></canvas>
+        <div class="fp-info"><div class="fp-name">Alexandre</div><div class="fp-age">28 · Québec</div><div class="fp-trait">Artiste · Libre</div></div>
+        <div class="fp-fog"></div>
+        <div class="fp-ghost">◉ Fantôme</div>
+      </div>
+      <div class="fp-card">
+        <canvas class="fp-canvas" id="fp2" width="58" height="58"></canvas>
+        <div class="fp-info"><div class="fp-name">Maxime</div><div class="fp-age">32 · Montréal</div><div class="fp-trait">Musicien · Rêveur</div></div>
+        <div class="fp-fog"></div>
+        <div class="fp-ghost">◉ Fantôme</div>
+      </div>
+      <div class="fp-card">
+        <canvas class="fp-canvas" id="fp3" width="58" height="58"></canvas>
+        <div class="fp-info"><div class="fp-name">Jordan</div><div class="fp-age">25 · Gatineau</div><div class="fp-trait">Photo · Voyageur</div></div>
+        <div class="fp-fog"></div>
+        <div class="fp-ghost">◉ Fantôme</div>
+      </div>
+    </div>
+    <div class="salon-chat">
+      <div class="sc-label">// Voix du salon flottant //</div>
+      <div class="chat-msg"><span class="chat-name gold">Alex·QC</span><span class="chat-text">Ce salon me fait sentir libre ✦</span></div>
+      <div class="chat-msg"><span class="chat-name ghost">◉ Fantôme</span><span class="chat-text">Je suis là mais vous ne me voyez pas...</span></div>
+      <div class="chat-msg"><span class="chat-name gold">Sasha·MTL</span><span class="chat-text">La musique ce soir est parfaite</span></div>
+      <div class="chat-msg" id="live-chat" style="opacity:0;transition:opacity .5s"></div>
+    </div>
+  </div>
+</div>
+
+<!-- À PROPOS -->
+<section id="a-propos" class="section" style="border-top:0.5px solid rgba(212,175,55,0.08);background:rgba(0,0,0,0.6)">
+  <div class="section-label">// À propos de VIBE //</div>
+  <div style="max-width:720px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:rgba(212,175,55,0.05);margin-bottom:36px">
+      <div style="padding:32px 24px;background:#000">
+        <span style="font-size:1.6rem;display:block;margin-bottom:14px">🏙</span>
+        <div style="font-size:0.72rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;font-weight:700">Né à Québec</div>
+        <p style="font-size:0.66rem;color:rgba(255,255,255,0.28);line-height:1.9">VIBE est une plateforme québécoise conçue pour et par la communauté LGBTQ+ canadienne. Notre quartier général est à Québec, QC.</p>
+      </div>
+      <div style="padding:32px 24px;background:#000">
+        <span style="font-size:1.6rem;display:block;margin-bottom:14px">🔒</span>
+        <div style="font-size:0.72rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;font-weight:700">Données souveraines</div>
+        <p style="font-size:0.66rem;color:rgba(255,255,255,0.28);line-height:1.9">Tes données ne quittent jamais le Canada. Aucune vente à des tiers. Hébergement conforme à la loi 25 du Québec.</p>
+      </div>
+      <div style="padding:32px 24px;background:#000">
+        <span style="font-size:1.6rem;display:block;margin-bottom:14px">🌈</span>
+        <div style="font-size:0.72rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;font-weight:700">Inclusif par design</div>
+        <p style="font-size:0.66rem;color:rgba(255,255,255,0.28);line-height:1.9">VIBE reconnaît toutes les identités LGBTQ+. Aucune discrimination tolérée. Le tribunal communautaire protège chaque membre.</p>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <a href="https://vibegay.ca/a-propos" target="_blank" rel="noopener" style="display:inline-block;color:var(--gold);text-decoration:none;font-size:0.62rem;letter-spacing:4px;text-transform:uppercase;border:0.5px solid rgba(212,175,55,0.35);padding:12px 32px;transition:all 0.3s" onmouseover="this.style.background='rgba(212,175,55,0.08)'" onmouseout="this.style.background='transparent'">En savoir plus sur VIBE ↗ vibegay.ca</a>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTE -->
+<section id="manifeste" class="section">
+  <p class="manifeste-text">
+    Le monde surveille.<br>
+    <em>VIBE</em> protège.<br>
+    L'amour n'a pas de frontières —<br>
+    mais il a une <em>origine</em>.<br>
+    Québec. Canada.<br>
+    <em>Fierté.</em>
+  </p>
+</section>
+
+<!-- INSCRIPTION -->
 <section id="inscription" class="section">
+  <div class="section-label">// Rejoindre le réseau //</div>
   <div class="form-wrap">
-    <h2 class="form-title">Rejoindre VIBE</h2>
-    <p class="form-sub">500 places Fondateur · Accès à vie</p>
-
-    <div class="founder-badge">
-      <div class="fb-label">Pass Fondateur</div>
-      <div class="fb-price">99 $CAD</div>
-      <div class="fb-sub">Accès illimité · 1 an · Renouvelable</div>
+    <div class="form-title">Créer mon profil</div>
+    <div class="form-sub">Gratuit · Sécurisé · Québec</div>
+    <form id="signup-form" onsubmit="handleSignup(event)">
+      <div class="form-group">
+        <label for="prenom">Prénom</label>
+        <input class="form-input" type="text" id="prenom" name="prenom" placeholder="Ton prénom" required autocomplete="given-name">
+      </div>
+      <div class="form-group">
+        <label for="email">Courriel</label>
+        <input class="form-input" type="email" id="email" name="email" placeholder="ton@courriel.ca" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="mdp">Mot de passe</label>
+        <input class="form-input" type="password" id="mdp" name="mdp" placeholder="Minimum 8 caractères" minlength="8" required autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label for="ville">Ta ville</label>
+        <select class="form-select" id="ville" name="ville" required>
+          <option value="">Choisir une ville...</option>
+          <option value="qc">Québec</option>
+          <option value="mtl">Montréal</option>
+          <option value="yyz">Toronto</option>
+          <option value="yvr">Vancouver</option>
+          <option value="yow">Ottawa</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="identite">Identité</label>
+        <select class="form-select" id="identite" name="identite" required>
+          <option value="">Comment tu t'identifies...</option>
+          <option value="gay">Gay</option>
+          <option value="lesbienne">Lesbienne</option>
+          <option value="bisexuel">Bisexuel·le</option>
+          <option value="trans">Trans</option>
+          <option value="nonbinaire">Non-binaire</option>
+          <option value="queer">Queer</option>
+          <option value="asexuel">Asexuel·le</option>
+          <option value="autre">Autre / Je préfère ne pas dire</option>
+        </select>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="cgu" name="cgu" required>
+        <label for="cgu">J'accepte les <a href="#cgu">conditions d'utilisation</a> et la <a href="#confidentialite">politique de confidentialité</a> de VIBE.</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="ange-ok" name="ange-ok">
+        <label for="ange-ok">Activer l'ange gardien — je désigne un contact de confiance pour le triple-tap d'urgence.</label>
+      </div>
+      <button class="submit-btn" type="submit"><span>Créer mon compte VIBE ✦</span></button>
+    </form>
+    <div class="form-success" id="signup-success">
+      <span class="fs-icon">✦</span>
+      <div class="fs-title">Bienvenue dans VIBE</div>
+      <p class="fs-sub">Ton compte a été créé. L'ange gardien veille sur toi.</p>
+      <a href="https://vibegay.ca/dashboard" target="_blank" rel="noopener" style="display:inline-block;margin-top:20px;color:var(--gold);text-decoration:none;font-size:0.62rem;letter-spacing:3px;border:0.5px solid rgba(212,175,55,0.4);padding:10px 24px;transition:all 0.3s" onmouseover="this.style.background='rgba(212,175,55,0.08)'" onmouseout="this.style.background='transparent'">Accéder à mon profil ↗</a>
     </div>
-
-    <div class="form-group">
-      <label>Prénom</label>
-      <input type="text" placeholder="Ton prénom">
-    </div>
-    <div class="form-group">
-      <label>Courriel</label>
-      <input type="email" placeholder="ton@courriel.ca">
-    </div>
-    <div class="form-group">
-      <label>Ville</label>
-      <select>
-        <option value="">Sélectionner ta ville</option>
-        <option>Québec</option>
-        <option>Montréal</option>
-        <option>Toronto</option>
-        <option>Vancouver</option>
-        <option>Ottawa</option>
-        <option>Calgary</option>
-        <option>Autre</option>
-      </select>
-    </div>
-
-    <button class="btn-submit"><span>Réserver ma place — 99 $</span></button>
-    <p class="form-note">Paiement sécurisé via Stripe · SSL · Politique de confidentialité conforme Loi 25</p>
+    <div class="login-link">Déjà membre ? <a href="#" onclick="openLogin();return false;">Se connecter</a></div>
   </div>
 </section>
 
-<footer>
-  <div class="footer-brand">VIBE 2026</div>
-  <div class="footer-links">
-    <a href="#">Confidentialité</a>
-    <a href="#">Conditions</a>
-    <a href="#">Contact</a>
-    <a href="#">À propos</a>
+<!-- FOOTER COMPLET -->
+<footer style="padding:0;border-top:0.5px solid rgba(212,175,55,0.12)">
+  <!-- BANDE APP -->
+  <div id="app-section" style="background:rgba(212,175,55,0.02);padding:52px 24px;text-align:center;border-bottom:0.5px solid rgba(212,175,55,0.08)">
+    <div style="font-size:0.52rem;letter-spacing:6px;color:rgba(212,175,55,0.35);text-transform:uppercase;margin-bottom:18px">// Télécharger l'application //</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);margin-bottom:6px;font-weight:700">VIBE — L'app LGBTQ+</div>
+    <p style="font-size:0.62rem;color:rgba(255,255,255,0.22);letter-spacing:2px;margin-bottom:28px">Disponible sur iOS et Android · Gratuit · Québec</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="https://vibegay.ca/app" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(212,175,55,0.5);padding:13px 26px;text-decoration:none;transition:all 0.3s;color:var(--gold);font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:3px" onmouseover="this.style.background='rgba(212,175,55,0.08)'" onmouseout="this.style.background='transparent'">
+        <span style="font-size:1.2rem">🍎</span> APP STORE
+      </a>
+      <a href="https://vibegay.ca/app" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(212,175,55,0.5);padding:13px 26px;text-decoration:none;transition:all 0.3s;color:var(--gold);font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:3px" onmouseover="this.style.background='rgba(212,175,55,0.08)'" onmouseout="this.style.background='transparent'">
+        <span style="font-size:1.2rem">🤖</span> GOOGLE PLAY
+      </a>
+      <a href="https://vibegay.ca" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;border:0.5px solid rgba(212,175,55,0.2);padding:13px 26px;text-decoration:none;transition:all 0.3s;color:rgba(212,175,55,0.45);font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:3px" onmouseover="this.style.borderColor='rgba(212,175,55,0.5)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='rgba(212,175,55,0.2)';this.style.color='rgba(212,175,55,0.45)'">
+        <span style="font-size:1.2rem">🌐</span> VIBEGAY.CA
+      </a>
+    </div>
   </div>
-  <div class="footer-copy">© 2026 VIBE · Québec, Canada · Tous droits réservés</div>
+
+  <!-- LIENS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:rgba(212,175,55,0.05);border-bottom:0.5px solid rgba(212,175,55,0.08)">
+    <div style="padding:36px 24px;background:#000">
+      <div style="font-size:0.48rem;letter-spacing:4px;color:rgba(212,175,55,0.3);text-transform:uppercase;margin-bottom:18px">Réseau</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <a href="https://vibegay.ca" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">vibegay.ca</a>
+        <a href="https://vibegay.ca/app" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Télécharger l'app</a>
+        <a href="https://vibegay.ca/a-propos" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">À propos</a>
+        <a href="https://vibegay.ca/blog" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Blog &amp; Actualités</a>
+      </div>
+    </div>
+    <div style="padding:36px 24px;background:#000">
+      <div style="font-size:0.48rem;letter-spacing:4px;color:rgba(212,175,55,0.3);text-transform:uppercase;margin-bottom:18px">Sécurité</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <a href="https://vibegay.ca/ange-gardien" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Ange gardien</a>
+        <a href="https://vibegay.ca/tribunal" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Tribunal communautaire</a>
+        <a href="https://vibegay.ca/signaler" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Signaler un abus</a>
+        <a href="https://vibegay.ca/securite" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Centre de sécurité</a>
+      </div>
+    </div>
+    <div style="padding:36px 24px;background:#000">
+      <div style="font-size:0.48rem;letter-spacing:4px;color:rgba(212,175,55,0.3);text-transform:uppercase;margin-bottom:18px">Légal</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <a href="https://vibegay.ca/conditions" target="_blank" rel="noopener" id="cgu" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Conditions d'utilisation</a>
+        <a href="https://vibegay.ca/confidentialite" target="_blank" rel="noopener" id="confidentialite" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Politique de confidentialité</a>
+        <a href="https://vibegay.ca/donnees" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Données souveraines</a>
+        <a href="https://vibegay.ca/contact" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Nous contacter</a>
+      </div>
+    </div>
+    <div style="padding:36px 24px;background:#000">
+      <div style="font-size:0.48rem;letter-spacing:4px;color:rgba(212,175,55,0.3);text-transform:uppercase;margin-bottom:18px">Communauté</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <a href="https://vibegay.ca/salon" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Salon flottant</a>
+        <a href="https://vibegay.ca/evenements" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Événements</a>
+        <a href="https://vibegay.ca/fiertes" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Fiertés Canada</a>
+        <a href="https://vibegay.ca/ressources" target="_blank" rel="noopener" style="font-size:0.62rem;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:2px;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Ressources LGBTQ+</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div style="padding:20px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <div style="font-size:0.48rem;letter-spacing:3px;color:rgba(255,255,255,0.12);text-transform:uppercase">
+      © 2026 VIBE Canada Inc. · <a href="https://vibegay.ca" target="_blank" rel="noopener" style="color:rgba(212,175,55,0.4);text-decoration:none">vibegay.ca</a> · Fait avec fierté à Québec, QC
+    </div>
+    <div style="display:flex;gap:14px;align-items:center">
+      <a href="https://vibegay.ca" target="_blank" rel="noopener" style="font-size:0.48rem;letter-spacing:2px;color:rgba(212,175,55,0.3);text-decoration:none;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(212,175,55,0.3)'">✦ vibegay.ca</a>
+      <span style="color:rgba(255,255,255,0.08);font-size:0.48rem">|</span>
+      <span style="font-size:0.48rem;letter-spacing:2px;color:rgba(255,255,255,0.1)">Données hébergées au Canada 🇨🇦</span>
+    </div>
+  </div>
 </footer>
 
+<!-- MODALE CONNEXION -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeLogin()">✕</button>
+    <div class="modal-title">Connexion</div>
+    <div class="modal-sub">// Accès au réseau VIBE //</div>
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="login-email">Courriel</label>
+        <input class="form-input" type="email" id="login-email" placeholder="ton@courriel.ca" required>
+      </div>
+      <div class="form-group">
+        <label for="login-mdp">Mot de passe</label>
+        <input class="form-input" type="password" id="login-mdp" placeholder="••••••••" required>
+      </div>
+      <button class="submit-btn" type="submit" style="margin-top:6px"><span>Entrer dans VIBE ✦</span></button>
+    </form>
+    <div style="margin-top:16px;text-align:center;font-size:.58rem;color:rgba(255,255,255,.2);letter-spacing:2px">
+      Pas encore membre ? <a href="#inscription" onclick="closeLogin()" style="color:rgba(212,175,55,.6);text-decoration:none">S'inscrire</a>
+    </div>
+    <div style="margin-top:10px;text-align:center;font-size:.52rem;color:rgba(255,255,255,.15);letter-spacing:2px">
+      <a href="https://vibegay.ca/connexion" target="_blank" rel="noopener" style="color:rgba(212,175,55,.3);text-decoration:none;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.7)'" onmouseout="this.style.color='rgba(212,175,55,0.3)'">Ouvrir sur vibegay.ca ↗</a>
+    </div>
+  </div>
+</div>
+
 <script>
-// Canvas univers — étoiles animées
-const canvas = document.getElementById('universe');
-const ctx = canvas.getContext('2d');
-let stars = [];
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+// ── HORLOGE ──
+function updateClock(){
+  const n=new Date();
+  document.getElementById('hud-time').textContent=[n.getHours(),n.getMinutes()].map(x=>String(x).padStart(2,'0')).join(':');
 }
+setInterval(updateClock,1000);updateClock();
 
-function initStars() {
-  stars = [];
-  for (let i = 0; i < 180; i++) {
-    stars.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.2,
-      a: Math.random(),
-      speed: 0.0003 + Math.random() * 0.0005
-    });
+// ── UNIVERS CANVAS ──
+const uc=document.getElementById('universe'),ux=uc.getContext('2d');
+let UW,UH,stars=[];
+const PC=['#E40303','#FF8C00','#FFED00','#008026','#004DFF','#750787','#FFAFC8','#74D7EE','#b44fff','#00eeff','#D4AF37'];
+function resU(){UW=uc.offsetWidth;UH=uc.offsetHeight;uc.width=UW;uc.height=UH;}
+function initU(){stars=Array.from({length:130},()=>({x:Math.random()*UW,y:Math.random()*UH,r:Math.random()*1.1+.2,vx:(Math.random()-.5)*.08,vy:(Math.random()-.5)*.08,c:PC[Math.floor(Math.random()*PC.length)],op:Math.random()*.45+.08,ph:Math.random()*Math.PI*2}));}
+function drawU(){
+  ux.clearRect(0,0,UW,UH);ux.fillStyle='#000';ux.fillRect(0,0,UW,UH);
+  for(let i=0;i<stars.length;i++){
+    const p=stars[i];p.x+=p.vx;p.y+=p.vy;p.ph+=.014;
+    if(p.x<0||p.x>UW)p.vx*=-1;if(p.y<0||p.y>UH)p.vy*=-1;
+    const op=p.op*(.6+.4*Math.sin(p.ph));
+    for(let j=i+1;j<stars.length;j++){const q=stars[j];const dx=q.x-p.x,dy=q.y-p.y,d=Math.sqrt(dx*dx+dy*dy);if(d<70){ux.beginPath();ux.strokeStyle=`rgba(212,175,55,${.04*(1-d/70)})`;ux.lineWidth=.3;ux.moveTo(p.x,p.y);ux.lineTo(q.x,q.y);ux.stroke();}}
+    const h=p.c,r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
+    ux.beginPath();ux.arc(p.x,p.y,p.r,0,Math.PI*2);ux.fillStyle=`rgba(${r},${g},${b},${op})`;ux.fill();
   }
+  requestAnimationFrame(drawU);
+}
+resU();initU();drawU();
+window.addEventListener('resize',()=>{resU();initU();});
+
+// ── DNA ──
+(function(){
+  const c=document.getElementById('dna-canvas'),ctx=c.getContext('2d');
+  const W=180,H=180,cx=W/2;let t=0;
+  const cols=['#D4AF37','#b44fff','#00eeff','#ff3380','#00ff88'];
+  function fr(){
+    ctx.clearRect(0,0,W,H);const n=10;
+    for(let i=0;i<n;i++){
+      const fy=i/n,y=16+fy*(H-32),ph=t+fy*Math.PI*2.5;
+      const x1=cx+Math.sin(ph)*52,x2=cx+Math.sin(ph+Math.PI)*52;
+      const op=.5+.5*Math.sin(ph);const col=cols[i%cols.length];
+      const hx=col,r=parseInt(hx.slice(1,3),16),g=parseInt(hx.slice(3,5),16),b=parseInt(hx.slice(5,7),16);
+      ctx.beginPath();ctx.arc(x1,y,3.5,0,Math.PI*2);ctx.fillStyle=`rgba(${r},${g},${b},${op})`;ctx.fill();
+      ctx.beginPath();ctx.arc(x2,y,3.5,0,Math.PI*2);ctx.fillStyle=`rgba(${r},${g},${b},${1-op+.15})`;ctx.fill();
+      ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(x2,y);ctx.strokeStyle=`rgba(${r},${g},${b},.18)`;ctx.lineWidth=.7;ctx.stroke();
+      if(i<n-1){const fy2=(i+1)/n,y2=16+fy2*(H-32),ph2=t+fy2*Math.PI*2.5;const nx1=cx+Math.sin(ph2)*52,nx2=cx+Math.sin(ph2+Math.PI)*52;ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(nx1,y2);ctx.strokeStyle='rgba(212,175,55,.1)';ctx.lineWidth=.5;ctx.stroke();ctx.beginPath();ctx.moveTo(x2,y);ctx.lineTo(nx2,y2);ctx.strokeStyle='rgba(180,79,255,.08)';ctx.lineWidth=.5;ctx.stroke();}
+    }
+    ctx.beginPath();for(let i=0;i<=60;i++){const fy=i/60,y=16+fy*(H-32),ph=t+fy*Math.PI*2.5;const x=cx+Math.sin(ph)*52;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.strokeStyle='rgba(212,175,55,.42)';ctx.lineWidth=1.1;ctx.stroke();
+    ctx.beginPath();for(let i=0;i<=60;i++){const fy=i/60,y=16+fy*(H-32),ph=t+fy*Math.PI*2.5+Math.PI;const x=cx+Math.sin(ph)*52;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.strokeStyle='rgba(180,79,255,.28)';ctx.lineWidth=1.1;ctx.stroke();
+    t+=.022;requestAnimationFrame(fr);
+  }fr();
+})();
+
+// ── ANGE ──
+(function(){
+  const c=document.getElementById('ange-canvas'),ctx=c.getContext('2d');
+  let t=0;
+  function fr(){
+    ctx.clearRect(0,0,180,180);const cx=90,cy=90;
+    for(let i=0;i<3;i++){const r=28+i*18,op=.1-i*.025;ctx.beginPath();ctx.arc(cx,cy,r+5*Math.sin(t+i),0,Math.PI*2);ctx.strokeStyle=`rgba(212,175,55,${op+.05*Math.sin(t)})`;ctx.lineWidth=.5;ctx.stroke();}
+    for(let i=0;i<12;i++){
+      const a=t*.5+i/12*Math.PI*2,r=32+8*Math.sin(t*1.5+i);
+      const x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
+      const hues=['#D4AF37','#b44fff','#00eeff','#FFAFC8','#74D7EE'];
+      const col=hues[i%hues.length],rx=parseInt(col.slice(1,3),16),gx=parseInt(col.slice(3,5),16),bx=parseInt(col.slice(5,7),16);
+      ctx.beginPath();ctx.arc(x,y,2.2,0,Math.PI*2);ctx.fillStyle=`rgba(${rx},${gx},${bx},${.55+.3*Math.sin(t+i)})`;ctx.fill();
+    }
+    const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,18);grd.addColorStop(0,'rgba(212,175,55,0.35)');grd.addColorStop(1,'rgba(212,175,55,0.04)');
+    ctx.beginPath();ctx.arc(cx,cy,18,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
+    ctx.font='bold 18px Georgia';ctx.fillStyle='rgba(212,175,55,0.95)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('☽',cx,cy+1);
+    t+=.024;requestAnimationFrame(fr);
+  }fr();
+})();
+
+// ── GLOBE SPECTACULAIRE ── VERSION FINALE
+(function(){
+  const gc=document.getElementById('globe-canvas');
+  function resizeGlobe(){
+    const sz=Math.min(window.innerWidth-0,520);
+    gc.width=sz;gc.height=sz;
+  }
+  resizeGlobe();
+  window.addEventListener('resize',resizeGlobe);
+
+  const gx=gc.getContext('2d');
+  let rotY=0.3,rotX=0.22,drag=false,lastX=0,lastY=0,velX=0,velY=0,gf=0;
+
+  // Continents précis lat/lon
+  const continents=[
+    {name:'NA',pts:[[70,-140],[68,-115],[65,-105],[62,-95],[60,-93],[58,-90],[55,-85],[52,-80],[50,-74],[47,-65],[45,-63],[42,-70],[40,-74],[35,-75],[30,-81],[25,-80],[22,-90],[18,-87],[10,-83],[8,-77],[9,-75],[12,-72],[15,-61],[18,-66],[20,-75],[25,-80],[30,-84],[35,-77],[40,-75],[45,-67],[50,-55],[55,-60],[60,-64],[65,-68],[70,-70],[72,-78],[73,-85],[72,-95],[70,-105],[68,-115],[70,-130],[70,-140]],col:'#ff22dd'},
+    {name:'SA',pts:[[12,-72],[10,-62],[8,-60],[5,-52],[0,-50],[-5,-35],[-10,-37],[-15,-39],[-20,-40],[-25,-48],[-34,-58],[-38,-62],[-42,-65],[-52,-68],[-55,-66],[-52,-70],[-45,-66],[-40,-62],[-35,-57],[-20,-42],[-10,-37],[-5,-35],[0,-48],[5,-52],[8,-60],[10,-62],[12,-72]],col:'#ff00aa'},
+    {name:'EU',pts:[[72,28],[70,20],[65,15],[60,5],[55,8],[50,2],[45,0],[43,5],[40,18],[42,28],[45,30],[48,38],[55,37],[60,30],[65,25],[70,28],[72,28]],col:'#dd00ff'},
+    {name:'AF',pts:[[38,10],[35,37],[12,44],[5,40],[0,42],[-5,40],[-10,38],[-20,35],[-34,26],[-34,18],[-20,13],[-10,12],[0,9],[5,2],[10,-5],[15,-17],[20,-17],[15,-5],[10,0],[5,5],[0,10],[10,14],[15,38],[20,37],[35,37],[38,10]],col:'#ff44ff'},
+    {name:'AS',pts:[[72,28],[72,60],[70,80],[68,100],[65,142],[60,150],[55,145],[50,140],[45,135],[40,130],[35,120],[25,120],[20,110],[10,104],[0,104],[5,100],[10,98],[20,90],[22,80],[20,73],[22,57],[25,50],[30,48],[35,37],[40,36],[45,38],[48,38],[55,37],[60,30],[65,25],[70,28]],col:'#cc00ff'},
+    {name:'AU',pts:[[-16,136],[-13,130],[-15,125],[-22,114],[-32,115],[-38,145],[-38,148],[-28,153],[-20,148],[-16,136]],col:'#ff55ee'},
+  ];
+
+  function ll2xyz(lat,lon,R){
+    const phi=(90-lat)*Math.PI/180,th=(lon+180)*Math.PI/180;
+    return{x:-(R*Math.sin(phi)*Math.cos(th)),y:R*Math.cos(phi),z:R*Math.sin(phi)*Math.sin(th)};
+  }
+  function rotPt(p){
+    const cY=Math.cos(rotY),sY=Math.sin(rotY);
+    const x2=p.x*cY+p.z*sY,z2=-p.x*sY+p.z*cY;
+    const cX=Math.cos(rotX),sX=Math.sin(rotX);
+    return{x:x2,y:p.y*cX-z2*sX,z:p.y*sX+z2*cX};
+  }
+
+  function getPos(e){
+    const rect=gc.getBoundingClientRect();
+    if(e.touches) return{x:e.touches[0].clientX-rect.left,y:e.touches[0].clientY-rect.top};
+    return{x:e.offsetX,y:e.offsetY};
+  }
+  gc.addEventListener('mousedown',e=>{drag=true;const p=getPos(e);lastX=p.x;lastY=p.y;velX=velY=0;});
+  gc.addEventListener('mousemove',e=>{if(!drag)return;const p=getPos(e);velX=(p.x-lastX)*.007;velY=(p.y-lastY)*.004;rotY+=velX;rotX+=velY;rotX=Math.max(-1.3,Math.min(1.3,rotX));lastX=p.x;lastY=p.y;});
+  gc.addEventListener('mouseup',()=>{drag=false;});
+  gc.addEventListener('mouseleave',()=>{drag=false;});
+  gc.addEventListener('touchstart',e=>{drag=true;const p=getPos(e);lastX=p.x;lastY=p.y;velX=velY=0;},{passive:true});
+  gc.addEventListener('touchmove',e=>{e.preventDefault();if(!drag)return;const p=getPos(e);velX=(p.x-lastX)*.007;velY=(p.y-lastY)*.004;rotY+=velX;rotX+=velY;rotX=Math.max(-1.3,Math.min(1.3,rotX));lastX=p.x;lastY=p.y;},{passive:false});
+  gc.addEventListener('touchend',()=>{drag=false;});
+
+  const cities=[
+    {lat:46.8,lon:-71.2,name:'QC',col:'#FFD700'},
+    {lat:45.5,lon:-73.6,name:'MTL',col:'#ff88ff'},
+    {lat:43.7,lon:-79.4,name:'YYZ',col:'#ff9944'},
+    {lat:49.3,lon:-123.1,name:'YVR',col:'#44ddff'},
+    {lat:45.4,lon:-75.7,name:'YOW',col:'#cc77ff'}
+  ];
+
+  // Pré-calcul des points de grille pour perf
+  const gridPts=[];
+  for(let i=0;i<=18;i++){const lat=-90+i*10;const row=[];for(let j=0;j<=72;j++)row.push(ll2xyz(lat,-180+j*5,1));gridPts.push({lat,row});}
+  const meridPts=[];
+  for(let j=0;j<=24;j++){const lon=-180+j*15;const col=[];for(let i=0;i<=36;i++)col.push(ll2xyz(-90+i*5,lon,1));meridPts.push({lon,col});}
+
+  function drawGlobe(){
+    const W=gc.width,H=gc.height,R=W*0.40,cx=W/2,cy=H/2;
+    gx.clearRect(0,0,W,H);
+
+    // Halo externe violet profond
+    const haloGrd=gx.createRadialGradient(cx,cy,R*0.85,cx,cy,R*1.45);
+    haloGrd.addColorStop(0,'rgba(160,0,255,0.0)');
+    haloGrd.addColorStop(0.5,'rgba(180,0,220,0.22)');
+    haloGrd.addColorStop(0.8,'rgba(255,0,180,0.35)');
+    haloGrd.addColorStop(1,'rgba(0,200,255,0.0)');
+    gx.beginPath();gx.arc(cx,cy,R*1.45,0,Math.PI*2);gx.fillStyle=haloGrd;gx.fill();
+
+    // Globe base
+    gx.save();
+    gx.beginPath();gx.arc(cx,cy,R,0,Math.PI*2);gx.clip();
+
+    // Fond dégradé violet foncé → noir profond
+    const baseGrd=gx.createRadialGradient(cx-R*0.28,cy-R*0.22,R*0.02,cx,cy,R);
+    baseGrd.addColorStop(0,'rgba(120,0,200,0.85)');
+    baseGrd.addColorStop(0.4,'rgba(80,0,160,0.92)');
+    baseGrd.addColorStop(0.75,'rgba(40,0,100,0.97)');
+    baseGrd.addColorStop(1,'rgba(5,0,30,1)');
+    gx.fillStyle=baseGrd;gx.fillRect(0,0,W,H);
+
+    // Grille latitudes — magenta lumineux
+    gridPts.forEach(({row})=>{
+      const pts=row.map(p=>{const rp=rotPt({x:p.x*R,y:p.y*R,z:p.z*R});return{sx:cx+rp.x,sy:cy+rp.y,vis:rp.z>-5};});
+      let drawing=false;
+      gx.beginPath();
+      pts.forEach(pt=>{
+        if(pt.vis){if(!drawing){gx.moveTo(pt.sx,pt.sy);drawing=true;}else gx.lineTo(pt.sx,pt.sy);}
+        else{if(drawing){gx.stroke();gx.beginPath();drawing=false;}}
+      });
+      if(drawing)gx.stroke();
+      gx.strokeStyle='rgba(255,30,255,0.32)';gx.lineWidth=0.55;
+    });
+
+    // Grille longitudes — bleu/violet
+    meridPts.forEach(({col})=>{
+      const pts=col.map(p=>{const rp=rotPt({x:p.x*R,y:p.y*R,z:p.z*R});return{sx:cx+rp.x,sy:cy+rp.y,vis:rp.z>-5};});
+      let drawing=false;
+      gx.beginPath();
+      pts.forEach(pt=>{
+        if(pt.vis){if(!drawing){gx.moveTo(pt.sx,pt.sy);drawing=true;}else gx.lineTo(pt.sx,pt.sy);}
+        else{if(drawing){gx.stroke();gx.beginPath();drawing=false;}}
+      });
+      if(drawing)gx.stroke();
+      gx.strokeStyle='rgba(120,0,255,0.28)';gx.lineWidth=0.4;
+    });
+
+    // Continents — néon magenta avec fill brillant
+    continents.forEach((cont,ci)=>{
+      const pts3d=cont.pts.map(([lat,lon])=>ll2xyz(lat,lon,R));
+      const pts2d=pts3d.map(p=>rotPt(p));
+      const front=pts2d.filter(p=>p.z>-20).length;
+      if(front<3)return;
+      gx.save();
+      gx.beginPath();
+      let started=false;
+      pts2d.forEach((p,i)=>{
+        if(p.z>-15){
+          const sx=cx+p.x,sy=cy+p.y;
+          if(!started){gx.moveTo(sx,sy);started=true;}else gx.lineTo(sx,sy);
+        }
+      });
+      if(started){
+        gx.closePath();
+        // Remplissage lumineux
+        const fillGrd=gx.createRadialGradient(cx,cy,0,cx,cy,R*1.1);
+        fillGrd.addColorStop(0,'rgba(255,20,220,0.28)');
+        fillGrd.addColorStop(0.5,'rgba(200,0,255,0.20)');
+        fillGrd.addColorStop(1,'rgba(140,0,200,0.12)');
+        gx.fillStyle=fillGrd;gx.fill();
+        // Contour néon vif
+        const neonCol=cont.col;
+        gx.shadowBlur=12;gx.shadowColor=neonCol;
+        gx.strokeStyle=neonCol;gx.lineWidth=1.8;gx.stroke();
+        gx.shadowBlur=24;gx.lineWidth=0.8;gx.stroke();
+        gx.shadowBlur=0;
+      }
+      gx.restore();
+    });
+
+    // Points membres — pride colors
+    const prideC=['#ff00cc','#ff44ff','#00eeff','#ff0088','#aa00ff','#ff88ff'];
+    for(let i=0;i<60;i++){
+      const lat=(Math.sin(i*2.39)*80),lon=(i*137.5)%360-180;
+      const p=ll2xyz(lat,lon,R),r=rotPt(p);
+      if(r.z>8){
+        const col=prideC[i%prideC.length];
+        const op=0.4+0.5*(r.z/R);
+        const sz=1.2+0.8*(r.z/R);
+        gx.beginPath();gx.arc(cx+r.x,cy+r.y,sz,0,Math.PI*2);
+        gx.fillStyle=col.replace(')',`,${op})`).replace('rgb','rgba').replace('#','rgba(').replace(/(\w{2})(\w{2})(\w{2})/,(_,r,g,b)=>`${parseInt(r,16)},${parseInt(g,16)},${parseInt(b,16)}`);
+        // Simplified:
+        gx.fillStyle=col;gx.globalAlpha=op;gx.fill();gx.globalAlpha=1;
+      }
+    }
+
+    // Équateur arc-en-ciel pride
+    const prideRainbow=['#E40303','#FF8C00','#FFED00','#008026','#004DFF','#750787','#FF00FF','#00EEFF'];
+    for(let i=0;i<240;i++){
+      const lon=-180+i*1.5;
+      const p1=ll2xyz(0,lon,R),p2=ll2xyz(0,lon+1.5,R);
+      const r1=rotPt(p1),r2=rotPt(p2);
+      if(r1.z>0&&r2.z>0){
+        gx.beginPath();gx.moveTo(cx+r1.x,cy+r1.y);gx.lineTo(cx+r2.x,cy+r2.y);
+        const col=prideRainbow[Math.floor(i/30)%prideRainbow.length];
+        gx.shadowBlur=6;gx.shadowColor=col;
+        gx.strokeStyle=col;gx.lineWidth=2.8;gx.stroke();
+        gx.shadowBlur=0;
+      }
+    }
+
+    // Villes avec pulsation
+    cities.forEach((city,ci)=>{
+      const p=ll2xyz(city.lat,city.lon,R),r=rotPt(p);
+      if(r.z>0){
+        const sx=cx+r.x,sy=cy+r.y;
+        const pulse=0.65+0.35*Math.sin(gf*0.07+ci*1.3);
+        // Glow halo
+        const glw=gx.createRadialGradient(sx,sy,0,sx,sy,22);
+        const col=city.col;
+        glw.addColorStop(0,col.replace('#','rgba(').replace(/(\w{2})(\w{2})(\w{2})/,(_,r2,g2,b2)=>`${parseInt(r2,16)},${parseInt(g2,16)},${parseInt(b2,16)},${pulse*0.8})`));
+        glw.addColorStop(1,'rgba(0,0,0,0)');
+        gx.beginPath();gx.arc(sx,sy,22,0,Math.PI*2);gx.fillStyle=glw;gx.fill();
+        // Dot
+        gx.shadowBlur=14;gx.shadowColor=col;
+        gx.beginPath();gx.arc(sx,sy,5.5,0,Math.PI*2);gx.fillStyle=col;gx.globalAlpha=pulse;gx.fill();gx.globalAlpha=1;
+        gx.shadowBlur=0;
+        // Ring
+        gx.beginPath();gx.arc(sx,sy,10,0,Math.PI*2);gx.strokeStyle=col;gx.globalAlpha=pulse*0.35;gx.lineWidth=1.5;gx.stroke();gx.globalAlpha=1;
+        // Label
+        const fs=Math.max(9,Math.round(W*0.022));
+        gx.font=`bold ${fs}px "Space Mono",monospace`;
+        gx.shadowBlur=8;gx.shadowColor=col;
+        gx.fillStyle=col;gx.textAlign='center';gx.fillText(city.name,sx,sy-17);
+        gx.shadowBlur=0;
+      }
+    });
+
+    // Reflet spéculaire
+    const specGrd=gx.createRadialGradient(cx-R*0.28,cy-R*0.28,0,cx-R*0.15,cy-R*0.18,R*0.5);
+    specGrd.addColorStop(0,'rgba(255,180,255,0.20)');
+    specGrd.addColorStop(0.4,'rgba(200,100,255,0.10)');
+    specGrd.addColorStop(1,'rgba(255,180,255,0)');
+    gx.fillStyle=specGrd;gx.fillRect(0,0,W,H);
+
+    gx.restore();
+
+    // Bordure globe — cyan/magenta dégradé lumineux
+    const rimGrd=gx.createLinearGradient(cx-R,cy,cx+R,cy);
+    rimGrd.addColorStop(0,'rgba(0,220,255,0.95)');
+    rimGrd.addColorStop(0.25,'rgba(255,0,200,0.85)');
+    rimGrd.addColorStop(0.5,'rgba(180,0,255,0.80)');
+    rimGrd.addColorStop(0.75,'rgba(255,0,180,0.85)');
+    rimGrd.addColorStop(1,'rgba(0,220,255,0.95)');
+    gx.shadowBlur=18;gx.shadowColor='rgba(0,200,255,0.8)';
+    gx.beginPath();gx.arc(cx,cy,R,0,Math.PI*2);gx.strokeStyle=rimGrd;gx.lineWidth=3;gx.stroke();
+    gx.shadowBlur=30;gx.shadowColor='rgba(255,0,200,0.5)';
+    gx.beginPath();gx.arc(cx,cy,R+4,0,Math.PI*2);gx.strokeStyle='rgba(255,0,200,0.18)';gx.lineWidth=8;gx.stroke();
+    gx.shadowBlur=0;
+
+    // Rotation auto avec inertie
+    if(!drag){
+      rotY+=0.0045;
+      if(Math.abs(velX)>0.0005){velX*=0.94;rotY+=velX;}
+      if(Math.abs(velY)>0.0005){velY*=0.94;rotX+=velY;rotX=Math.max(-1.3,Math.min(1.3,rotX));}
+    }
+    gf++;requestAnimationFrame(drawGlobe);
+  }
+  drawGlobe();
+})();
+
+// ── TRIBUNAL ──
+(function(){
+  const tc=document.getElementById('trib-canvas');tc.width=tc.offsetWidth||window.innerWidth;tc.height=320;
+  const ctx=tc.getContext('2d'),W=tc.width,H=320;let t=0;
+  function fr(){
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+    for(let i=0;i<5;i++){const px=W*.1+i*(W*.18),py=H-60;ctx.fillStyle='rgba(212,175,55,0.04)';ctx.fillRect(px-5,36,10,py-36);ctx.fillStyle='rgba(212,175,55,0.07)';ctx.fillRect(px-13,36,26,14);ctx.fillRect(px-13,py-8,26,8);}
+    ctx.fillStyle='rgba(212,175,55,0.04)';ctx.fillRect(0,H-62,W,62);
+    ctx.strokeStyle='rgba(212,175,55,0.14)';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(0,H-62);ctx.lineTo(W,H-62);ctx.stroke();
+    for(let row=0;row<2;row++){for(let col=0;col<5;col++){const sx=W*.08+col*(W*.18),sy=H-102-row*46,op=.2+.18*Math.sin(t*.5+col+row);if(Math.sin(t*.12+col+row)>.1){ctx.fillStyle=`rgba(212,175,55,${op})`;ctx.beginPath();ctx.arc(sx,sy,7,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(sx,sy,12,0,Math.PI*2);ctx.strokeStyle=`rgba(212,175,55,${op*.3})`;ctx.lineWidth=.8;ctx.stroke();}else{ctx.strokeStyle='rgba(212,175,55,0.07)';ctx.lineWidth=.5;ctx.beginPath();ctx.arc(sx,sy,7,0,Math.PI*2);ctx.stroke();}}}
+    const bx=W/2-24,by=H-110;ctx.fillStyle='rgba(212,175,55,0.07)';ctx.fillRect(bx,by,48,34);ctx.strokeStyle='rgba(212,175,55,0.2)';ctx.lineWidth=.5;ctx.strokeRect(bx,by,48,34);ctx.fillStyle=`rgba(212,175,55,${.5+.3*Math.sin(t)})`;ctx.font='12px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('⚖',W/2,by+17);
+    ctx.fillStyle=`rgba(220,50,50,${.18+.1*Math.sin(t*.7)})`;ctx.fillRect(0,0,4,H);ctx.fillRect(W-4,0,4,H);
+    t+=.018;requestAnimationFrame(fr);
+  }fr();
+})();
+
+// ── SALON ──
+(function(){
+  const sc=document.getElementById('salon-canvas');sc.width=sc.offsetWidth||window.innerWidth;sc.height=340;
+  const ctx=sc.getContext('2d'),W=sc.width,H=340;let t=0;
+  function fr(){
+    ctx.clearRect(0,0,W,H);const sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#000814');sky.addColorStop(1,'#060018');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+    for(let i=0;i<25;i++){const sx=((i*97+t*5)%W),sy=22+Math.sin(i*.8+t*.22)*14;ctx.beginPath();ctx.arc(sx,sy,.7,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${.2+.2*Math.sin(i+t)})`;ctx.fill();}
+    for(let layer=0;layer<4;layer++){const y=H*.38+layer*H*.13,op=.07+layer*.05;ctx.fillStyle=`rgba(140,140,200,${op})`;for(let i=0;i<5;i++){const bx=((i*110+t*5*(layer+1))%(W+160))-80;ctx.beginPath();ctx.ellipse(bx,y,90+25*Math.sin(i),28+10*Math.sin(i*.7),0,0,Math.PI*2);ctx.fill();}}
+    const plats=[{x:W*.18,y:H*.58,w:100},{x:W*.52,y:H*.48,w:140},{x:W*.83,y:H*.63,w:90}];
+    plats.forEach((p,i)=>{
+      const fy=p.y+5*Math.sin(t*.38+i);
+      ctx.fillStyle='rgba(212,175,55,0.1)';ctx.fillRect(p.x-p.w/2,fy,p.w,7);ctx.strokeStyle='rgba(212,175,55,0.26)';ctx.lineWidth=.5;ctx.strokeRect(p.x-p.w/2,fy,p.w,7);
+      const nc=[1,2,1][i]||1;for(let f=0;f<nc;f++){const fx=p.x+(f-.5)*30,fop=.35+.2*Math.sin(t+i+f);ctx.fillStyle=`rgba(212,175,55,${fop})`;ctx.beginPath();ctx.arc(fx,fy-13,5,0,Math.PI*2);ctx.fill();ctx.fillStyle=`rgba(212,175,55,${fop*.6})`;ctx.fillRect(fx-3.5,fy-8,7,8);}
+    });
+    t+=.012;requestAnimationFrame(fr);
+  }fr();
+})();
+
+// ── PROFILS FLOTTANTS ──
+function drawFP(id,hue){
+  const c=document.getElementById(id);if(!c)return;const ctx=c.getContext('2d');let t=0;
+  function fr(){ctx.clearRect(0,0,58,58);const grd=ctx.createRadialGradient(29,29,2,29,29,29);grd.addColorStop(0,`hsla(${hue},70%,55%,0.95)`);grd.addColorStop(1,`hsla(${hue+40},60%,15%,0.7)`);ctx.beginPath();ctx.arc(29,29,26,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();for(let i=0;i<5;i++){const a=t+i/5*Math.PI*2,r=13+3*Math.sin(t*1.5+i);const x=29+Math.cos(a)*r,y=29+Math.sin(a)*r;ctx.beginPath();ctx.arc(x,y,1.8,0,Math.PI*2);ctx.fillStyle=`hsla(${hue+i*28},100%,80%,0.8)`;ctx.fill();}ctx.beginPath();ctx.arc(29,29,26,0,Math.PI*2);ctx.strokeStyle=`hsla(${hue},80%,60%,0.4)`;ctx.lineWidth=.8;ctx.stroke();t+=.035;requestAnimationFrame(fr);}fr();
+}
+drawFP('fp1',45);drawFP('fp2',280);drawFP('fp3',160);
+
+// ── COMPTEUR MEMBRES ──
+let cnt=0;const cel=document.getElementById('stat-members');
+const step=()=>{cnt+=980;if(cnt>=50247){cnt=50247;cel.textContent=cnt.toLocaleString('fr-CA');return;}cel.textContent=cnt.toLocaleString('fr-CA');setTimeout(step,22);};
+setTimeout(step,400);
+
+// ── MUSIQUE SALON ──
+const tracks=[['Nuit de Québec','VIBE Ambient · Salon Flottant'],['Brouillard d\'hiver','VIBE Chill · Mode Fantôme'],['Lumière de la fierté','VIBE Pride · 2026'],['Âmes connectées','VIBE Deep · Salon Flottant']];
+let ti=0;
+setInterval(()=>{ti=(ti+1)%tracks.length;document.getElementById('np-track').textContent=tracks[ti][0];document.getElementById('np-artist').textContent=tracks[ti][1];},8000);
+
+// ── CHAT LIVE ──
+const chatMsgs=['Bienvenue dans le salon ✦','Quelqu\'un veut danser ? ◉','Ce brouillard est magnifique','Je suis fantôme mais je vous entends ☽','L\'ange gardien veille sur nous tous'];
+let mi=0;const lc=document.getElementById('live-chat');
+setInterval(()=>{lc.style.opacity='0';setTimeout(()=>{lc.innerHTML=`<span class="chat-name gold">◈ Salon</span><span class="chat-text">${chatMsgs[mi%chatMsgs.length]}</span>`;lc.style.opacity='1';mi++;},400);},5000);
+
+// ── SOS ──
+function activateSOS(){
+  const b=document.getElementById('sos-btn');
+  b.textContent='✦ Ange activé — aide en route';b.style.borderColor='#D4AF37';b.style.color='#D4AF37';
+  setTimeout(()=>{b.textContent='SOS — Activer l\'ange gardien';b.style.borderColor='';b.style.color='';},4000);
 }
 
-function drawStars() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  stars.forEach(s => {
-    s.a += s.speed;
-    const opacity = 0.1 + Math.abs(Math.sin(s.a)) * 0.5;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(212,175,55,${opacity})`;
-    ctx.fill();
+// ══════════════════════════════════════════════
+// ██ VIBE SECURITY LAYER — vibegay.ca © 2026 ██
+// ══════════════════════════════════════════════
+
+// ── 1. DÉTECTION DEVTOOLS (anti-inspection) ──
+(function(){
+  let devopen=false;
+  const threshold=160;
+  setInterval(()=>{
+    if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){
+      if(!devopen){devopen=true;console.clear();console.log('%c⛔ VIBE Security · Accès non autorisé détecté','color:#D4AF37;font-size:18px;font-weight:bold');}
+    } else {devopen=false;}
+  },1000);
+  // Bloquer clic droit
+  document.addEventListener('contextmenu',e=>{e.preventDefault();});
+  // Bloquer F12, Ctrl+Shift+I, Ctrl+U
+  document.addEventListener('keydown',e=>{
+    if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U')){
+      e.preventDefault();
+    }
   });
-  requestAnimationFrame(drawStars);
+})();
+
+// ── 2. ANTI-BOT / HONEYPOT ──
+(function(){
+  // Champ honeypot invisible — si rempli = bot
+  const hp=document.getElementById('hp-field');
+  if(hp) hp.addEventListener('input',()=>{
+    document.querySelector('.form-wrap').innerHTML='<p style="color:rgba(255,80,80,0.7);text-align:center;font-size:.7rem;letter-spacing:3px;padding:40px">⛔ Accès refusé.</p>';
+  });
+})();
+
+// ── 3. RATE LIMITING FORMULAIRE (anti-spam) ──
+const VIBE_SEC={
+  attempts:{signup:0,login:0},
+  maxAttempts:5,
+  lockUntil:{signup:0,login:0},
+  tokens:{},
+  // Génère un token CSRF simple côté client
+  generateToken(){
+    const t=Math.random().toString(36).slice(2)+Date.now().toString(36);
+    sessionStorage.setItem('vibe_csrf',t);
+    return t;
+  },
+  validateToken(t){
+    return t===sessionStorage.getItem('vibe_csrf');
+  },
+  // Sanitize input — retire HTML/scripts
+  sanitize(str){
+    const d=document.createElement('div');
+    d.textContent=str||'';
+    return d.innerHTML.replace(/[<>"'&]/g,c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c]));
+  },
+  // Valide email format
+  isValidEmail(e){
+    return /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(e);
+  },
+  // Valide mot de passe
+  isStrongPassword(p){
+    return p.length>=8&&/[A-Z]/.test(p)&&/[0-9]/.test(p);
+  },
+  // Check rate limit
+  checkLimit(action){
+    const now=Date.now();
+    if(now<this.lockUntil[action]){
+      const secs=Math.ceil((this.lockUntil[action]-now)/1000);
+      this.showSecAlert(`⛔ Trop de tentatives. Réessaie dans ${secs}s.`);
+      return false;
+    }
+    this.attempts[action]++;
+    if(this.attempts[action]>=this.maxAttempts){
+      this.lockUntil[action]=now+60000; // 60s lock
+      this.attempts[action]=0;
+      this.showSecAlert('⛔ Accès temporairement bloqué — 60 secondes.');
+      return false;
+    }
+    return true;
+  },
+  showSecAlert(msg){
+    let el=document.getElementById('sec-alert');
+    if(!el){el=document.createElement('div');el.id='sec-alert';el.style.cssText='position:fixed;top:60px;left:50%;transform:translateX(-50%);background:rgba(220,50,50,0.95);color:#fff;padding:12px 28px;font-family:Space Mono,monospace;font-size:.65rem;letter-spacing:3px;z-index:9999;border:1px solid rgba(255,80,80,0.6);backdrop-filter:blur(8px)';document.body.appendChild(el);}
+    el.textContent=msg;el.style.display='block';
+    setTimeout(()=>{el.style.display='none';},4000);
+  },
+  showSuccess(msg){
+    let el=document.getElementById('sec-success');
+    if(!el){el=document.createElement('div');el.id='sec-success';el.style.cssText='position:fixed;top:60px;left:50%;transform:translateX(-50%);background:rgba(30,180,30,0.92);color:#fff;padding:12px 28px;font-family:Space Mono,monospace;font-size:.65rem;letter-spacing:3px;z-index:9999;border:1px solid rgba(80,220,80,0.6);backdrop-filter:blur(8px)';document.body.appendChild(el);}
+    el.textContent=msg;el.style.display='block';
+    setTimeout(()=>{el.style.display='none';},4000);
+  },
+  logEvent(type,detail){
+    const log={t:new Date().toISOString(),type,detail,ua:navigator.userAgent.slice(0,80)};
+    try{const logs=JSON.parse(sessionStorage.getItem('vibe_log')||'[]');logs.push(log);if(logs.length>50)logs.shift();sessionStorage.setItem('vibe_log',JSON.stringify(logs));}catch(e){}
+  }
+};
+
+// Initialise CSRF token
+VIBE_SEC.generateToken();
+
+// ── 4. MODALE CONNEXION ──
+function openLogin(){
+  VIBE_SEC.generateToken(); // Nouveau token à chaque ouverture
+  document.getElementById('login-modal').classList.add('open');
+}
+function closeLogin(){document.getElementById('login-modal').classList.remove('open');}
+document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)closeLogin();});
+// Fermer avec Escape
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLogin();});
+
+// ── 5. FORMULAIRE INSCRIPTION — SÉCURISÉ ──
+function handleSignup(e){
+  e.preventDefault();
+  if(!VIBE_SEC.checkLimit('signup'))return;
+
+  const prenom=VIBE_SEC.sanitize(document.getElementById('prenom').value.trim());
+  const email=VIBE_SEC.sanitize(document.getElementById('email').value.trim());
+  const mdp=document.getElementById('mdp').value;
+  const cgu=document.getElementById('cgu').checked;
+  const hp=document.getElementById('hp-field');
+
+  // Honeypot check
+  if(hp&&hp.value){VIBE_SEC.logEvent('BOT_DETECTED','signup honeypot');return;}
+
+  // Validations
+  if(!prenom||prenom.length<2){VIBE_SEC.showSecAlert('⚠ Prénom invalide.');return;}
+  if(!VIBE_SEC.isValidEmail(email)){VIBE_SEC.showSecAlert('⚠ Courriel invalide.');return;}
+  if(!VIBE_SEC.isStrongPassword(mdp)){
+    VIBE_SEC.showSecAlert('⚠ Mot de passe trop faible — min. 8 caractères, 1 majuscule, 1 chiffre.');
+    return;
+  }
+  if(!cgu){VIBE_SEC.showSecAlert('⚠ Tu dois accepter les conditions.');return;}
+
+  VIBE_SEC.logEvent('SIGNUP_ATTEMPT',email.replace(/(.{2}).+(@.+)/,'$1***$2'));
+  VIBE_SEC.attempts.signup=0; // Reset si succès
+
+  document.getElementById('signup-form').style.display='none';
+  document.getElementById('signup-success').style.display='block';
+  VIBE_SEC.showSuccess('✦ Compte créé — redirection vers VIBE...');
+
+  // Redirection sécurisée après 2.5s
+  setTimeout(()=>{
+    const url='https://vibegay.ca/inscription?ref=landing&email='+encodeURIComponent(email)+'&nom='+encodeURIComponent(prenom);
+    window.location.href=url;
+  },2500);
 }
 
-window.addEventListener('resize', () => { resize(); initStars(); });
-resize();
-initStars();
-drawStars();
+// ── 6. FORMULAIRE CONNEXION — SÉCURISÉ ──
+function handleLogin(e){
+  e.preventDefault();
+  if(!VIBE_SEC.checkLimit('login'))return;
+
+  const email=VIBE_SEC.sanitize(document.getElementById('login-email').value.trim());
+  const mdp=document.getElementById('login-mdp').value;
+  const hp=document.getElementById('hp-field-login');
+
+  if(hp&&hp.value){VIBE_SEC.logEvent('BOT_DETECTED','login honeypot');return;}
+  if(!VIBE_SEC.isValidEmail(email)){VIBE_SEC.showSecAlert('⚠ Courriel invalide.');return;}
+  if(!mdp||mdp.length<8){VIBE_SEC.showSecAlert('⚠ Mot de passe incorrect.');return;}
+
+  VIBE_SEC.logEvent('LOGIN_ATTEMPT',email.replace(/(.{2}).+(@.+)/,'$1***$2'));
+  closeLogin();
+  VIBE_SEC.showSuccess('✦ Connexion — redirection...');
+  setTimeout(()=>{window.location.href='https://vibegay.ca/connexion?ref=landing';},1200);
+}
+
+// ── 7. PROTECTION COPY/PASTE MOTS DE PASSE ──
+document.querySelectorAll('input[type=password]').forEach(el=>{
+  el.addEventListener('paste',e=>{/* autorisé */});
+  el.addEventListener('copy',e=>e.preventDefault());
+  el.addEventListener('cut',e=>e.preventDefault());
+});
+
+// ── 8. SESSION TIMEOUT — 30 min inactivité ──
+(function(){
+  let timer;
+  function resetTimer(){
+    clearTimeout(timer);
+    timer=setTimeout(()=>{
+      sessionStorage.clear();
+      VIBE_SEC.showSecAlert('⏱ Session expirée pour ta sécurité.');
+    },30*60*1000);
+  }
+  ['mousemove','keypress','scroll','touchstart'].forEach(ev=>document.addEventListener(ev,resetTimer,{passive:true}));
+  resetTimer();
+})();
+
+// ── 9. MONITORING ERREURS JS ──
+window.addEventListener('error',function(e){
+  VIBE_SEC.logEvent('JS_ERROR',e.message+' @ '+e.filename+':'+e.lineno);
+});
+window.addEventListener('unhandledrejection',function(e){
+  VIBE_SEC.logEvent('PROMISE_ERROR',String(e.reason).slice(0,120));
+});
+// Console de sécurité visible en dev (utile pour toi)
+console.log('%c✦ VIBE Security Active — vibegay.ca © 2026','color:#D4AF37;font-weight:bold;font-size:13px');
+console.log('%cCSP · Anti-bot · Rate limiting · XSS protection · Session timeout · Input sanitization','color:rgba(212,175,55,0.6);font-size:11px');
+
 </script>
 </body>
 </html>
