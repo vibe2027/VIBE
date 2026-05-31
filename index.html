@@ -984,6 +984,36 @@
       <div class="tcol"><div class="tcol-n">// 02</div><div class="tcol-t">Délibération</div><p class="tcol-txt">12 membres tirés au sort. Identités protégées.</p></div>
       <div class="tcol"><div class="tcol-n">// 03</div><div class="tcol-t">Verdict</div><p class="tcol-txt">Avertissement, suspension ou bannissement définitif.</p></div>
     </div>
+
+    <!-- Formulaire signalement réel -->
+    <div style="max-width:480px;margin:28px auto 0;border:0.5px solid rgba(220,50,50,0.2);padding:24px;background:rgba(220,50,50,0.02);">
+      <div style="font-size:0.52rem;letter-spacing:4px;color:rgba(220,50,50,0.5);text-transform:uppercase;margin-bottom:16px;">// Soumettre un signalement</div>
+      <form id="tribunal-form" onsubmit="handleSignalement(event)">
+        <div class="form-group">
+          <label style="font-size:0.5rem;letter-spacing:3px;color:rgba(212,175,55,0.35);display:block;margin-bottom:6px;">Ton pseudo (anonyme)</label>
+          <input id="trib-pseudo" type="text" placeholder="Pseudo anonyme" maxlength="30" style="width:100%;background:rgba(255,255,255,0.03);border:0.5px solid rgba(212,175,55,0.15);color:rgba(255,255,255,0.7);padding:10px 12px;font-size:0.68rem;font-family:'Space Mono',monospace;outline:none;">
+        </div>
+        <div class="form-group" style="margin-top:10px;">
+          <label style="font-size:0.5rem;letter-spacing:3px;color:rgba(212,175,55,0.35);display:block;margin-bottom:6px;">Motif</label>
+          <select id="trib-motif" style="width:100%;background:#111;border:0.5px solid rgba(212,175,55,0.15);color:rgba(255,255,255,0.7);padding:10px 12px;font-size:0.68rem;font-family:'Space Mono',monospace;outline:none;">
+            <option value="">Choisir un motif...</option>
+            <option value="harcèlement">Harcèlement</option>
+            <option value="faux profil">Faux profil</option>
+            <option value="comportement abusif">Comportement abusif</option>
+            <option value="discours haineux">Discours haineux</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-top:10px;">
+          <label style="font-size:0.5rem;letter-spacing:3px;color:rgba(212,175,55,0.35);display:block;margin-bottom:6px;">Détails (optionnel)</label>
+          <textarea id="trib-details" maxlength="500" placeholder="Décris brièvement la situation..." style="width:100%;background:rgba(255,255,255,0.03);border:0.5px solid rgba(212,175,55,0.15);color:rgba(255,255,255,0.7);padding:10px 12px;font-size:0.65rem;font-family:'Space Mono',monospace;outline:none;height:80px;resize:none;"></textarea>
+        </div>
+        <div id="trib-success" style="display:none;padding:14px;text-align:center;font-size:0.62rem;color:rgba(212,175,55,0.7);letter-spacing:2px;"></div>
+        <button type="submit" style="margin-top:12px;width:100%;background:transparent;color:rgba(220,50,50,0.7);border:0.5px solid rgba(220,50,50,0.3);padding:12px;font-size:0.62rem;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.3s;">
+          Soumettre au tribunal ↗
+        </button>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -1597,16 +1627,149 @@ const tracks=[['Nuit de Québec','VIBE Ambient · Salon Flottant'],['Brouillard 
 let ti=0;
 setInterval(()=>{ti=(ti+1)%tracks.length;document.getElementById('np-track').textContent=tracks[ti][0];document.getElementById('np-artist').textContent=tracks[ti][1];},8000);
 
-// ── CHAT LIVE ──
-const chatMsgs=['Bienvenue dans le salon ✦','Quelqu\'un veut danser ? ◉','Ce brouillard est magnifique','Je suis fantôme mais je vous entends ☽','L\'ange gardien veille sur nous tous'];
-let mi=0;const lc=document.getElementById('live-chat');
-setInterval(()=>{lc.style.opacity='0';setTimeout(()=>{lc.innerHTML=`<span class="chat-name gold">◈ Salon</span><span class="chat-text">${chatMsgs[mi%chatMsgs.length]}</span>`;lc.style.opacity='1';mi++;},400);},5000);
+// ── CHAT SALON — SUPABASE REALTIME ──
+const SALON_PSEUDOS=['Alex·QC','Sasha·MTL','Jordan·YOW','River·YVR','Sam·YYZ','◉ Fantôme'];
+const SALON_SEED=[
+  {prenom:'Alex',ville:'QC',message:'Ce salon me fait sentir libre ✦',mode:'normal'},
+  {prenom:'◉ Fantôme',ville:'',message:'Je suis là mais vous ne me voyez pas...',mode:'fantome'},
+  {prenom:'Sasha',ville:'MTL',message:'La musique ce soir est parfaite',mode:'normal'}
+];
 
-// ── SOS ──
-function activateSOS(){
+const lc=document.getElementById('live-chat');
+let salonMsgs=[...SALON_SEED];
+
+function renderSalonMsg(msg){
+  const isGhost=msg.mode==='fantome'||msg.prenom==='◉ Fantôme';
+  const name=isGhost?'◉ Fantôme':`${msg.prenom}·${msg.ville||'QC'}`;
+  const cls=isGhost?'ghost':'gold';
+  return `<div class="chat-msg"><span class="chat-name ${cls}">${name}</span><span class="chat-text">${msg.message}</span></div>`;
+}
+
+function refreshChat(){
+  if(!lc)return;
+  const last=salonMsgs.slice(-3);
+  lc.innerHTML=last.map(renderSalonMsg).join('');
+}
+refreshChat();
+
+// Charger les vrais messages depuis Supabase
+async function loadSalonMessages(){
+  try{
+    const {data}=await _supa.from('salon_messages')
+      .select('*').order('created_at',{ascending:false}).limit(20);
+    if(data&&data.length>0){
+      salonMsgs=[...SALON_SEED,...data.reverse()];
+      refreshChat();
+    }
+  }catch(e){}
+}
+
+// Écouter les nouveaux messages en temps réel
+function subscribeSalon(){
+  _supa.channel('salon_public')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'salon_messages'},(payload)=>{
+      salonMsgs.push(payload.new);
+      if(salonMsgs.length>50)salonMsgs.shift();
+      refreshChat();
+    })
+    .subscribe();
+}
+
+// Formulaire envoi message salon (si connecté)
+async function sendSalonMessage(msg,prenom,ville,mode){
+  try{
+    await _supa.from('salon_messages').insert({
+      prenom:prenom||'Visiteur',
+      ville:ville||'QC',
+      message:msg,
+      mode:mode||'normal'
+    });
+  }catch(e){}
+}
+
+loadSalonMessages();
+subscribeSalon();
+
+// ── SOS ANGE GARDIEN — GPS RÉEL ──
+let sosActive=false;
+let sosMediaRecorder=null;
+let sosStream=null;
+
+async function activateSOS(){
   const b=document.getElementById('sos-btn');
-  b.textContent='✦ Ange activé — aide en route';b.style.borderColor='#D4AF37';b.style.color='#D4AF37';
-  setTimeout(()=>{b.textContent='SOS — Activer l\'ange gardien';b.style.borderColor='';b.style.color='';},4000);
+  if(sosActive)return;
+  sosActive=true;
+  b.textContent='⟳ Activation en cours...';
+  b.style.borderColor='#D4AF37';b.style.color='#D4AF37';
+
+  let gpsData=null;
+  let audioBlob=null;
+
+  // 1. Obtenir position GPS
+  try{
+    const pos=await new Promise((resolve,reject)=>
+      navigator.geolocation.getCurrentPosition(resolve,reject,{timeout:8000,maximumAge:0})
+    );
+    gpsData={
+      lat:pos.coords.latitude.toFixed(6),
+      lng:pos.coords.longitude.toFixed(6),
+      accuracy:Math.round(pos.coords.accuracy)+'m',
+      timestamp:new Date().toISOString()
+    };
+    b.textContent='✦ GPS obtenu — enregistrement audio...';
+  }catch(e){
+    gpsData={lat:'inconnu',lng:'inconnu',accuracy:'N/A',timestamp:new Date().toISOString()};
+  }
+
+  // 2. Enregistrer audio 15 secondes
+  try{
+    sosStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    const chunks=[];
+    sosMediaRecorder=new MediaRecorder(sosStream);
+    sosMediaRecorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+    sosMediaRecorder.onstop=async()=>{
+      audioBlob=new Blob(chunks,{type:'audio/webm'});
+      // Sauvegarder alerte dans Supabase
+      try{
+        const user=await _supa.auth.getUser();
+        const userId=user?.data?.user?.id||null;
+        await _supa.from('ange_alerts').insert({
+          user_id:userId,
+          latitude:parseFloat(gpsData.lat)||null,
+          longitude:parseFloat(gpsData.lng)||null,
+          statut:'active',
+          notes:`GPS: ${gpsData.lat},${gpsData.lng} | Précision: ${gpsData.accuracy}`
+        });
+        VIBE_SEC.logEvent('SOS_ACTIVATED',`GPS:${gpsData.lat},${gpsData.lng}`);
+      }catch(e){}
+      // Arrêter les tracks audio
+      if(sosStream)sosStream.getTracks().forEach(t=>t.stop());
+      b.textContent='✦ Ange gardien activé — aide en route';
+      setTimeout(()=>{
+        b.textContent='SOS — Activer l\'ange gardien';
+        b.style.borderColor='';b.style.color='';
+        sosActive=false;
+      },8000);
+    };
+    sosMediaRecorder.start();
+    b.textContent='⬤ Enregistrement 15s en cours...';
+    setTimeout(()=>{if(sosMediaRecorder&&sosMediaRecorder.state==='recording')sosMediaRecorder.stop();},15000);
+  }catch(e){
+    // Audio refusé — sauvegarder quand même le GPS
+    try{
+      const user=await _supa.auth.getUser();
+      const userId=user?.data?.user?.id||null;
+      await _supa.from('ange_alerts').insert({
+        user_id:userId,
+        latitude:parseFloat(gpsData.lat)||null,
+        longitude:parseFloat(gpsData.lng)||null,
+        statut:'active',
+        notes:`GPS: ${gpsData.lat},${gpsData.lng} | Audio: refusé`
+      });
+    }catch(ex){}
+    b.textContent='✦ Ange gardien activé (GPS uniquement)';
+    setTimeout(()=>{b.textContent='SOS — Activer l\'ange gardien';b.style.borderColor='';b.style.color='';sosActive=false;},6000);
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -1782,23 +1945,41 @@ async function handleSignup(e){
   }
 }
 
-// ── 6. FORMULAIRE CONNEXION — SÉCURISÉ ──
-function handleLogin(e){
+// ── 6. FORMULAIRE CONNEXION — SUPABASE RÉEL ──
+async function handleLogin(e){
   e.preventDefault();
   if(!VIBE_SEC.checkLimit('login'))return;
 
   const email=VIBE_SEC.sanitize(document.getElementById('login-email').value.trim());
   const mdp=document.getElementById('login-mdp').value;
   const hp=document.getElementById('hp-field-login');
+  const btn=document.querySelector('#login-form .btn-submit')||document.querySelector('#login-form button[type=submit]');
 
   if(hp&&hp.value){VIBE_SEC.logEvent('BOT_DETECTED','login honeypot');return;}
   if(!VIBE_SEC.isValidEmail(email)){VIBE_SEC.showSecAlert('⚠ Courriel invalide.');return;}
-  if(!mdp||mdp.length<8){VIBE_SEC.showSecAlert('⚠ Mot de passe incorrect.');return;}
+  if(!mdp||mdp.length<6){VIBE_SEC.showSecAlert('⚠ Mot de passe trop court.');return;}
 
-  VIBE_SEC.logEvent('LOGIN_ATTEMPT',email.replace(/(.{2}).+(@.+)/,'$1***$2'));
-  closeLogin();
-  VIBE_SEC.showSuccess('✦ Connexion — redirection...');
-  VIBE_SEC.showSuccess('✦ Connexion en cours — fonctionnalité bientôt disponible.');closeLogin();
+  if(btn){btn.disabled=true;btn.textContent='Connexion...';}
+
+  try{
+    const {data,error}=await _supa.auth.signInWithPassword({email:email,password:mdp});
+    if(error)throw error;
+    VIBE_SEC.logEvent('LOGIN_SUCCESS',email.replace(/(.{2}).+(@.+)/,'$1***$2'));
+    closeLogin();
+    const prenom=data.user?.user_metadata?.prenom||'Membre';
+    VIBE_SEC.showSuccess(`✦ Bienvenue ${prenom} — connexion réussie !`);
+    // Mettre à jour le HUD
+    const hudBtn=document.querySelector('.hud-connexion');
+    if(hudBtn){hudBtn.textContent='✦ '+prenom;hudBtn.onclick=()=>_supa.auth.signOut().then(()=>location.reload());}
+  }catch(err){
+    if(btn){btn.disabled=false;btn.textContent='Entrer dans VIBE ✦';}
+    if(err.message&&err.message.includes('Invalid login')){
+      VIBE_SEC.showSecAlert('⚠ Courriel ou mot de passe incorrect.');
+    } else {
+      VIBE_SEC.showSecAlert('⚠ Erreur: '+(err.message||'réessaie.'));
+    }
+    VIBE_SEC.logEvent('LOGIN_ERROR',err.message||'unknown');
+  }
 }
 
 // ── 7. PROTECTION COPY/PASTE MOTS DE PASSE ──
@@ -1829,9 +2010,58 @@ window.addEventListener('error',function(e){
 window.addEventListener('unhandledrejection',function(e){
   VIBE_SEC.logEvent('PROMISE_ERROR',String(e.reason).slice(0,120));
 });
-// Console de sécurité visible en dev (utile pour toi)
 console.log('%c✦ VIBE Security Active — vibegay.ca © 2026','color:#D4AF37;font-weight:bold;font-size:13px');
 console.log('%cCSP · Anti-bot · Rate limiting · XSS protection · Session timeout · Input sanitization','color:rgba(212,175,55,0.6);font-size:11px');
+
+// ── TRIBUNAL — SIGNALEMENT RÉEL ──
+async function handleSignalement(e){
+  e.preventDefault();
+  const pseudo=document.getElementById('trib-pseudo').value.trim()||'Anonyme';
+  const motif=document.getElementById('trib-motif').value;
+  const details=document.getElementById('trib-details').value.trim();
+  const btn=e.target.querySelector('button[type=submit]');
+  const success=document.getElementById('trib-success');
+
+  if(!motif){VIBE_SEC.showSecAlert('⚠ Choisis un motif.');return;}
+
+  if(btn){btn.disabled=true;btn.textContent='Envoi en cours...';}
+
+  try{
+    const {error}=await _supa.from('tribunal_signalements').insert({
+      pseudo_reporter:pseudo.slice(0,30),
+      motif:motif,
+      details:details.slice(0,500)||null,
+      statut:'en_examen'
+    });
+    if(error)throw error;
+
+    document.getElementById('tribunal-form').style.display='none';
+    success.style.display='block';
+    success.innerHTML='✦ Signalement soumis — le jury examine dans les 24h.';
+    VIBE_SEC.logEvent('SIGNALEMENT_SENT',motif);
+  }catch(err){
+    if(btn){btn.disabled=false;btn.textContent='Soumettre au tribunal ↗';}
+    VIBE_SEC.showSecAlert('⚠ Erreur: '+(err.message||'réessaie.'));
+  }
+}
+
+// ── VÉRIFIER SESSION AU CHARGEMENT ──
+(async()=>{
+  try{
+    const {data:{user}}=await _supa.auth.getUser();
+    if(user){
+      const prenom=user.user_metadata?.prenom||'Membre';
+      const hudBtn=document.querySelector('.hud-connexion');
+      if(hudBtn){
+        hudBtn.textContent='✦ '+prenom;
+        hudBtn.onclick=()=>_supa.auth.signOut().then(()=>{
+          location.reload();
+        });
+      }
+      VIBE_SEC.logEvent('SESSION_RESTORED',user.id.slice(0,8));
+    }
+  }catch(e){}
+})();
 
 </script>
 </body>
