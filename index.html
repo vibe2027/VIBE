@@ -2014,8 +2014,17 @@ console.log('%c✦ VIBE Security Active — vibegay.ca © 2026','color:#D4AF37;f
 console.log('%cCSP · Anti-bot · Rate limiting · XSS protection · Session timeout · Input sanitization','color:rgba(212,175,55,0.6);font-size:11px');
 
 // ── TRIBUNAL — SIGNALEMENT RÉEL ──
+// ── ADMIN CONFIG ──
+const ADMIN_EMAIL='vibeqbc2026@hotmail.com';
+let CURRENT_USER=null;
+let IS_ADMIN=false;
+
+// ── TRIBUNAL SIGNALEMENT RÉEL ──
 async function handleSignalement(e){
   e.preventDefault();
+  // Admin ne peut pas être signalé et ne peut pas signaler lui-même
+  if(IS_ADMIN){VIBE_SEC.showSecAlert('⚠ Accès admin — fonction non disponible.');return;}
+
   const pseudo=document.getElementById('trib-pseudo').value.trim()||'Anonyme';
   const motif=document.getElementById('trib-motif').value;
   const details=document.getElementById('trib-details').value.trim();
@@ -2023,7 +2032,6 @@ async function handleSignalement(e){
   const success=document.getElementById('trib-success');
 
   if(!motif){VIBE_SEC.showSecAlert('⚠ Choisis un motif.');return;}
-
   if(btn){btn.disabled=true;btn.textContent='Envoi en cours...';}
 
   try{
@@ -2034,7 +2042,6 @@ async function handleSignalement(e){
       statut:'en_examen'
     });
     if(error)throw error;
-
     document.getElementById('tribunal-form').style.display='none';
     success.style.display='block';
     success.innerHTML='✦ Signalement soumis — le jury examine dans les 24h.';
@@ -2045,22 +2052,171 @@ async function handleSignalement(e){
   }
 }
 
-// ── VÉRIFIER SESSION AU CHARGEMENT ──
+// ── PANNEAU ADMIN ──
+function showAdminPanel(user){
+  // Supprimer ancien panel si existe
+  const old=document.getElementById('admin-panel');
+  if(old)old.remove();
+
+  const panel=document.createElement('div');
+  panel.id='admin-panel';
+  panel.style.cssText=`
+    position:fixed;bottom:20px;right:20px;z-index:9999;
+    background:rgba(0,0,0,0.97);border:1px solid rgba(212,175,55,0.5);
+    padding:20px;min-width:300px;max-width:380px;
+    font-family:'Space Mono',monospace;backdrop-filter:blur(12px);
+    max-height:80vh;overflow-y:auto;
+  `;
+  panel.innerHTML=`
+    <div style="font-size:0.6rem;letter-spacing:4px;color:var(--gold);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+      ✦ ADMIN PASCAL <span style="cursor:pointer;opacity:0.5;" onclick="document.getElementById('admin-panel').style.display='none'">✕</span>
+    </div>
+    <div id="admin-stats" style="font-size:0.55rem;color:rgba(255,255,255,0.4);letter-spacing:2px;margin-bottom:14px;">Chargement...</div>
+    <div style="display:grid;gap:8px;">
+      <button onclick="adminLoadInscriptions()" style="background:transparent;border:0.5px solid rgba(212,175,55,0.3);color:rgba(212,175,55,0.7);padding:8px;font-size:0.52rem;letter-spacing:3px;cursor:pointer;font-family:'Space Mono',monospace;">
+        📋 VOIR INSCRIPTIONS
+      </button>
+      <button onclick="adminLoadSignalements()" style="background:transparent;border:0.5px solid rgba(220,50,50,0.3);color:rgba(220,50,50,0.7);padding:8px;font-size:0.52rem;letter-spacing:3px;cursor:pointer;font-family:'Space Mono',monospace;">
+        ⚖ VOIR SIGNALEMENTS
+      </button>
+      <button onclick="adminLoadMessages()" style="background:transparent;border:0.5px solid rgba(0,238,255,0.2);color:rgba(0,238,255,0.5);padding:8px;font-size:0.52rem;letter-spacing:3px;cursor:pointer;font-family:'Space Mono',monospace;">
+        💬 MESSAGES SALON
+      </button>
+      <button onclick="adminLoadAlerts()" style="background:transparent;border:0.5px solid rgba(255,80,80,0.2);color:rgba(255,80,80,0.5);padding:8px;font-size:0.52rem;letter-spacing:3px;cursor:pointer;font-family:'Space Mono',monospace;">
+        🚨 ALERTES SOS
+      </button>
+    </div>
+    <div id="admin-data" style="margin-top:14px;font-size:0.52rem;color:rgba(255,255,255,0.35);line-height:1.8;max-height:300px;overflow-y:auto;"></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:0.5px solid rgba(212,175,55,0.1);">
+      <button onclick="_supa.auth.signOut().then(()=>location.reload())" style="background:transparent;border:0.5px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);padding:6px 12px;font-size:0.48rem;letter-spacing:2px;cursor:pointer;font-family:'Space Mono',monospace;width:100%;">
+        DÉCONNEXION
+      </button>
+    </div>
+  `;
+  document.body.appendChild(panel);
+  adminLoadStats();
+}
+
+async function adminLoadStats(){
+  try{
+    const [ins,sig,msg,sos]=await Promise.all([
+      _supa.from('landing_inscriptions').select('id',{count:'exact',head:true}),
+      _supa.from('tribunal_signalements').select('id',{count:'exact',head:true}),
+      _supa.from('salon_messages').select('id',{count:'exact',head:true}),
+      _supa.from('ange_alerts').select('id',{count:'exact',head:true})
+    ]);
+    const el=document.getElementById('admin-stats');
+    if(el)el.innerHTML=`
+      Inscriptions: ${ins.count||0} · Signalements: ${sig.count||0}<br>
+      Messages salon: ${msg.count||0} · Alertes SOS: ${sos.count||0}
+    `;
+  }catch(e){}
+}
+
+async function adminLoadInscriptions(){
+  const el=document.getElementById('admin-data');
+  if(!el)return;
+  el.innerHTML='Chargement...';
+  try{
+    const {data}=await _supa.from('landing_inscriptions')
+      .select('prenom,email,ville,statut,created_at')
+      .order('created_at',{ascending:false}).limit(20);
+    if(!data||!data.length){el.innerHTML='Aucune inscription.';return;}
+    el.innerHTML='<div style="color:rgba(212,175,55,0.6);margin-bottom:8px;">DERNIÈRES INSCRIPTIONS</div>'+
+      data.map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.05);padding:6px 0;">
+        <span style="color:rgba(212,175,55,0.8)">${r.prenom}</span> · ${r.email}<br>
+        <span style="color:rgba(255,255,255,0.2)">${r.ville||'N/A'} · ${r.statut} · ${new Date(r.created_at).toLocaleDateString('fr-CA')}</span>
+      </div>`).join('');
+  }catch(e){el.innerHTML='Erreur: '+e.message;}
+}
+
+async function adminLoadSignalements(){
+  const el=document.getElementById('admin-data');
+  if(!el)return;
+  el.innerHTML='Chargement...';
+  try{
+    const {data}=await _supa.from('tribunal_signalements')
+      .select('pseudo_reporter,motif,details,statut,created_at')
+      .order('created_at',{ascending:false}).limit(20);
+    if(!data||!data.length){el.innerHTML='Aucun signalement.';return;}
+    el.innerHTML='<div style="color:rgba(220,50,50,0.6);margin-bottom:8px;">SIGNALEMENTS</div>'+
+      data.map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.05);padding:6px 0;">
+        <span style="color:rgba(220,50,50,0.8)">${r.motif}</span> par ${r.pseudo_reporter}<br>
+        <span style="color:rgba(255,255,255,0.2)">${r.details||''} · ${r.statut} · ${new Date(r.created_at).toLocaleDateString('fr-CA')}</span>
+      </div>`).join('');
+  }catch(e){el.innerHTML='Erreur: '+e.message;}
+}
+
+async function adminLoadMessages(){
+  const el=document.getElementById('admin-data');
+  if(!el)return;
+  el.innerHTML='Chargement...';
+  try{
+    const {data}=await _supa.from('salon_messages')
+      .select('prenom,ville,message,created_at')
+      .order('created_at',{ascending:false}).limit(20);
+    if(!data||!data.length){el.innerHTML='Aucun message.';return;}
+    el.innerHTML='<div style="color:rgba(0,238,255,0.5);margin-bottom:8px;">MESSAGES SALON</div>'+
+      data.map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.05);padding:6px 0;">
+        <span style="color:rgba(0,238,255,0.7)">${r.prenom}·${r.ville||'QC'}</span>: ${r.message}<br>
+        <span style="color:rgba(255,255,255,0.2)">${new Date(r.created_at).toLocaleDateString('fr-CA')}</span>
+      </div>`).join('');
+  }catch(e){el.innerHTML='Erreur: '+e.message;}
+}
+
+async function adminLoadAlerts(){
+  const el=document.getElementById('admin-data');
+  if(!el)return;
+  el.innerHTML='Chargement...';
+  try{
+    const {data}=await _supa.from('ange_alerts')
+      .select('latitude,longitude,statut,notes,created_at')
+      .order('created_at',{ascending:false}).limit(20);
+    if(!data||!data.length){el.innerHTML='Aucune alerte SOS.';return;}
+    el.innerHTML='<div style="color:rgba(255,80,80,0.6);margin-bottom:8px;">ALERTES SOS</div>'+
+      data.map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.05);padding:6px 0;">
+        <span style="color:rgba(255,80,80,0.8)">GPS: ${r.latitude||'?'},${r.longitude||'?'}</span><br>
+        <span style="color:rgba(255,255,255,0.2)">${r.notes||''} · ${r.statut} · ${new Date(r.created_at).toLocaleDateString('fr-CA')}</span>
+      </div>`).join('');
+  }catch(e){el.innerHTML='Erreur: '+e.message;}
+}
+
+// ── INIT SESSION AU CHARGEMENT ──
 (async()=>{
   try{
     const {data:{user}}=await _supa.auth.getUser();
     if(user){
+      CURRENT_USER=user;
+      IS_ADMIN=(user.email===ADMIN_EMAIL||user.user_metadata?.role==='superadmin');
       const prenom=user.user_metadata?.prenom||'Membre';
       const hudBtn=document.querySelector('.hud-connexion');
       if(hudBtn){
-        hudBtn.textContent='✦ '+prenom;
-        hudBtn.onclick=()=>_supa.auth.signOut().then(()=>{
-          location.reload();
-        });
+        hudBtn.textContent=(IS_ADMIN?'✦ Admin · ':'✦ ')+prenom;
+        hudBtn.style.color=IS_ADMIN?'var(--gold)':'rgba(212,175,55,0.6)';
+        hudBtn.onclick=IS_ADMIN
+          ? ()=>showAdminPanel(user)
+          : ()=>_supa.auth.signOut().then(()=>location.reload());
       }
-      VIBE_SEC.logEvent('SESSION_RESTORED',user.id.slice(0,8));
+      // Masquer formulaire tribunal si admin (pas signalable)
+      if(IS_ADMIN){
+        const tribForm=document.getElementById('tribunal-form');
+        if(tribForm)tribForm.style.display='none';
+        const tribSec=document.getElementById('trib-success');
+        if(tribSec){tribSec.style.display='block';tribSec.innerHTML='✦ Compte admin — immunisé du tribunal.';}
+        // Afficher panneau admin automatiquement
+        showAdminPanel(user);
+      }
+      VIBE_SEC.logEvent('SESSION_RESTORED',(IS_ADMIN?'ADMIN:':'')+user.id.slice(0,8));
     }
-  }catch(e){}
+  }catch(e){
+    VIBE_SEC.logEvent('SESSION_ERROR',e.message);
+  }
+
+  // Écouter changements d'auth
+  _supa.auth.onAuthStateChange((event,session)=>{
+    if(event==='SIGNED_OUT'){CURRENT_USER=null;IS_ADMIN=false;location.reload();}
+    if(event==='SIGNED_IN'&&session){location.reload();}
+  });
 })();
 
 </script>
