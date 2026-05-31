@@ -1617,10 +1617,14 @@ function drawFP(id,hue){
 }
 drawFP('fp1',45);drawFP('fp2',280);drawFP('fp3',160);
 
-// ── COMPTEUR MEMBRES ──
-let cnt=0;const cel=document.getElementById('stat-members');
-const step=()=>{cnt+=980;if(cnt>=50247){cnt=50247;cel.textContent=cnt.toLocaleString('fr-CA');return;}cel.textContent=cnt.toLocaleString('fr-CA');setTimeout(step,22);};
-setTimeout(step,400);
+// ── COMPTEUR MEMBRES — SUPABASE RÉEL ──
+const cel=document.getElementById('stat-members');
+(async()=>{
+  try{
+    const {count}=await _supa.from('landing_inscriptions').select('id',{count:'exact',head:true});
+    cel.textContent=(count||0).toLocaleString('fr-CA');
+  }catch(e){cel.textContent='0';}
+})();
 
 // ── MUSIQUE SALON ──
 const tracks=[['Nuit de Québec','VIBE Ambient · Salon Flottant'],['Brouillard d\'hiver','VIBE Chill · Mode Fantôme'],['Lumière de la fierté','VIBE Pride · 2026'],['Âmes connectées','VIBE Deep · Salon Flottant']];
