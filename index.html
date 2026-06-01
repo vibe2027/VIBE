@@ -30,18 +30,63 @@ body{
   background:#000;
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;
-  transition:opacity 1.6s ease;
+  transition:opacity 1.8s ease;
 }
 #intro.fade-out{opacity:0;pointer-events:none}
-#intro-canvas{position:absolute;inset:0;width:100%;height:100%}
+#intro-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+.intro-terminal{
+  position:relative;z-index:10;
+  width:min(540px,90vw);
+  padding:0 20px;
+}
+.intro-line{
+  font-family:'Share Tech Mono',monospace;
+  font-size:clamp(0.75rem,2.5vw,1rem);
+  letter-spacing:3px;
+  color:rgba(212,175,55,0.85);
+  margin-bottom:14px;
+  overflow:hidden;
+  white-space:nowrap;
+  width:0;
+  border-right:2px solid rgba(212,175,55,0.7);
+  animation:none;
+}
+.intro-line.typing{
+  border-right-color:rgba(212,175,55,0.7);
+}
+.intro-line.done{
+  width:auto;
+  border-right-color:transparent;
+}
+.intro-line.dim{color:rgba(212,175,55,0.35);font-size:clamp(0.6rem,2vw,0.75rem)}
+.intro-line.bright{color:#fff;font-size:clamp(0.85rem,3vw,1.1rem);letter-spacing:5px}
+.intro-cursor{
+  display:inline-block;width:2px;height:1em;
+  background:rgba(212,175,55,0.8);
+  vertical-align:middle;margin-left:4px;
+  animation:cur-blink 0.8s ease-in-out infinite;
+}
+@keyframes cur-blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.intro-progress{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  width:min(240px,70vw);height:1px;
+  background:rgba(212,175,55,0.08);overflow:hidden;
+}
+.intro-bar{
+  height:100%;width:0;
+  background:linear-gradient(90deg,rgba(212,175,55,0.3),rgba(212,175,55,0.8));
+  transition:width 0.1s linear;
+}
 .intro-skip{
-  position:absolute;bottom:24px;right:24px;z-index:20;
-  font-size:0.44rem;letter-spacing:3px;color:rgba(255,255,255,0.2);
+  position:absolute;bottom:18px;right:20px;z-index:20;
+  font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.15);
   cursor:pointer;text-transform:uppercase;
   background:transparent;border:none;
   font-family:'Share Tech Mono',monospace;transition:color 0.3s;
 }
-.intro-skip:hover{color:rgba(255,255,255,0.5)}
+.intro-skip:hover{color:rgba(255,255,255,0.4)}
 
 /* ══ CANVAS LAYERS ══ */
 #matrix-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.6}
@@ -673,6 +718,8 @@ footer{
 <!-- ══ INTRO SCREEN ══ -->
 <div id="intro">
   <canvas id="intro-canvas"></canvas>
+  <div class="intro-terminal" id="intro-terminal"></div>
+  <div class="intro-progress"><div class="intro-bar" id="intro-bar"></div></div>
   <button class="intro-skip" onclick="skipIntro()">PASSER →</button>
 </div>
 
@@ -1028,323 +1075,97 @@ function showSuccess(msg){const el=document.getElementById('notif-success');el.t
 function showError(msg){const el=document.getElementById('notif-error');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),4500)}
 
 // ══════════════════════════════════════════
-// INTRO CINÉMATIQUE 5 SECONDES
-// Sans voix — Explosion pride réaliste
+// INTRO — TEXTE LIGNE PAR LIGNE
 // ══════════════════════════════════════════
 (function(){
+  // Canvas matrix subtil en fond
   const cv=document.getElementById('intro-canvas');
   const ctx=cv.getContext('2d');
-  let W=window.innerWidth,H=window.innerHeight;
-  let CX=W/2,CY=H/2;
-  cv.width=W;cv.height=H;
+  cv.width=window.innerWidth;cv.height=window.innerHeight;
 
-  const PRIDE=['#E40303','#FF8C00','#FFED00','#008026','#24A0ED','#750787','#FFAFC8','#74D7EE','#ffffff','#b44fff','#00eeff','#D4AF37','#ff3399'];
+  const CHARS='VIBE♀♂⚧✦◈01LGBTQ+'.split('');
+  const cols=Math.floor(cv.width/18);
+  const drops=Array(cols).fill(1);
+  const COLORS=['rgba(212,175,55,0.12)','rgba(180,79,255,0.07)','rgba(0,238,255,0.05)'];
 
-  // ─── PHASE 1 : Convergence (0→3.2s) ───
-  // Particules qui convergent vers le centre depuis les bords
-  let convParticles=[];
-  for(let i=0;i<300;i++){
-    const angle=Math.random()*Math.PI*2;
-    const dist=Math.max(W,H)*0.6+Math.random()*200;
-    convParticles.push({
-      x:CX+Math.cos(angle)*dist,
-      y:CY+Math.sin(angle)*dist,
-      tx:CX+(Math.random()-.5)*60,
-      ty:CY+(Math.random()-.5)*60,
-      color:PRIDE[Math.floor(Math.random()*PRIDE.length)],
-      r:Math.random()*2.5+0.5,
-      speed:0.018+Math.random()*0.025,
-      t:0,trail:[],
-      delay:Math.random()*0.6,
+  function drawMatrix(){
+    ctx.fillStyle='rgba(0,0,0,0.08)';
+    ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.font='12px Share Tech Mono,monospace';
+    drops.forEach((y,i)=>{
+      const ch=CHARS[Math.floor(Math.random()*CHARS.length)];
+      ctx.fillStyle=COLORS[Math.floor(Math.random()*COLORS.length)];
+      ctx.fillText(ch,i*18,y*18);
+      if(y*18>cv.height&&Math.random()>0.978)drops[i]=0;
+      drops[i]++;
     });
   }
+  const matIv=setInterval(drawMatrix,80);
 
-  // ─── PHASE 2 : Explosion (3.2s) ───
-  let expParticles=[];
-  let rings=[];
-  let exploded=false;
+  // Lignes à taper
+  const LINES=[
+    {text:'INITIALISATION...',delay:0,speed:40,cls:''},
+    {text:'CONNEXION AU RÉSEAU VIBE...',delay:900,speed:35,cls:''},
+    {text:'LOCALISATION : QUÉBEC, CANADA',delay:2000,speed:38,cls:'dim'},
+    {text:'CRYPTAGE LGBTQ+ · 100%',delay:3000,speed:38,cls:'dim'},
+    {text:'BIENVENUE DANS VIBE',delay:4000,speed:50,cls:'bright'},
+  ];
+  const TOTAL=5800;
 
-  // ─── PHASE 3 : VIBE text (3.6s→5s) ───
-  let textOpacity=0;
-  let subOpacity=0;
-  let rayOpacity=0;
+  const terminal=document.getElementById('intro-terminal');
+  const bar=document.getElementById('intro-bar');
 
-  // ─── TIMING ───
-  const T_CONV_END=3200;  // fin convergence
-  const T_EXPLODE=3200;   // explosion
-  const T_TEXT=3600;      // VIBE apparaît
-  const T_SUB=4100;       // sous-titre
-  const T_CLOSE=5000;     // fermeture
+  // Barre progression
+  let prog=0;
+  const barIv=setInterval(()=>{
+    prog+=100/(TOTAL/80);
+    if(prog>=100){prog=100;clearInterval(barIv);}
+    bar.style.width=prog+'%';
+  },80);
 
-  let startTime=null;
-  let phase='conv'; // conv | explode | text | done
+  // Typer chaque ligne
+  LINES.forEach(line=>{
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='intro-line'+(line.cls?' '+line.cls:'');
+      terminal.appendChild(el);
 
-  function lerp(a,b,t){return a+(b-a)*t}
-  function easeInOut(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
-  function easeOut(t){return 1-Math.pow(1-t,3)}
+      let i=0;
+      el.style.width='auto';
+      el.textContent='';
+      // Ajouter curseur
+      const cur=document.createElement('span');
+      cur.className='intro-cursor';
+      el.appendChild(cur);
 
-  function triggerExplosion(){
-    exploded=true;
+      const iv=setInterval(()=>{
+        el.textContent=line.text.slice(0,++i);
+        el.appendChild(cur);
+        if(i>=line.text.length){
+          clearInterval(iv);
+          cur.remove();
+          el.classList.add('done');
+        }
+      },line.speed);
+    },line.delay);
+  });
 
-    // 500 particules depuis le centre
-    for(let i=0;i<500;i++){
-      const angle=Math.random()*Math.PI*2;
-      const speed=3+Math.random()*18;
-      const col=PRIDE[Math.floor(Math.random()*PRIDE.length)];
-      const size=Math.random()<0.1?Math.random()*6+3:Math.random()*3+0.5;
-      expParticles.push({
-        x:CX,y:CY,
-        vx:Math.cos(angle)*speed*(0.6+Math.random()*0.8),
-        vy:Math.sin(angle)*speed*(0.6+Math.random()*0.8),
-        color:col,r:size,life:1,
-        decay:0.006+Math.random()*0.014,
-        gravity:0.06+Math.random()*0.06,
-        trail:[],maxTrail:6+Math.floor(Math.random()*8),
-      });
-    }
+  // Fermeture à 5.8s
+  setTimeout(()=>skipIntro(),TOTAL);
 
-    // Cristaux géométriques
-    for(let i=0;i<80;i++){
-      const angle=Math.random()*Math.PI*2;
-      const speed=4+Math.random()*12;
-      expParticles.push({
-        x:CX,y:CY,
-        vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
-        color:PRIDE[Math.floor(Math.random()*PRIDE.length)],
-        r:3+Math.random()*8,life:1,
-        decay:0.008+Math.random()*0.01,
-        gravity:0.04,trail:[],maxTrail:4,
-        crystal:true,rotation:Math.random()*Math.PI*2,
-        rotSpeed:(Math.random()-.5)*0.2,
-      });
-    }
-
-    // Rayons depuis le centre
-    rings.push({r:0,maxR:Math.max(W,H)*1.1,life:1,decay:0.025,type:'shock'});
-    rings.push({r:0,maxR:Math.max(W,H)*0.9,life:0.8,decay:0.02,type:'pride',delay:100});
-    rings.push({r:0,maxR:Math.max(W,H)*0.7,life:0.6,decay:0.018,type:'gold',delay:200});
+  function cleanIntro(){
+    clearInterval(matIv);clearInterval(barIv);
   }
-
-  function drawFrame(ts){
-    if(!startTime)startTime=ts;
-    const elapsed=ts-startTime;
-    const prog=Math.min(elapsed/T_CLOSE,1);
-
-    // Fond — persistance légère pour effet de traîne
-    if(!exploded){
-      ctx.fillStyle='rgba(0,0,0,0.18)';
-    } else {
-      ctx.fillStyle='rgba(0,0,0,0.12)';
-    }
-    ctx.fillRect(0,0,W,H);
-
-    // ─── PHASE CONVERGENCE ───
-    if(elapsed<T_CONV_END){
-      const convProg=elapsed/T_CONV_END;
-
-      // Halo central qui grossit
-      const haloR=20+easeOut(convProg)*80;
-      const grd=ctx.createRadialGradient(CX,CY,0,CX,CY,haloR);
-      grd.addColorStop(0,`rgba(212,175,55,${0.15+convProg*0.3})`);
-      grd.addColorStop(0.4,`rgba(180,79,255,${0.08+convProg*0.15})`);
-      grd.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.beginPath();ctx.arc(CX,CY,haloR,0,Math.PI*2);
-      ctx.fillStyle=grd;ctx.fill();
-
-      // Anneaux orbitaux pulsants
-      [40,65,90].forEach((r,i)=>{
-        const pulse=Math.sin(elapsed*0.003+i*1.2)*10;
-        const op=0.15+convProg*0.25;
-        ctx.beginPath();ctx.arc(CX,CY,r+pulse,0,Math.PI*2);
-        ctx.strokeStyle=`rgba(212,175,55,${op})`;ctx.lineWidth=0.8;ctx.stroke();
-      });
-
-      // Particules convergentes
-      convParticles.forEach(p=>{
-        if(convProg<p.delay)return;
-        const t=Math.min((convProg-p.delay)/(1-p.delay),1);
-        p.x=lerp(p.x,CX,p.speed);
-        p.y=lerp(p.y,CY,p.speed);
-        p.trail.push({x:p.x,y:p.y});
-        if(p.trail.length>6)p.trail.shift();
-
-        const dist=Math.sqrt((p.x-CX)**2+(p.y-CY)**2);
-        const op=Math.min(1,dist/100)*0.8;
-
-        // Trail
-        if(p.trail.length>1){
-          ctx.beginPath();
-          ctx.moveTo(p.trail[0].x,p.trail[0].y);
-          p.trail.forEach(pt=>ctx.lineTo(pt.x,pt.y));
-          ctx.strokeStyle=p.color;ctx.globalAlpha=op*0.3;
-          ctx.lineWidth=p.r*0.4;ctx.stroke();ctx.globalAlpha=1;
-        }
-        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle=p.color;ctx.globalAlpha=op;ctx.fill();ctx.globalAlpha=1;
-      });
-    }
-
-    // ─── EXPLOSION ───
-    if(elapsed>=T_EXPLODE&&!exploded){
-      triggerExplosion();
-      // Flash blanc instantané
-      ctx.fillStyle='rgba(255,255,255,0.9)';ctx.fillRect(0,0,W,H);
-    }
-
-    if(exploded){
-      // Rayons depuis le centre
-      const expElapsed=elapsed-T_EXPLODE;
-      const numRays=36;
-      for(let i=0;i<numRays;i++){
-        const a=(i/numRays)*Math.PI*2;
-        const rayLen=Math.min(expElapsed*0.4,Math.max(W,H)*0.8);
-        const op=Math.max(0,0.25-expElapsed*0.00006);
-        if(op<=0)break;
-        const col=PRIDE[i%PRIDE.length];
-        ctx.beginPath();ctx.moveTo(CX,CY);
-        ctx.lineTo(CX+Math.cos(a)*rayLen,CY+Math.sin(a)*rayLen);
-        ctx.strokeStyle=col;ctx.globalAlpha=op;ctx.lineWidth=2+Math.random()*2;ctx.stroke();
-        ctx.globalAlpha=1;
-      }
-
-      // Ondes de choc
-      rings.forEach(ring=>{
-        if(ring.delay&&expElapsed<ring.delay)return;
-        ring.r+=18;ring.life-=ring.decay;
-        if(ring.life<=0)return;
-        if(ring.type==='shock'){
-          ctx.beginPath();ctx.arc(CX,CY,ring.r,0,Math.PI*2);
-          ctx.strokeStyle=`rgba(255,255,255,${ring.life*0.5})`;ctx.lineWidth=4*ring.life;ctx.stroke();
-        } else if(ring.type==='pride'){
-          PRIDE.slice(0,7).forEach((col,i)=>{
-            const r=ring.r-i*4;if(r<0)return;
-            ctx.beginPath();ctx.arc(CX,CY,r,0,Math.PI*2);
-            ctx.strokeStyle=col;ctx.globalAlpha=ring.life*0.15;ctx.lineWidth=3;ctx.stroke();ctx.globalAlpha=1;
-          });
-        } else {
-          ctx.beginPath();ctx.arc(CX,CY,ring.r,0,Math.PI*2);
-          ctx.strokeStyle=`rgba(212,175,55,${ring.life*0.3})`;ctx.lineWidth=2;ctx.stroke();
-        }
-      });
-      rings=rings.filter(r=>r.life>0);
-
-      // Particules explosion
-      expParticles.forEach(p=>{
-        p.vx*=0.975;p.vy*=0.975;
-        p.vy+=p.gravity;
-        p.x+=p.vx;p.y+=p.vy;
-        p.life-=p.decay;
-        if(p.life<=0)return;
-
-        p.trail.push({x:p.x,y:p.y});
-        if(p.trail.length>p.maxTrail)p.trail.shift();
-
-        if(p.crystal&&p.trail.length>0){
-          // Cristaux géométriques
-          p.rotation+=p.rotSpeed;
-          ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation);
-          ctx.globalAlpha=p.life*0.9;
-          ctx.beginPath();
-          ctx.moveTo(0,-p.r);ctx.lineTo(p.r*0.6,p.r*0.3);
-          ctx.lineTo(0,p.r*0.7);ctx.lineTo(-p.r*0.6,p.r*0.3);
-          ctx.closePath();
-          ctx.fillStyle=p.color;ctx.fill();
-          ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=0.5;ctx.stroke();
-          ctx.restore();ctx.globalAlpha=1;
-        } else {
-          // Trail
-          if(p.trail.length>1){
-            ctx.beginPath();ctx.moveTo(p.trail[0].x,p.trail[0].y);
-            p.trail.forEach(pt=>ctx.lineTo(pt.x,pt.y));
-            ctx.strokeStyle=p.color;ctx.globalAlpha=p.life*0.25;
-            ctx.lineWidth=p.r*0.5;ctx.stroke();ctx.globalAlpha=1;
-          }
-          // Particule avec glow
-          const gr=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*2);
-          gr.addColorStop(0,p.color);gr.addColorStop(1,'rgba(0,0,0,0)');
-          ctx.beginPath();ctx.arc(p.x,p.y,p.r*2,0,Math.PI*2);
-          ctx.fillStyle=gr;ctx.globalAlpha=p.life*0.3;ctx.fill();
-          ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
-          ctx.fillStyle=p.color;ctx.globalAlpha=p.life;ctx.fill();ctx.globalAlpha=1;
-        }
-      });
-      expParticles=expParticles.filter(p=>p.life>0);
-    }
-
-    // ─── TEXTE VIBE ───
-    if(elapsed>=T_TEXT){
-      const textProg=Math.min((elapsed-T_TEXT)/400,1);
-      textOpacity=easeOut(textProg);
-
-      // Halo derrière VIBE
-      const haloGrd=ctx.createRadialGradient(CX,CY,0,CX,CY,Math.min(W,H)*0.45);
-      haloGrd.addColorStop(0,`rgba(0,0,0,${textOpacity*0.7})`);
-      haloGrd.addColorStop(0.6,`rgba(0,0,0,${textOpacity*0.4})`);
-      haloGrd.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.beginPath();ctx.arc(CX,CY,Math.min(W,H)*0.45,0,Math.PI*2);
-      ctx.fillStyle=haloGrd;ctx.fill();
-
-      // VIBE — dégradé pride
-      const fontSize=Math.min(W*0.22,180);
-      ctx.save();
-      ctx.globalAlpha=textOpacity;
-      ctx.font=`bold ${fontSize}px Playfair Display,serif`;
-      ctx.textAlign='center';ctx.textBaseline='middle';
-
-      // Dégradé horizontal pride sur le texte
-      const textW=ctx.measureText('VIBE').width;
-      const tGrd=ctx.createLinearGradient(CX-textW/2,CY,CX+textW/2,CY);
-      tGrd.addColorStop(0,'#74D7EE');
-      tGrd.addColorStop(0.25,'#b44fff');
-      tGrd.addColorStop(0.5,'#ffffff');
-      tGrd.addColorStop(0.75,'#00eeff');
-      tGrd.addColorStop(1,'#D4AF37');
-
-      // Ombre/glow
-      ctx.shadowColor='rgba(180,79,255,0.8)';ctx.shadowBlur=40*textOpacity;
-      ctx.fillStyle=tGrd;
-      ctx.fillText('VIBE',CX,CY);
-      ctx.shadowBlur=0;ctx.restore();
-    }
-
-    // ─── SOUS-TITRE ───
-    if(elapsed>=T_SUB){
-      const subProg=Math.min((elapsed-T_SUB)/500,1);
-      subOpacity=easeOut(subProg);
-
-      ctx.save();
-      ctx.globalAlpha=subOpacity*0.65;
-      ctx.font=`${Math.min(W*0.028,18)}px Share Tech Mono,monospace`;
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.letterSpacing='8px';
-      ctx.fillStyle='rgba(212,175,55,0.9)';
-      const lineH=Math.min(W*0.05,32);
-      ctx.fillText('LE RÉSEAU RÉVOLUTIONNAIRE',CX,CY+Math.min(W*0.14,115));
-      ctx.globalAlpha=subOpacity*0.4;
-      ctx.fillStyle='rgba(255,255,255,0.8)';
-      ctx.fillText('THE FUTURE IS NOW',CX,CY+Math.min(W*0.14,115)+lineH);
-      ctx.restore();
-    }
-
-    if(elapsed<T_CLOSE){
-      requestAnimationFrame(drawFrame);
-    } else {
-      skipIntro();
-    }
-  }
-
-  requestAnimationFrame(drawFrame);
+  window._introClean=cleanIntro;
 })();
 
 function skipIntro(){
-  window.speechSynthesis?.cancel();
+  if(window._introClean)window._introClean();
   const intro=document.getElementById('intro');
   if(!intro||intro.style.display==='none')return;
   intro.classList.add('fade-out');
-  setTimeout(()=>{intro.style.display='none'},1600);
+  setTimeout(()=>{intro.style.display='none'},1800);
 }
-
-// ══════════════════════════════════════════
 // MATRIX CANVAS (fond or/violet)
 // ══════════════════════════════════════════
 const matCanvas=document.getElementById('matrix-canvas');
