@@ -1163,7 +1163,7 @@
       <span class="fs-icon">✦</span>
       <div class="fs-title">Bienvenue dans VIBE</div>
       <p class="fs-sub">Ton compte a été créé. L'ange gardien veille sur toi.</p>
-      <a href="https://vibegay.ca/dashboard" target="_blank" rel="noopener" style="display:inline-block;margin-top:20px;color:var(--gold);text-decoration:none;font-size:0.62rem;letter-spacing:3px;border:0.5px solid rgba(212,175,55,0.4);padding:10px 24px;transition:all 0.3s" onmouseover="this.style.background='rgba(212,175,55,0.08)'" onmouseout="this.style.background='transparent'">Accéder à mon profil ↗</a>
+      <a href="#" onclick="openLogin();return false;" style="display:inline-block;margin-top:20px;color:var(--gold);text-decoration:none;font-size:0.62rem;letter-spacing:3px;border:0.5px solid rgba(212,175,55,0.4);padding:10px 24px;transition:all 0.3s" onmouseover="this.style.background='rgba(212,175,55,0.08)'" onmouseout="this.style.background='transparent'">Accéder à mon profil ↗</a>
     </div>
     <div class="login-link">Déjà membre ? <a href="#" onclick="openLogin();return false;">Se connecter</a></div>
   </div>
@@ -1262,8 +1262,8 @@
     <div style="margin-top:16px;text-align:center;font-size:.58rem;color:rgba(255,255,255,.2);letter-spacing:2px">
       Pas encore membre ? <a href="#inscription" onclick="closeLogin()" style="color:rgba(212,175,55,.6);text-decoration:none">S'inscrire</a>
     </div>
-    <div style="margin-top:10px;text-align:center;font-size:.52rem;color:rgba(255,255,255,.15);letter-spacing:2px">
-      <a href="https://vibegay.ca/connexion" target="_blank" rel="noopener" style="color:rgba(212,175,55,.3);text-decoration:none;transition:color 0.3s" onmouseover="this.style.color='rgba(212,175,55,0.7)'" onmouseout="this.style.color='rgba(212,175,55,0.3)'">Ouvrir sur vibegay.ca ↗</a>
+    <div style="margin-top:10px;text-align:center;font-size:.52rem;color:rgba(255,255,255,.1);letter-spacing:2px">
+      Mot de passe oublié ? <a href="#" onclick="handleForgotPassword();return false;" style="color:rgba(212,175,55,.4);text-decoration:none;">Réinitialiser</a>
     </div>
   </div>
 </div>
@@ -1617,14 +1617,30 @@ function drawFP(id,hue){
 }
 drawFP('fp1',45);drawFP('fp2',280);drawFP('fp3',160);
 
-// ── COMPTEUR MEMBRES — SUPABASE RÉEL ──
+// ── COMPTEUR MEMBRES — RÉEL SUPABASE ──
 const cel=document.getElementById('stat-members');
-(async()=>{
+async function loadMemberCount(){
   try{
-    const {count}=await _supa.from('landing_inscriptions').select('id',{count:'exact',head:true});
-    cel.textContent=(count||0).toLocaleString('fr-CA');
-  }catch(e){cel.textContent='0';}
-})();
+    const {count}=await _supa.from('landing_inscriptions')
+      .select('id',{count:'exact',head:true});
+    const real=count||0;
+    // Animer de 0 vers le vrai chiffre
+    let c=0;
+    const target=real;
+    if(target===0){cel.textContent='0';return;}
+    const increment=Math.ceil(target/40);
+    const anim=()=>{
+      c+=increment;
+      if(c>=target){cel.textContent=target.toLocaleString('fr-CA');return;}
+      cel.textContent=c.toLocaleString('fr-CA');
+      setTimeout(anim,30);
+    };
+    setTimeout(anim,400);
+  }catch(e){
+    cel.textContent='0';
+  }
+}
+loadMemberCount();
 
 // ── MUSIQUE SALON ──
 const tracks=[['Nuit de Québec','VIBE Ambient · Salon Flottant'],['Brouillard d\'hiver','VIBE Chill · Mode Fantôme'],['Lumière de la fierté','VIBE Pride · 2026'],['Âmes connectées','VIBE Deep · Salon Flottant']];
@@ -1902,7 +1918,7 @@ async function handleSignup(e){
   const ville=villeEl?villeEl.value:'';
   const cgu=document.getElementById('cgu').checked;
   const hp=document.getElementById('hp-field');
-  const btn=document.querySelector('.btn-submit');
+  const btn=document.querySelector('#signup-form .btn-submit')||document.querySelector('#signup-form button[type=submit]');
 
   if(hp&&hp.value){VIBE_SEC.logEvent('BOT_DETECTED','signup honeypot');return;}
   if(!prenom||prenom.length<2){VIBE_SEC.showSecAlert('⚠ Prénom invalide.');return;}
@@ -1957,7 +1973,7 @@ async function handleLogin(e){
   const email=VIBE_SEC.sanitize(document.getElementById('login-email').value.trim());
   const mdp=document.getElementById('login-mdp').value;
   const hp=document.getElementById('hp-field-login');
-  const btn=document.querySelector('#login-form .btn-submit')||document.querySelector('#login-form button[type=submit]');
+  const btn=document.querySelector('#login-form button[type=submit]')||document.querySelector('#login-form .submit-btn');
 
   if(hp&&hp.value){VIBE_SEC.logEvent('BOT_DETECTED','login honeypot');return;}
   if(!VIBE_SEC.isValidEmail(email)){VIBE_SEC.showSecAlert('⚠ Courriel invalide.');return;}
@@ -1983,6 +1999,23 @@ async function handleLogin(e){
       VIBE_SEC.showSecAlert('⚠ Erreur: '+(err.message||'réessaie.'));
     }
     VIBE_SEC.logEvent('LOGIN_ERROR',err.message||'unknown');
+  }
+}
+
+// ── MOT DE PASSE OUBLIÉ ──
+async function handleForgotPassword(){
+  const email=document.getElementById('login-email').value.trim();
+  if(!email||!VIBE_SEC.isValidEmail(email)){
+    VIBE_SEC.showSecAlert('⚠ Entre ton courriel d\'abord.');return;
+  }
+  try{
+    await _supa.auth.resetPasswordForEmail(email,{
+      redirectTo:'https://vibegay.ca'
+    });
+    VIBE_SEC.showSuccess('✦ Courriel de réinitialisation envoyé à '+email);
+    closeLogin();
+  }catch(e){
+    VIBE_SEC.showSecAlert('⚠ Erreur: '+(e.message||'réessaie.'));
   }
 }
 
