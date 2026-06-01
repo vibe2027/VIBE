@@ -39,35 +39,45 @@ body{
   position:relative;z-index:10;
   width:min(540px,90vw);
   padding:0 20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 .intro-line{
   font-family:'Share Tech Mono',monospace;
   font-size:clamp(0.75rem,2.5vw,1rem);
-  letter-spacing:3px;
+  letter-spacing:4px;
   color:rgba(212,175,55,0.85);
-  margin-bottom:14px;
+  margin-bottom:16px;
   overflow:hidden;
   white-space:nowrap;
-  width:0;
+  text-align:center;
   border-right:2px solid rgba(212,175,55,0.7);
-  animation:none;
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity 0.5s ease, transform 0.5s ease;
 }
-.intro-line.typing{
-  border-right-color:rgba(212,175,55,0.7);
+.intro-line.visible{
+  opacity:1;
+  transform:translateY(0);
 }
 .intro-line.done{
-  width:auto;
   border-right-color:transparent;
 }
-.intro-line.dim{color:rgba(212,175,55,0.35);font-size:clamp(0.6rem,2vw,0.75rem)}
-.intro-line.bright{color:#fff;font-size:clamp(0.85rem,3vw,1.1rem);letter-spacing:5px}
+.intro-line.dim{color:rgba(212,175,55,0.4);font-size:clamp(0.6rem,2vw,0.75rem);letter-spacing:5px}
+.intro-line.bright{
+  color:#fff;
+  font-size:clamp(0.9rem,3vw,1.2rem);
+  letter-spacing:8px;
+  text-shadow:0 0 30px rgba(212,175,55,0.6);
+}
 .intro-cursor{
   display:inline-block;width:2px;height:1em;
   background:rgba(212,175,55,0.8);
   vertical-align:middle;margin-left:4px;
-  animation:cur-blink 0.8s ease-in-out infinite;
+  animation:cur-blink 0.7s ease-in-out infinite;
 }
-@keyframes cur-blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes sound-pulse{0%,100%{border-color:rgba(212,175,55,0.3);color:rgba(212,175,55,0.5)}50%{border-color:rgba(212,175,55,0.8);color:rgba(212,175,55,0.9);box-shadow:0 0 15px rgba(212,175,55,0.2)}}
 
 .intro-progress{
   position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
@@ -720,6 +730,14 @@ footer{
   <canvas id="intro-canvas"></canvas>
   <div class="intro-terminal" id="intro-terminal"></div>
   <div class="intro-progress"><div class="intro-bar" id="intro-bar"></div></div>
+  <button id="sound-btn" onclick="activateSound()" style="
+    position:absolute;bottom:60px;left:50%;transform:translateX(-50%);
+    background:transparent;border:1px solid rgba(212,175,55,0.4);
+    color:rgba(212,175,55,0.7);padding:10px 24px;
+    font-family:'Share Tech Mono',monospace;font-size:0.5rem;
+    letter-spacing:4px;text-transform:uppercase;cursor:pointer;
+    z-index:20;transition:all 0.3s;animation:sound-pulse 2s ease-in-out infinite;
+  ">🔊 APPUYER POUR LE SON</button>
   <button class="intro-skip" onclick="skipIntro()">PASSER →</button>
 </div>
 
@@ -1100,7 +1118,151 @@ function showError(msg){const el=document.getElementById('notif-error');el.textC
       drops[i]++;
     });
   }
-  const matIv=setInterval(drawMatrix,80);
+  // ── BEAT SYNTHWAVE WEB AUDIO ──
+  let audioCtx=null;
+  let beatNodes=[];
+
+  function startBeat(){
+    try{
+      audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+      const master=audioCtx.createGain();
+      master.gain.setValueAtTime(0,audioCtx.currentTime);
+      master.gain.linearRampToValueAtTime(0.7,audioCtx.currentTime+2);
+      master.connect(audioCtx.destination);
+
+      const BPM=128,BAR=60/BPM*4;
+
+      // ── PAD AMBIENT ──
+      function makePad(freq,vol=0.08){
+        const osc=audioCtx.createOscillator();
+        const gain=audioCtx.createGain();
+        const filter=audioCtx.createBiquadFilter();
+        osc.type='sawtooth';
+        osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(freq*1.002,audioCtx.currentTime+8);
+        filter.type='lowpass';filter.frequency.value=800;filter.Q.value=2;
+        gain.gain.setValueAtTime(0,audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(vol,audioCtx.currentTime+1.5);
+        osc.connect(filter);filter.connect(gain);gain.connect(master);
+        osc.start();
+        return{osc,gain};
+      }
+      makePad(110);makePad(165,0.05);makePad(220,0.04);makePad(55,0.06);
+
+      // ── BASSE PULSANTE ──
+      function bass(time,freq){
+        const osc=audioCtx.createOscillator();
+        const gain=audioCtx.createGain();
+        const filter=audioCtx.createBiquadFilter();
+        osc.type='triangle';osc.frequency.value=freq;
+        filter.type='lowpass';filter.frequency.value=200;
+        gain.gain.setValueAtTime(0.35,time);
+        gain.gain.exponentialRampToValueAtTime(0.001,time+0.35);
+        osc.connect(filter);filter.connect(gain);gain.connect(master);
+        osc.start(time);osc.stop(time+0.4);
+      }
+
+      // ── KICK ──
+      function kick(time){
+        const osc=audioCtx.createOscillator();
+        const gain=audioCtx.createGain();
+        osc.type='sine';
+        osc.frequency.setValueAtTime(160,time);
+        osc.frequency.exponentialRampToValueAtTime(40,time+0.12);
+        gain.gain.setValueAtTime(0.8,time);
+        gain.gain.exponentialRampToValueAtTime(0.001,time+0.25);
+        osc.connect(gain);gain.connect(master);
+        osc.start(time);osc.stop(time+0.3);
+      }
+
+      // ── HI-HAT ──
+      function hat(time,vol=0.12){
+        const buf=audioCtx.createBuffer(1,audioCtx.sampleRate*0.05,audioCtx.sampleRate);
+        const data=buf.getChannelData(0);
+        for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;
+        const src=audioCtx.createBufferSource();
+        const gain=audioCtx.createGain();
+        const filter=audioCtx.createBiquadFilter();
+        filter.type='highpass';filter.frequency.value=8000;
+        gain.gain.setValueAtTime(vol,time);
+        gain.gain.exponentialRampToValueAtTime(0.001,time+0.05);
+        src.buffer=buf;src.connect(filter);filter.connect(gain);gain.connect(master);
+        src.start(time);
+      }
+
+      // ── SYNTH ARPÈGE ──
+      function arp(time,freq,dur=0.1){
+        const osc=audioCtx.createOscillator();
+        const gain=audioCtx.createGain();
+        const filter=audioCtx.createBiquadFilter();
+        osc.type='square';osc.frequency.value=freq;
+        filter.type='bandpass';filter.frequency.value=freq*2;filter.Q.value=3;
+        gain.gain.setValueAtTime(0.12,time);
+        gain.gain.exponentialRampToValueAtTime(0.001,time+dur);
+        osc.connect(filter);filter.connect(gain);gain.connect(master);
+        osc.start(time);osc.stop(time+dur+0.05);
+      }
+
+      // ── SÉQUENCER ──
+      const BEAT=60/BPM;
+      const now=audioCtx.currentTime+0.3;
+      const BARS=8;
+
+      // Notes arpège — gamme mineure pentatonique
+      const NOTES=[110,131,147,165,196,220,262,294,330];
+
+      for(let bar=0;bar<BARS;bar++){
+        const t=now+bar*BAR;
+
+        // Kick pattern : 1, 3
+        kick(t);kick(t+BEAT*2);
+
+        // Bass
+        bass(t,55);bass(t+BEAT*2,55);
+        bass(t+BEAT*1.5,44,0.2);
+
+        // Hi-hats
+        for(let h=0;h<8;h++){
+          hat(t+h*BEAT*0.5,h%2===0?0.14:0.07);
+        }
+
+        // Arpège pattern
+        const arpPattern=[0,2,4,5,7,4,2,0,1,3,5,4,2,1,3,2];
+        arpPattern.forEach((ni,i)=>{
+          const nt=t+i*(BAR/arpPattern.length);
+          arp(nt,NOTES[ni%NOTES.length]*( bar%2===0?1:0.5),0.08);
+        });
+
+        // Lead synth toutes les 2 bars
+        if(bar%2===0){
+          [0,1,2,3].forEach(i=>{
+            const freq=NOTES[(bar+i*2)%NOTES.length]*2;
+            arp(t+i*BEAT,freq,0.15);
+          });
+        }
+      }
+
+      // Fade out avant fermeture
+      setTimeout(()=>{
+        if(master)master.gain.linearRampToValueAtTime(0,audioCtx.currentTime+1.5);
+      },7500);
+
+    }catch(e){}
+  }
+
+  function activateSound(){
+    const btn=document.getElementById('sound-btn');
+    if(btn){btn.textContent='🔊 SON ACTIVÉ';btn.style.opacity='0.4';btn.disabled=true;}
+    tryStartBeat();
+  }
+
+  // Démarrer le beat au premier touch/click
+  let beatStarted=false;
+  function tryStartBeat(){
+    if(!beatStarted){beatStarted=true;startBeat();}
+  }
+  document.addEventListener('touchstart',tryStartBeat,{once:true});
+  document.addEventListener('click',tryStartBeat,{once:true});
 
   // Lignes à taper
   const LINES=[
@@ -1130,10 +1292,13 @@ function showError(msg){const el=document.getElementById('notif-error');el.textC
       el.className='intro-line'+(line.cls?' '+line.cls:'');
       terminal.appendChild(el);
 
+      // Apparition avec mouvement
+      requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>el.classList.add('visible'));
+      });
+
       let i=0;
-      el.style.width='auto';
       el.textContent='';
-      // Ajouter curseur
       const cur=document.createElement('span');
       cur.className='intro-cursor';
       el.appendChild(cur);
