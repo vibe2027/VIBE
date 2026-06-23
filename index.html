@@ -1319,7 +1319,7 @@ function showError(msg){const el=document.getElementById('notif-error');el.textC
   setTimeout(()=>skipIntro(),TOTAL);
 
   function cleanIntro(){
-    clclearInterval(barIv);
+  clearInterval(barIv);
   }
   window._introClean=cleanIntro;
 })();
