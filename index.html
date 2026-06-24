@@ -1318,9 +1318,9 @@ function showError(msg){const el=document.getElementById('notif-error');el.textC
   // Fermeture à 5.8s
   setTimeout(()=>skipIntro(),TOTAL);
 
-  function cleanIntro(){
-  cleaclearInterval
-  }
+ function cleanIntro(){
+        clearInterval(barIv);
+ }
   window._introClean=cleanIntro;
 })();
 
