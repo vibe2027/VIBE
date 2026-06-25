@@ -1319,7 +1319,7 @@ function showError(msg){const el=document.getElementById('notif-error');el.textC
   setTimeout(()=>skipIntro(),TOTAL);
 
  function cleanIntro(){
-        clearInterval(barIv);
+   clearInterval(barIv) 
  }
   window._introClean=cleanIntro;
 })();
@@ -1568,7 +1568,7 @@ function drawSalon(ts){
         const wop=(1-w/4)*0.3*p.depth;
         sCtx.beginPath();sCtx.arc(p.x,p.y,wr,0,Math.PI*2);
         sCtx.strokeStyle=`hsla(${p.hue},80%,70%,${wop})`;
-         sCtx.lineWidth=0.8;sCtx.stroke()
+      sCtx.lineWidth=0.8;sCtx.stroke()
       }
     }
   });
