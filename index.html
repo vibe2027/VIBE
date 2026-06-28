@@ -1,4 +1,4 @@
-de<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -77,7 +77,7 @@ body{
   vertical-align:middle;margin-left:4px;
   animation:cur-blink 0.7s ease-in-out infinite;
 }
-@keyframes sound-pulse{0%,100%{border-color:rgba(212,175,55,0.3);color:rgba(212,175,55,0.5)}50%{border-color:rgba(212,175,55,0.8);color:rgba(212,175,55,0.9);box-shadow:0 0 15px rgba(212,175,55,0.2)}}
+@keyframes sound-pulse{0%,100%{border-color:rgba(212,175,55,0.7);color:rgba(212,175,55,0.5)}50%{border-color:rgba(212,175,55,0.8);color:rgba(212,175,55,0.9);box-shadow:0 0 15px rgba(212,175,55,0.2)}}
 
 .intro-progress{
   position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
@@ -91,7 +91,7 @@ body{
 }
 .intro-skip{
   position:absolute;bottom:18px;right:20px;z-index:20;
-  font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.15);
+  font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.48);
   cursor:pointer;text-transform:uppercase;
   background:transparent;border:none;
   font-family:'Share Tech Mono',monospace;transition:color 0.3s;
@@ -119,7 +119,7 @@ body{
 .hud-brand span{font-size:0.4rem;letter-spacing:4px;color:rgba(212,175,55,0.4);display:block;margin-top:2px}
 .hud-nav{display:flex;gap:20px}
 .hud-nav a{
-  font-size:0.44rem;letter-spacing:3px;color:rgba(212,175,55,0.35);
+  font-size:0.44rem;letter-spacing:3px;color:rgba(212,175,55,0.72);
   text-decoration:none;text-transform:uppercase;transition:all 0.3s;
   position:relative;
 }
@@ -132,7 +132,7 @@ body{
 .hud-right{display:flex;align-items:center;gap:14px}
 .hud-status{
   display:flex;align-items:center;gap:6px;
-  font-size:0.42rem;letter-spacing:3px;color:rgba(212,175,55,0.35);
+  font-size:0.42rem;letter-spacing:3px;color:rgba(212,175,55,0.72);
 }
 .pulse-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:blink 1.3s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1;box-shadow:0 0 6px rgba(212,175,55,0.8)}50%{opacity:.15;box-shadow:none}}
@@ -159,7 +159,7 @@ body{
 }
 .lhud-item:last-child{border-right:none}
 .lhud-val{color:var(--gold);font-weight:700;display:block;font-size:0.55rem}
-.lhud-lbl{color:rgba(255,255,255,0.15);text-transform:uppercase}
+.lhud-lbl{color:rgba(255,255,255,0.48);text-transform:uppercase}
 @media(max-width:500px){.lhud-item:nth-child(n+4){display:none}}
 
 /* ══ HERO ══ */
@@ -169,9 +169,7 @@ body{
   justify-content:center;text-align:center;padding:100px 24px 60px;
 }
 .hero-scan{
-  position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(212,175,55,0.4),transparent);
-  animation:scan 4s ease-in-out infinite;z-index:2;
+  display:none;
 }
 @keyframes scan{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:0.3}100%{top:100vh;opacity:0}}
 
@@ -186,19 +184,21 @@ body{
 }
 .orbit-ring.r1{
   inset:-20px;
-  border-color:rgba(212,175,55,0.25);
+  border-color:rgba(212,175,55,0.72);
   animation-duration:15s;
-  box-shadow:0 0 0 0.5px rgba(212,175,55,0.05) inset;
+  box-shadow:0 0 12px rgba(212,175,55,0.12),0 0 0 0.5px rgba(212,175,55,0.08) inset;
 }
 .orbit-ring.r2{
   inset:-38px;
-  border-color:rgba(180,79,255,0.15);
+  border-color:rgba(180,79,255,0.22);
   animation-duration:25s;animation-direction:reverse;
+  box-shadow:0 0 14px rgba(180,79,255,0.08);
 }
 .orbit-ring.r3{
   inset:-58px;
-  border-color:rgba(0,238,255,0.07);
+  border-color:rgba(0,238,255,0.12);
   animation-duration:40s;
+  box-shadow:0 0 16px rgba(0,238,255,0.05);
 }
 /* Points qui orbitent */
 .orbit-dot{
@@ -207,18 +207,18 @@ body{
 }
 .orbit-ring.r1::before{
   content:'';position:absolute;width:6px;height:6px;border-radius:50%;
-  background:rgba(212,175,55,0.8);top:-3px;left:50%;transform:translateX(-50%);
-  box-shadow:0 0 8px rgba(212,175,55,0.6);
+  background:rgba(212,175,55,0.9);top:-3px;left:50%;transform:translateX(-50%);
+  box-shadow:0 0 14px rgba(212,175,55,0.8),0 0 24px rgba(212,175,55,0.4);
 }
 .orbit-ring.r2::before{
   content:'';position:absolute;width:5px;height:5px;border-radius:50%;
-  background:rgba(180,79,255,0.7);bottom:-2px;right:20%;
-  box-shadow:0 0 8px rgba(180,79,255,0.5);
+  background:rgba(180,79,255,0.8);bottom:-2px;right:20%;
+  box-shadow:0 0 14px rgba(180,79,255,0.7),0 0 22px rgba(180,79,255,0.35);
 }
 .orbit-ring.r3::before{
   content:'';position:absolute;width:4px;height:4px;border-radius:50%;
-  background:rgba(0,238,255,0.6);top:20%;right:-2px;
-  box-shadow:0 0 8px rgba(0,238,255,0.4);
+  background:rgba(0,238,255,0.7);top:20%;right:-2px;
+  box-shadow:0 0 12px rgba(0,238,255,0.55),0 0 20px rgba(0,238,255,0.3);
 }
 @keyframes orbit-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
@@ -229,20 +229,27 @@ body{
 
 /* TITRE */
 .hero-glitch-wrap{position:relative;display:inline-block}
+.hero-glitch-wrap::before{
+  content:'';position:absolute;left:50%;top:50%;
+  width:130%;height:150%;transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse,rgba(212,175,55,0.12),rgba(180,79,255,0.05) 45%,transparent 70%);
+  pointer-events:none;z-index:0;animation:halo-breathe 7s ease-in-out infinite;
+}
+@keyframes halo-breathe{0%,100%{opacity:0.65;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
 .hero-title{
   font-family:'Playfair Display',serif;
   font-size:clamp(5rem,15vw,9rem);
   font-weight:700;line-height:0.85;margin-bottom:12px;
-  position:relative;display:inline-block;
+  position:relative;display:inline-block;z-index:1;
 }
 .ht-v{
   color:var(--gold);position:relative;display:inline-block;
-  text-shadow:0 0 60px rgba(212,175,55,0.2);
+  text-shadow:0 0 60px rgba(212,175,55,0.25);
   animation:holo-v 8s ease-in-out infinite;
 }
 @keyframes holo-v{
-  0%,100%{text-shadow:0 0 60px rgba(212,175,55,0.2)}
-  50%{text-shadow:0 0 80px rgba(212,175,55,0.5),0 0 120px rgba(212,175,55,0.1)}
+  0%,100%{text-shadow:0 0 60px rgba(212,175,55,0.3),0 0 100px rgba(212,175,55,0.08)}
+  50%{text-shadow:0 0 80px rgba(212,175,55,0.6),0 0 140px rgba(212,175,55,0.18)}
 }
 .ht-v::before{content:'V';position:absolute;left:3px;top:0;color:var(--purple);opacity:0;animation:g1 7s infinite}
 .ht-v::after{content:'V';position:absolute;left:-3px;top:0;color:var(--cyan);opacity:0;animation:g2 7s infinite}
@@ -250,14 +257,14 @@ body{
 @keyframes g2{0%,91%,100%{opacity:0}94%{opacity:.4;transform:skewX(6deg) translateX(-5px)}97%{opacity:0}}
 .ht-ibe{
   color:transparent;
-  -webkit-text-stroke:1.5px rgba(212,175,55,0.3);
+  -webkit-text-stroke:1.5px rgba(212,175,55,0.4);
   font-family:'Playfair Display',serif;
   animation:ibe-pulse 6s ease-in-out infinite;
 }
-@keyframes ibe-pulse{0%,100%{-webkit-text-stroke-color:rgba(212,175,55,0.3)}50%{-webkit-text-stroke-color:rgba(212,175,55,0.6)}}
+@keyframes ibe-pulse{0%,100%{-webkit-text-stroke-color:rgba(212,175,55,0.4)}50%{-webkit-text-stroke-color:rgba(212,175,55,0.75)}}
 
 .hero-sub{font-size:0.65rem;letter-spacing:8px;color:rgba(212,175,55,0.5);text-transform:uppercase;margin-bottom:4px;font-family:'Share Tech Mono',monospace}
-.hero-origin{font-size:0.5rem;letter-spacing:5px;color:rgba(255,255,255,0.12);text-transform:uppercase;margin-bottom:24px;font-family:'Share Tech Mono',monospace}
+.hero-origin{font-size:0.5rem;letter-spacing:5px;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:24px;font-family:'Share Tech Mono',monospace}
 
 .pride-bar{display:flex;height:2px;width:280px;margin:0 auto 28px;border-radius:2px;overflow:hidden}
 .pb{flex:1;animation:pp 2.5s ease-in-out infinite}
@@ -269,14 +276,15 @@ body{
 
 /* FOUNDER BLOCK */
 .founder-block{
-  border:1px solid rgba(212,175,55,0.4);padding:22px 36px;
+  border:1px solid rgba(212,175,55,0.5);padding:22px 36px;
   background:rgba(0,0,0,0.8);margin-bottom:24px;
   position:relative;overflow:hidden;
   backdrop-filter:blur(10px);
+  box-shadow:0 0 30px rgba(212,175,55,0.12),0 0 60px rgba(212,175,55,0.05);
 }
 .founder-block::before{
   content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(212,175,55,0.06),transparent);
+  background:linear-gradient(90deg,transparent,rgba(212,175,55,0.1),transparent);
   animation:shimmer 4s ease-in-out infinite;
 }
 @keyframes shimmer{0%{left:-100%}100%{left:100%}}
@@ -285,16 +293,16 @@ body{
   border:1px solid rgba(212,175,55,0);
   animation:border-pulse 3s ease-in-out infinite;
 }
-@keyframes border-pulse{0%,100%{border-color:rgba(212,175,55,0);box-shadow:none}50%{border-color:rgba(212,175,55,0.15);box-shadow:0 0 20px rgba(212,175,55,0.05) inset}}
+@keyframes border-pulse{0%,100%{border-color:rgba(212,175,55,0.55);box-shadow:none}50%{border-color:rgba(212,175,55,0.7);box-shadow:0 0 30px rgba(212,175,55,0.1) inset}}
 .f-label{font-size:0.44rem;letter-spacing:6px;color:rgba(212,175,55,0.45);text-transform:uppercase;margin-bottom:8px;font-family:'Share Tech Mono',monospace}
-.f-price{font-family:'Playfair Display',serif;font-size:3rem;color:var(--gold);font-weight:700;line-height:1;text-shadow:0 0 30px rgba(212,175,55,0.2)}
-.f-period{font-size:0.5rem;color:rgba(255,255,255,0.25);letter-spacing:4px;margin-top:4px;font-family:'Share Tech Mono',monospace}
+.f-price{font-family:'Playfair Display',serif;font-size:3rem;color:var(--gold);font-weight:700;line-height:1;text-shadow:0 0 30px rgba(212,175,55,0.35),0 0 60px rgba(212,175,55,0.12)}
+.f-period{font-size:0.5rem;color:rgba(255,255,255,0.62);letter-spacing:4px;margin-top:4px;font-family:'Share Tech Mono',monospace}
 .f-spots{
   font-size:0.46rem;color:rgba(212,175,55,0.5);letter-spacing:3px;
   margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px;
   font-family:'Share Tech Mono',monospace;
 }
-.spots-bar{width:100px;height:2px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.spots-bar{width:100px;height:2px;background:rgba(255,255,255,0.38);border-radius:2px;overflow:hidden}
 .spots-fill{height:100%;background:var(--gold);border-radius:2px;transition:width 1s ease}
 
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
@@ -338,7 +346,7 @@ body{
   font-family:'Share Tech Mono',monospace;
   text-shadow:0 0 20px rgba(212,175,55,0.3);
 }
-.stat-l{display:block;font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.18);text-transform:uppercase}
+.stat-l{display:block;font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.55);text-transform:uppercase}
 
 /* TICKER */
 .ticker{
@@ -348,7 +356,7 @@ body{
 }
 .ticker-inner{
   display:inline-block;animation:tick 60s linear infinite;
-  font-size:0.44rem;letter-spacing:5px;color:rgba(212,175,55,0.18);
+  font-size:0.44rem;letter-spacing:5px;color:rgba(212,175,55,0.6);
   font-family:'Share Tech Mono',monospace;
 }
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
@@ -356,7 +364,7 @@ body{
 /* ══ SECTIONS BASE ══ */
 .section{position:relative;z-index:10;padding:80px 24px}
 .section-tag{
-  font-size:0.48rem;letter-spacing:6px;color:rgba(212,175,55,0.35);
+  font-size:0.48rem;letter-spacing:6px;color:rgba(212,175,55,0.72);
   text-transform:uppercase;margin-bottom:14px;font-family:'Share Tech Mono',monospace;
 }
 .section-title{
@@ -365,11 +373,11 @@ body{
   line-height:1.05;margin-bottom:18px;
 }
 .section-title em{
-  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.35);
+  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.72);
   font-style:italic;
 }
 .section-body{
-  font-size:0.68rem;color:rgba(255,255,255,0.3);
+  font-size:0.68rem;color:rgba(255,255,255,0.7);
   line-height:2;max-width:560px;font-family:'Share Tech Mono',monospace;
 }
 
@@ -394,21 +402,21 @@ body{
   background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);
   transition:border-color 0.3s,background 0.3s;
 }
-.af-row:hover{border-color:rgba(212,175,55,0.2);background:rgba(212,175,55,0.02)}
+.af-row:hover{border-color:rgba(212,175,55,0.62);background:rgba(212,175,55,0.02)}
 .af-icon{font-size:1.3rem;flex-shrink:0;margin-top:2px}
 .af-title{
   font-size:0.6rem;color:var(--gold);letter-spacing:3px;
   text-transform:uppercase;font-weight:700;margin-bottom:4px;
   font-family:'Share Tech Mono',monospace;
 }
-.af-text{font-size:0.6rem;color:rgba(255,255,255,0.25);line-height:1.8;font-family:'Share Tech Mono',monospace}
+.af-text{font-size:0.6rem;color:rgba(255,255,255,0.62);line-height:1.8;font-family:'Share Tech Mono',monospace}
 .ange-stats-row{
   display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
   background:rgba(212,175,55,0.06);margin:24px 0;
 }
 .astat{padding:18px 14px;background:rgba(0,0,0,0.8);text-align:center}
 .astat-n{font-size:1.6rem;color:var(--gold);font-weight:700;display:block;margin-bottom:3px;font-family:'Share Tech Mono',monospace;text-shadow:0 0 15px rgba(212,175,55,0.3)}
-.astat-l{font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.18);text-transform:uppercase}
+.astat-l{font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.55);text-transform:uppercase}
 .sos-btn{
   display:flex;align-items:center;justify-content:center;gap:12px;
   border:1px solid rgba(255,51,51,0.4);padding:18px 32px;
@@ -478,7 +486,7 @@ body{
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 .np-info{flex:1;min-width:0}
 .np-track{font-size:0.62rem;color:var(--gold);letter-spacing:2px;margin-bottom:3px;font-family:'Share Tech Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.np-artist{font-size:0.46rem;color:rgba(255,255,255,0.28);letter-spacing:2px;font-family:'Share Tech Mono',monospace}
+.np-artist{font-size:0.46rem;color:rgba(255,255,255,0.68);letter-spacing:2px;font-family:'Share Tech Mono',monospace}
 .eq-bars{display:flex;gap:2px;align-items:flex-end;height:20px}
 .eq-bar{width:3px;border-radius:1px;background:var(--gold);animation:eq .8s ease-in-out infinite alternate}
 @keyframes eq{from{height:3px;opacity:.3}to{height:20px;opacity:1}}
@@ -489,14 +497,14 @@ body{
   background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);
   border-bottom:0.5px solid rgba(212,175,55,0.06);
 }
-.chat-head{font-size:0.44rem;letter-spacing:4px;color:rgba(212,175,55,0.28);text-transform:uppercase;margin-bottom:12px;font-family:'Share Tech Mono',monospace}
+.chat-head{font-size:0.44rem;letter-spacing:4px;color:rgba(212,175,55,0.68);text-transform:uppercase;margin-bottom:12px;font-family:'Share Tech Mono',monospace}
 #live-chat-msgs{display:flex;flex-direction:column;gap:8px;min-height:80px}
 .chat-msg{font-size:0.6rem;line-height:1.8;animation:msg-in 0.4s ease}
 @keyframes msg-in{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
 .cn-gold{color:rgba(212,175,55,0.7);margin-right:6px;font-family:'Share Tech Mono',monospace}
 .cn-ghost{color:rgba(180,79,255,0.6);margin-right:6px;font-family:'Share Tech Mono',monospace}
 .cn-cyan{color:rgba(0,238,255,0.6);margin-right:6px;font-family:'Share Tech Mono',monospace}
-.ct{color:rgba(255,255,255,0.28);font-family:'Share Tech Mono',monospace}
+.ct{color:rgba(255,255,255,0.68);font-family:'Share Tech Mono',monospace}
 .msg-wave{
   display:inline-block;width:30px;height:10px;
   background:linear-gradient(90deg,rgba(212,175,55,0.3),rgba(212,175,55,0));
@@ -510,13 +518,13 @@ body{
   background:rgba(0,0,0,0.3);
 }
 .chat-input{
-  flex:1;background:rgba(255,255,255,0.02);
-  border:0.5px solid rgba(212,175,55,0.1);
-  color:rgba(255,255,255,0.7);padding:10px 14px;
+  flex:1;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(212,175,55,0.4);
+  color:#ffffff;padding:10px 14px;
   font-size:0.6rem;font-family:'Share Tech Mono',monospace;
   outline:none;transition:border-color 0.3s;
 }
-.chat-input:focus{border-color:rgba(212,175,55,0.3)}
+.chat-input:focus{border-color:rgba(212,175,55,0.7)}
 .chat-send-btn{
   background:transparent;border:0.5px solid rgba(212,175,55,0.2);
   color:rgba(212,175,55,0.55);padding:10px 18px;
@@ -542,23 +550,24 @@ body{
 .vcard:hover{background:rgba(220,50,50,0.03)}
 .vnum{font-size:0.44rem;color:rgba(220,50,50,0.5);letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;font-family:'Share Tech Mono',monospace}
 .vtxt{font-family:'Playfair Display',serif;font-size:1.1rem;color:rgba(255,255,255,0.78);line-height:1.5;margin-bottom:8px}
-.vsub{font-size:0.58rem;color:rgba(255,255,255,0.22);line-height:1.9;font-family:'Share Tech Mono',monospace}
+.vsub{font-size:0.58rem;color:rgba(255,255,255,0.60);line-height:1.9;font-family:'Share Tech Mono',monospace}
 .trib-stats{
   display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
   background:rgba(220,50,50,0.05);
 }
 .ts{padding:22px 14px;background:rgba(0,0,0,0.6);text-align:center}
 .ts-n{font-size:1.7rem;color:rgba(220,50,50,0.8);font-weight:700;display:block;margin-bottom:3px;font-family:'Share Tech Mono',monospace}
-.ts-l{font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.18);text-transform:uppercase}
+.ts-l{font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.55);text-transform:uppercase}
 .trib-form-wrap{padding:32px 24px;max-width:520px;margin:0 auto}
 .trib-form-title{font-size:0.48rem;letter-spacing:5px;color:rgba(220,50,50,0.5);text-transform:uppercase;margin-bottom:18px;font-family:'Share Tech Mono',monospace}
 .form-input{
-  width:100%;background:rgba(255,255,255,0.02);
-  border:0.5px solid rgba(212,175,55,0.1);color:rgba(255,255,255,0.7);
-  padding:12px 14px;font-size:0.65rem;font-family:'Share Tech Mono',monospace;
+  width:100%;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(212,175,55,0.4);color:#ffffff;
+  padding:12px 14px;font-size:0.78rem;font-family:'Share Tech Mono',monospace;
   outline:none;transition:border-color 0.3s;margin-bottom:10px;
 }
-.form-input:focus{border-color:rgba(212,175,55,0.3)}
+.form-input::placeholder{color:rgba(255,255,255,0.4)}
+.form-input:focus{border-color:rgba(212,175,55,0.9)}
 select.form-input{-webkit-appearance:none;background-color:rgba(0,0,0,0.8)}
 select.form-input option{background:#0a0a0a}
 .trib-submit{
@@ -588,11 +597,11 @@ select.form-input option{background:#0a0a0a}
 }
 .ev-card:hover::before{height:100%}
 .ev-card:hover{background:rgba(212,175,55,0.02)}
-.ev-soon{display:inline-block;font-size:0.38rem;letter-spacing:3px;color:rgba(212,175,55,0.35);border:0.5px solid rgba(212,175,55,0.15);padding:3px 8px;text-transform:uppercase;margin-bottom:10px;font-family:'Share Tech Mono',monospace}
+.ev-soon{display:inline-block;font-size:0.38rem;letter-spacing:3px;color:rgba(212,175,55,0.72);border:0.5px solid rgba(212,175,55,0.15);padding:3px 8px;text-transform:uppercase;margin-bottom:10px;font-family:'Share Tech Mono',monospace}
 .ev-date{font-size:0.44rem;letter-spacing:4px;color:rgba(212,175,55,0.4);text-transform:uppercase;margin-bottom:6px;font-family:'Share Tech Mono',monospace}
 .ev-city{font-size:0.48rem;letter-spacing:3px;color:rgba(0,238,255,0.5);text-transform:uppercase;margin-bottom:8px;font-family:'Share Tech Mono',monospace}
 .ev-title{font-family:'Playfair Display',serif;font-size:1rem;color:rgba(255,255,255,0.82);margin-bottom:8px}
-.ev-desc{font-size:0.56rem;color:rgba(255,255,255,0.22);line-height:1.8;margin-bottom:14px;font-family:'Share Tech Mono',monospace}
+.ev-desc{font-size:0.56rem;color:rgba(255,255,255,0.60);line-height:1.8;margin-bottom:14px;font-family:'Share Tech Mono',monospace}
 .ev-btn{
   font-size:0.44rem;letter-spacing:3px;text-transform:uppercase;
   color:rgba(212,175,55,0.45);border:0.5px solid rgba(212,175,55,0.15);
@@ -604,48 +613,65 @@ select.form-input option{background:#0a0a0a}
 /* ══ INSCRIPTION ══ */
 #inscription{
   position:relative;z-index:10;padding:80px 24px;
-  border-top:0.5px solid rgba(212,175,55,0.08);
-  background:radial-gradient(ellipse at 50% 0%,rgba(212,175,55,0.03),transparent 60%);
+  border-top:0.5px solid rgba(0,170,255,0.2);
+  background:radial-gradient(ellipse at 50% 0%,rgba(0,170,255,0.06),transparent 60%);
 }
 .form-wrap{max-width:460px;margin:0 auto;text-align:center}
-.form-title{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold);margin-bottom:6px;font-weight:700;text-shadow:0 0 30px rgba(212,175,55,0.15)}
-.form-sub{font-size:0.5rem;letter-spacing:3px;color:rgba(255,255,255,0.18);text-transform:uppercase;margin-bottom:28px;font-family:'Share Tech Mono',monospace}
+.form-title{font-family:'Playfair Display',serif;font-size:2.2rem;color:#3bb6ff;margin-bottom:6px;font-weight:700;text-shadow:0 0 30px rgba(0,170,255,0.35)}
+.form-sub{font-size:0.5rem;letter-spacing:3px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:28px;font-family:'Share Tech Mono',monospace}
 .fbadge{
-  border:0.5px solid rgba(212,175,55,0.25);padding:18px;
-  background:rgba(0,0,0,0.6);margin-bottom:16px;
+  border:1px solid rgba(0,170,255,0.4);padding:18px;
+  background:rgba(0,30,50,0.5);margin-bottom:16px;
   backdrop-filter:blur(10px);position:relative;overflow:hidden;
 }
-.fbadge::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.05),transparent);animation:shimmer 4s ease-in-out infinite}
-.fb-l{font-size:0.42rem;letter-spacing:4px;color:rgba(212,175,55,0.4);text-transform:uppercase;margin-bottom:6px;font-family:'Share Tech Mono',monospace}
-.fb-p{font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);font-weight:700}
-.fb-s{font-size:0.48rem;color:rgba(255,255,255,0.2);letter-spacing:2px;margin-top:3px;font-family:'Share Tech Mono',monospace}
-.fb-r{font-size:0.44rem;color:rgba(212,175,55,0.45);letter-spacing:2px;margin-top:6px;font-family:'Share Tech Mono',monospace}
+.fbadge::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,170,255,0.12),transparent);animation:shimmer 4s ease-in-out infinite}
+.fb-l{font-size:0.42rem;letter-spacing:4px;color:rgba(0,170,255,0.7);text-transform:uppercase;margin-bottom:6px;font-family:'Share Tech Mono',monospace}
+.fb-p{font-family:'Playfair Display',serif;font-size:2rem;color:#3bb6ff;font-weight:700}
+.fb-s{font-size:0.48rem;color:rgba(255,255,255,0.62);letter-spacing:2px;margin-top:3px;font-family:'Share Tech Mono',monospace}
+.fb-r{font-size:0.44rem;color:rgba(0,170,255,0.7);letter-spacing:2px;margin-top:6px;font-family:'Share Tech Mono',monospace}
 .form-group{margin-bottom:10px;text-align:left}
-.form-label{display:block;font-size:0.44rem;letter-spacing:3px;color:rgba(212,175,55,0.32);text-transform:uppercase;margin-bottom:5px;font-family:'Share Tech Mono',monospace}
+.form-label{display:block;font-size:0.44rem;letter-spacing:3px;color:rgba(0,170,255,0.85);text-transform:uppercase;margin-bottom:5px;font-family:'Share Tech Mono',monospace}
 .form-field{
-  width:100%;background:rgba(255,255,255,0.02);
-  border:0.5px solid rgba(212,175,55,0.12);color:rgba(255,255,255,0.7);
-  padding:12px 14px;font-size:0.68rem;font-family:'Share Tech Mono',monospace;
+  width:100%;background:rgba(0,40,70,0.35);
+  border:1px solid rgba(0,170,255,0.5);color:#ffffff;
+  padding:12px 14px;font-size:0.8rem;font-family:'Share Tech Mono',monospace;
   outline:none;transition:border-color 0.3s;
 }
-.form-field:focus{border-color:rgba(212,175,55,0.35)}
-.form-field option{background:#050505}
+.form-field::placeholder{color:rgba(255,255,255,0.45)}
+.form-field:focus{border-color:rgba(0,170,255,1)}
+.form-field option{background:#031018;color:#fff}
 .cgu-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;text-align:left}
-.cgu-row input{flex-shrink:0;margin-top:3px;accent-color:var(--gold)}
-.cgu-row label{font-size:0.52rem;color:rgba(255,255,255,0.22);line-height:1.7;letter-spacing:1px;font-family:'Share Tech Mono',monospace}
-.cgu-row a{color:rgba(212,175,55,0.45);text-decoration:none}
+.cgu-row input{flex-shrink:0;margin-top:3px;accent-color:#00aaff}
+.cgu-row label{font-size:0.52rem;color:rgba(255,255,255,0.6);line-height:1.7;letter-spacing:1px;font-family:'Share Tech Mono',monospace}
+.cgu-row a{color:rgba(0,170,255,0.85);text-decoration:none}
 .btn-submit{
-  width:100%;background:transparent;color:var(--gold);
-  border:1px solid rgba(212,175,55,0.5);padding:16px;
+  width:100%;background:transparent;color:#3bb6ff;
+  border:1px solid rgba(0,170,255,0.7);padding:16px;
   font-size:0.68rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;
   cursor:pointer;font-family:'Share Tech Mono',monospace;
   position:relative;overflow:hidden;transition:color 0.35s;margin-bottom:10px;
 }
-.btn-submit::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--gold);z-index:0;transition:left 0.4s cubic-bezier(.4,0,.2,1)}
+.btn-submit::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:#00aaff;z-index:0;transition:left 0.4s cubic-bezier(.4,0,.2,1)}
 .btn-submit:hover::before{left:0}
 .btn-submit:hover{color:#000}
 .btn-submit span{position:relative;z-index:1}
-.form-note{font-size:0.42rem;color:rgba(255,255,255,0.1);letter-spacing:2px;line-height:1.8;font-family:'Share Tech Mono',monospace}
+.form-note{font-size:0.42rem;color:rgba(255,255,255,0.55);letter-spacing:2px;line-height:1.8;font-family:'Share Tech Mono',monospace}
+/* ═══ CHOIX DE PLAN (Fondateur / Gratuit) ═══ */
+.plan-choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.plan-card{position:relative;border:1px solid;border-radius:16px;padding:18px 12px;background:rgba(0,0,0,0.5);cursor:pointer;text-align:center;transition:all 0.3s;overflow:hidden}
+.plan-founder{border-color:rgba(212,175,55,0.4)}
+.plan-free{border-color:rgba(0,170,255,0.4)}
+.plan-founder.selected{border-color:var(--gold);background:rgba(212,175,55,0.1);box-shadow:0 0 24px rgba(212,175,55,0.2)}
+.plan-free.selected{border-color:#00aaff;background:rgba(0,170,255,0.1);box-shadow:0 0 24px rgba(0,170,255,0.2)}
+.plan-tag{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.plan-founder .plan-tag{color:var(--gold)}
+.plan-free .plan-tag{color:#3bb6ff}
+.plan-price{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:#fff;line-height:1}
+.plan-price span{display:block;font-family:'Share Tech Mono',monospace;font-size:0.42rem;letter-spacing:1px;color:rgba(255,255,255,0.5);margin-top:4px}
+.plan-desc{font-family:'Share Tech Mono',monospace;font-size:0.46rem;line-height:1.5;color:rgba(255,255,255,0.55);margin-top:10px}
+.plan-check{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:1px;margin-top:10px;opacity:0;transition:opacity 0.3s}
+.plan-founder.selected .plan-check{opacity:1;color:var(--gold)}
+.plan-free.selected .plan-check{opacity:1;color:#3bb6ff}
 #signup-success{display:none}
 
 /* ══ FOOTER ══ */
@@ -655,11 +681,11 @@ footer{
   padding:28px 24px;text-align:center;
   background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);
 }
-.footer-brand{font-family:'Playfair Display',serif;font-size:0.7rem;letter-spacing:8px;color:rgba(212,175,55,0.25);margin-bottom:12px}
+.footer-brand{font-family:'Playfair Display',serif;font-size:0.7rem;letter-spacing:8px;color:rgba(212,175,55,0.65);margin-bottom:12px}
 .footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
-.footer-links a{font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.1);text-decoration:none;text-transform:uppercase;transition:color 0.3s;font-family:'Share Tech Mono',monospace}
-.footer-links a:hover{color:rgba(212,175,55,0.35)}
-.footer-copy{font-size:0.4rem;letter-spacing:2px;color:rgba(255,255,255,0.06);text-transform:uppercase;font-family:'Share Tech Mono',monospace}
+.footer-links a{font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.55);text-decoration:none;text-transform:uppercase;transition:color 0.3s;font-family:'Share Tech Mono',monospace}
+.footer-links a:hover{color:rgba(212,175,55,0.72)}
+.footer-copy{font-size:0.4rem;letter-spacing:2px;color:rgba(255,255,255,0.72);text-transform:uppercase;font-family:'Share Tech Mono',monospace}
 
 /* ══ MODAL CONNEXION ══ */
 .modal-overlay{
@@ -683,12 +709,12 @@ footer{
 }
 .modal-close{
   position:absolute;top:16px;right:16px;
-  background:transparent;border:none;color:rgba(255,255,255,0.25);
+  background:transparent;border:none;color:rgba(255,255,255,0.62);
   font-size:1rem;cursor:pointer;padding:4px 8px;transition:color 0.3s;
 }
 .modal-close:hover{color:var(--gold)}
 .modal-title{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);margin-bottom:4px;font-weight:700}
-.modal-sub{font-size:0.46rem;letter-spacing:3px;color:rgba(255,255,255,0.18);text-transform:uppercase;margin-bottom:26px;font-family:'Share Tech Mono',monospace}
+.modal-sub{font-size:0.46rem;letter-spacing:3px;color:rgba(255,255,255,0.55);text-transform:uppercase;margin-bottom:26px;font-family:'Share Tech Mono',monospace}
 .submit-btn{
   width:100%;background:transparent;color:var(--gold);
   border:1px solid rgba(212,175,55,0.4);padding:14px;
@@ -710,7 +736,7 @@ footer{
   text-align:center;max-width:90vw;font-family:'Share Tech Mono',monospace;
 }
 .notif.show{opacity:1}
-.notif-success{background:rgba(212,175,55,0.06);border-color:rgba(212,175,55,0.35);color:var(--gold)}
+.notif-success{background:rgba(212,175,55,0.06);border-color:rgba(212,175,55,0.72);color:var(--gold)}
 .notif-error{background:rgba(220,50,50,0.05);border-color:rgba(220,50,50,0.35);color:rgba(220,50,50,0.9)}
 
 /* ADMIN */
@@ -721,12 +747,69 @@ footer{
   backdrop-filter:blur(20px);max-height:80vh;overflow-y:auto;
   box-shadow:0 0 40px rgba(212,175,55,0.08);
 }
+
+/* ═══ RÉSEAU / GLOBE ═══ */
+#reseau-section{position:relative;z-index:10;padding:80px 24px;border-top:0.5px solid rgba(212,175,55,0.15);text-align:center}
+.globe-wrap{position:relative;width:100%;max-width:520px;margin:32px auto 0;aspect-ratio:1/1}
+#globe-canvas{width:100%;height:100%;display:block}
+.globe-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:28px}
+.globe-city{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:2px;color:rgba(212,175,55,0.6);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.globe-city::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(212,175,55,0.8)}
+
+/* ═══ SALON DE LA VOIX (démo audio) ═══ */
+#voix-section{position:relative;z-index:10;padding:80px 24px;border-top:0.5px solid rgba(180,79,255,0.15);text-align:center}
+.voix-demo{position:relative;max-width:560px;margin:32px auto 0;border:0.5px solid rgba(180,79,255,0.4);border-radius:22px;background:rgba(180,79,255,0.04);padding:28px 24px;overflow:hidden;backdrop-filter:blur(10px)}
+.voix-demo::before{content:'';position:absolute;inset:0;z-index:-1;opacity:0.4;background:radial-gradient(circle at 20% 0%,rgba(255,77,210,0.25),transparent 55%),radial-gradient(circle at 90% 100%,rgba(0,180,255,0.2),transparent 55%)}
+.voix-demo-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.voix-demo-tag{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold)}
+.voix-demo-status{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4)}
+.voix-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.3)}
+.voix-dot.live{background:var(--gold);animation:voix-pulse 1s ease-in-out infinite}
+@keyframes voix-pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.voix-wavebox{display:flex;align-items:center;justify-content:center;gap:3px;height:90px;margin:24px 0}
+.voix-wavebox span{width:5px;border-radius:3px;background:linear-gradient(180deg,#ff4dd2,#b44fff);box-shadow:0 0 8px rgba(180,79,255,0.5);height:12%;transition:height 0.2s ease}
+.voix-transcript{min-height:90px;border:0.5px solid rgba(255,255,255,0.1);border-radius:14px;background:rgba(0,0,0,0.5);padding:18px;font-family:'Share Tech Mono',monospace;text-align:left}
+.voix-who{font-size:0.46rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.voix-said{font-size:0.7rem;line-height:1.6;color:rgba(255,255,255,0.85)}
+.voix-idle{font-size:0.62rem;color:rgba(255,255,255,0.72);font-style:italic}
+.voix-demo-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-top:22px}
+.voix-play{display:inline-flex;align-items:center;background:linear-gradient(90deg,#ff4dd2,#b44fff);border:none;color:#fff;padding:12px 24px;border-radius:30px;font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:transform 0.2s;box-shadow:0 0 20px rgba(180,79,255,0.3)}
+.voix-play:hover{transform:scale(1.04)}
+.voix-play:disabled{opacity:0.4;cursor:not-allowed}
+.voix-demo-meta{font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4)}
+
+/* ═══ SÉLECTEUR DE LANGUE ═══ */
+.lang-select{position:fixed;top:14px;right:14px;z-index:3500}
+.lang-btn{background:rgba(0,0,0,0.7);border:0.5px solid rgba(212,175,55,0.4);color:rgba(212,175,55,0.9);font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:2px;padding:7px 12px;border-radius:8px;cursor:pointer;backdrop-filter:blur(10px);text-transform:uppercase}
+.lang-btn:hover{border-color:rgba(212,175,55,0.7)}
+.lang-menu{position:absolute;top:36px;right:0;background:rgba(5,5,5,0.95);border:0.5px solid rgba(212,175,55,0.3);border-radius:10px;padding:6px;backdrop-filter:blur(20px);display:none;flex-direction:column;min-width:130px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+.lang-menu.open{display:flex}
+.lang-menu button{background:transparent;border:none;color:rgba(255,255,255,0.6);font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:1px;padding:8px 10px;text-align:left;cursor:pointer;border-radius:6px;transition:all 0.2s}
+.lang-menu button:hover{background:rgba(212,175,55,0.12);color:var(--gold)}
+.lang-menu button.active{color:var(--gold);background:rgba(212,175,55,0.08)}
 </style>
 </head>
 <body>
 
+<!-- SÉLECTEUR DE LANGUE -->
+<div class="lang-select">
+  <button class="lang-btn" onclick="document.getElementById('langMenu').classList.toggle('open')">🌐 <span id="langCurrent">FR</span></button>
+  <div class="lang-menu" id="langMenu">
+    <button onclick="setLang('fr')" data-lang="fr">Français</button>
+    <button onclick="setLang('en')" data-lang="en">English</button>
+    <button onclick="setLang('zh')" data-lang="zh">中文</button>
+    <button onclick="setLang('pa')" data-lang="pa">ਪੰਜਾਬੀ</button>
+    <button onclick="setLang('es')" data-lang="es">Español</button>
+    <button onclick="setLang('tl')" data-lang="tl">Tagalog</button>
+    <button onclick="setLang('it')" data-lang="it">Italiano</button>
+    <button onclick="setLang('de')" data-lang="de">Deutsch</button>
+    <button onclick="setLang('pt')" data-lang="pt">Português</button>
+    <button onclick="setLang('ru')" data-lang="ru">Русский</button>
+  </div>
+</div>
+
 <!-- ══ INTRO SCREEN ══ -->
-<div id="intro">
+<div id="intro" style="display:none">
   <canvas id="intro-canvas"></canvas>
   <div class="intro-terminal" id="intro-terminal"></div>
   <div class="intro-progress"><div class="intro-bar" id="intro-bar"></div></div>
@@ -756,10 +839,12 @@ footer{
     <span>RÉSEAU LGBTQ+ · QUÉBEC</span>
   </div>
   <nav class="hud-nav">
-    <a href="#accueil">Accueil</a>
-    <a href="#ange-section">Mode Ange</a>
-    <a href="#salon-section">Salon</a>
-    <a href="#tribunal-section">Tribunal</a>
+    <a href="#accueil" data-i18n="nav_home">Accueil</a>
+    <a href="#ange-section" data-i18n="nav_ange">Mode Ange</a>
+    <a href="#voix-section" data-i18n="nav_voix">Voix</a>
+    <a href="#reseau-section" data-i18n="nav_reseau">Réseau</a>
+    <a href="#salon-section" data-i18n="nav_salon">Salon</a>
+    <a href="#tribunal-section" data-i18n="nav_tribunal">Tribunal</a>
     <a href="#evenements-section">Événements</a>
     <a href="#inscription">Rejoindre</a>
   </nav>
@@ -798,8 +883,8 @@ footer{
     <h1 class="hero-title">
       <span class="ht-v">V</span><span class="ht-ibe">IBE</span>
     </h1>
-    <p class="hero-sub">Réseau LGBTQ+ Canadien</p>
-    <p class="hero-origin">Né à Québec · Canada · 2026</p>
+    <p class="hero-sub" data-i18n="hero_sub">Réseau LGBTQ+ Canadien</p>
+    <p class="hero-origin" data-i18n="hero_origin">Né à Québec · Canada · 2026</p>
 
     <div class="pride-bar">
       <div class="pb pb1"></div><div class="pb pb2"></div><div class="pb pb3"></div>
@@ -808,18 +893,18 @@ footer{
     </div>
 
     <div class="founder-block">
-      <div class="f-label">✦ Pass Fondateur — Édition Limitée</div>
+      <div class="f-label" data-i18n="f_label">✦ Pass Fondateur — Édition Limitée</div>
       <div class="f-price">99 $<span style="font-size:1.2rem;color:rgba(212,175,55,0.5)">CAD</span></div>
-      <div class="f-period">/ an · Renouvelable · Accès complet à la plateforme</div>
+      <div class="f-period" data-i18n="f_period">/ an · Renouvelable · Accès complet à la plateforme</div>
       <div class="f-spots">
-        <span id="spots-left">...</span>&nbsp;places restantes sur 500
+        <span id="spots-left">...</span>&nbsp;<span data-i18n="f_spots">places restantes sur 500</span>
         <div class="spots-bar"><div class="spots-fill" id="spots-fill"></div></div>
       </div>
     </div>
 
     <div class="hero-btns">
-      <a href="#inscription" class="btn-gold"><span>Devenir Fondateur</span></a>
-      <button class="btn-outline" onclick="openLogin()">Se connecter</button>
+      <a href="#inscription" class="btn-gold"><span data-i18n="btn_founder">Devenir Fondateur</span></a>
+      <button class="btn-outline" onclick="openLogin()" data-i18n="btn_login">Se connecter</button>
     </div>
   </div>
 </section>
@@ -842,8 +927,8 @@ footer{
 <section id="ange-section">
   <div class="ange-bg-glow"></div>
   <div class="ange-content">
-    <p class="section-tag">// Protection · Mode Ange Gardien</p>
-    <h2 class="section-title">Triple-tap.<br><em>Ta sécurité,</em><br>en 3 secondes.</h2>
+    <p class="section-tag" data-i18n="tag_ange">// Protection · Mode Ange Gardien</p>
+    <h2 class="section-title" data-i18n-html="title_ange">Triple-tap.<br><em>Ta sécurité,</em><br>en 3 secondes.</h2>
     <p class="section-body" style="margin-bottom:24px">
       Trois taps rapides sur l'écran. Ta position GPS exacte et 30 secondes d'audio ambiant partent instantanément à ton contact de confiance. Silencieux. Invisible. Toujours actif en arrière-plan.
     </p>
@@ -865,11 +950,49 @@ footer{
   </div>
 </section>
 
+<!-- RÉSEAU / GLOBE -->
+<section id="reseau-section">
+  <p class="section-tag" data-i18n="tag_reseau">// Le réseau s'étend</p>
+  <h2 class="section-title" data-i18n-html="title_reseau">Une communauté<br><em>qui grandit</em></h2>
+  <div class="globe-wrap">
+    <canvas id="globe-canvas"></canvas>
+  </div>
+  <div class="globe-legend">
+    <span class="globe-city">Québec</span>
+    <span class="globe-city">Montréal</span>
+    <span class="globe-city">Ottawa</span>
+    <span class="globe-city">Toronto</span>
+    <span class="globe-city">Vancouver</span>
+  </div>
+</section>
+
+<!-- SALON DE LA VOIX -->
+<section id="voix-section">
+  <p class="section-tag" data-i18n="tag_voix">// La voix d'abord</p>
+  <h2 class="section-title" data-i18n-html="title_voix">Écoute<br><em>avant de voir</em></h2>
+  <p class="section-body" style="max-width:480px;margin:0 auto 8px">Pas de photo. Pas de bio. Juste des voix vraies. Clique sur ▶ pis vis l'expérience.</p>
+
+  <div class="voix-demo">
+    <div class="voix-demo-head">
+      <span class="voix-demo-tag">✦ Démo live · Salon à Voix</span>
+      <span class="voix-demo-status"><span class="voix-dot" id="voixDot"></span><span id="voixStatus">PRÊT</span></span>
+    </div>
+    <div class="voix-wavebox" id="voixWave"></div>
+    <div class="voix-transcript" id="voixTranscript">
+      <span class="voix-idle">— Silence. Le salon attend ta présence. —</span>
+    </div>
+    <div class="voix-demo-foot">
+      <button class="voix-play" id="voixPlay" onclick="toggleVoixDemo()"><span id="voixPlayIcon">▶</span>&nbsp;<span id="voixPlayLabel">Écouter le salon</span></button>
+      <span class="voix-demo-meta">5 voix · 0 image · 100 % vrai</span>
+    </div>
+  </div>
+</section>
+
 <!-- SALON FLOTTANT -->
 <section id="salon-section">
   <div class="salon-header">
-    <p class="section-tag">// Communauté · Salon Flottant · Temps Réel</p>
-    <h2 class="section-title">Profils qui <em>flottent.</em><br>Connexions qui se créent.</h2>
+    <p class="section-tag" data-i18n="tag_salon">// Communauté · Salon Flottant · Temps Réel</p>
+    <h2 class="section-title" data-i18n-html="title_salon">Profils qui <em>flottent.</em><br>Connexions qui se créent.</h2>
     <p class="section-body">Tu entres dans la pièce. Les autres membres dérivent autour de toi. Tu t'approches — tu entends leur musique. Tu t'éloignes — elle s'estompe. Comme dans un vrai bar. En temps réel.</p>
   </div>
 
@@ -913,7 +1036,7 @@ footer{
 <section id="tribunal-section">
   <div class="tribunal-header">
     <p class="section-tag" style="color:rgba(220,50,50,0.45)">// Justice · Tribunal Communautaire</p>
-    <h2 class="section-title">Une justice rendue<br><em>par la communauté.</em></h2>
+    <h2 class="section-title" data-i18n-html="title_tribunal">Une justice rendue<br><em>par la communauté.</em></h2>
     <p class="section-body">Pas de modérateur anonyme caché. Tous les conflits arbitrés par un panel tournant de membres volontaires — vote secret, transparence totale, résultats publics.</p>
   </div>
   <div class="verdict-grid">
@@ -959,8 +1082,8 @@ footer{
 
 <!-- ÉVÉNEMENTS -->
 <section id="evenements-section">
-  <p class="section-tag">// Communauté · Événements à venir</p>
-  <h2 class="section-title">La scène LGBTQ+<br><em>s'anime.</em></h2>
+  <p class="section-tag" data-i18n="tag_events">// Communauté · Événements à venir</p>
+  <h2 class="section-title" data-i18n-html="title_events">La scène LGBTQ+<br><em>s'anime.</em></h2>
   <p class="section-body">Les événements de la communauté, dans ta ville. Présence VIBE confirmée.</p>
   <div class="ev-grid">
     <div class="ev-card">
@@ -994,10 +1117,27 @@ footer{
 <section id="inscription">
   <div class="form-wrap">
     <h2 class="form-title">Rejoindre VIBE</h2>
-    <p class="form-sub">500 places fondateur · 99 $ / an</p>
+    <p class="form-sub">Choisis ton accès</p>
     <div id="signup-success"></div>
+
+    <div class="plan-choice">
+      <button type="button" class="plan-card plan-founder selected" id="planFounder" onclick="choisirPlan('founder')">
+        <div class="plan-tag">✦ Fondateur</div>
+        <div class="plan-price">99 $<span>CAD/an</span></div>
+        <div class="plan-desc">Accès complet · Édition limitée · 500 places</div>
+        <div class="plan-check">✓ Choisi</div>
+      </button>
+      <button type="button" class="plan-card plan-free" id="planFree" onclick="choisirPlan('free')">
+        <div class="plan-tag">Membre Gratuit</div>
+        <div class="plan-price">0 $<span>pour toujours</span></div>
+        <div class="plan-desc">Accès de base · Salon · Profil · Communauté</div>
+        <div class="plan-check">✓ Choisi</div>
+      </button>
+    </div>
+
     <form id="signup-form" onsubmit="handleSignup(event)">
-      <div class="fbadge">
+      <input type="hidden" id="plan-choisi" value="founder">
+      <div class="fbadge" id="founder-badge">
         <div class="fb-l">✦ Pass Fondateur</div>
         <div class="fb-p">99 $<span style="font-size:0.9rem;color:rgba(212,175,55,0.45)">CAD</span></div>
         <div class="fb-s">par année · Accès complet · Renouvelable</div>
@@ -1028,7 +1168,7 @@ footer{
         <input type="checkbox" id="cgu" required>
         <label for="cgu">J'accepte les <a href="#inscription">conditions d'utilisation</a> et la <a href="#inscription">politique de confidentialité</a> (Loi 25 · LPRPDE)</label>
       </div>
-      <button type="submit" class="btn-submit"><span>Réserver ma place — 99 $ / an</span></button>
+      <button type="submit" class="btn-submit" id="submit-btn"><span id="submit-label">Réserver ma place — 99 $ / an</span></button>
       <p class="form-note">Paiement sécurisé · SSL · Aucune donnée vendue · Loi 25 conforme</p>
     </form>
   </div>
@@ -1261,8 +1401,7 @@ function showError(msg){const el=document.getElementById('notif-error');el.textC
   function tryStartBeat(){
     if(!beatStarted){beatStarted=true;startBeat();}
   }
-  document.addEventListener('touchstart',tryStartBeat,{once:true});
-  document.addEventListener('click',tryStartBeat,{once:true});
+  // Musique d'intro désactivée (plus de démarrage automatique)
 
   // Lignes à taper
   const LINES=[
@@ -1318,9 +1457,9 @@ function showError(msg){const el=document.getElementById('notif-error');el.textC
   // Fermeture à 5.8s
   setTimeout(()=>skipIntro(),TOTAL);
 
- function cleanIntro(){
-   clearInterval(barIv) 
- }
+  function cleanIntro(){
+    clearInterval(barIv);
+  }
   window._introClean=cleanIntro;
 })();
 
@@ -1534,7 +1673,11 @@ function drawSalon(ts){
       grad.addColorStop(1,'transparent');
     }
     sCtx.beginPath();sCtx.arc(p.x,p.y,glow*1.8,0,Math.PI*2);
+    sCtx.save();
+    sCtx.shadowBlur=p.speaking?28*p.depth:14*p.depth;
+    sCtx.shadowColor=p.ghost?`rgba(180,79,255,${0.5*p.depth})`:`hsla(${p.hue},80%,65%,${0.6*p.depth})`;
     sCtx.fillStyle=grad;sCtx.fill();
+    sCtx.restore();
 
     // Cercle
     sCtx.beginPath();sCtx.arc(p.x,p.y,r,0,Math.PI*2);
@@ -1568,7 +1711,7 @@ function drawSalon(ts){
         const wop=(1-w/4)*0.3*p.depth;
         sCtx.beginPath();sCtx.arc(p.x,p.y,wr,0,Math.PI*2);
         sCtx.strokeStyle=`hsla(${p.hue},80%,70%,${wop})`;
-      sCtx.lineWidth=0.8;sCtx.stroke()
+        sCtx.lineWidth=0.8;sCtx.stroke();
       }
     }
   });
@@ -1734,49 +1877,7 @@ async function handleForgotPassword(){
 // ══════════════════════════════════════════
 // INSCRIPTION
 // ══════════════════════════════════════════
-async function handleSignup(e){
-  e.preventDefault();
-  const prenom=document.getElementById('prenom').value.trim();
-  const email=document.getElementById('email').value.trim();
-  const mdp=document.getElementById('mdp').value;
-  const ville=document.getElementById('ville')?.value||'';
-  const cgu=document.getElementById('cgu').checked;
-  const hp=document.getElementById('hp-field');
-  const btn=document.querySelector('#signup-form .btn-submit');
 
-  if(hp?.value)return;
-  if(!prenom||prenom.length<2){showError('⚠ Prénom invalide.');return;}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showError('⚠ Courriel invalide.');return;}
-  if(mdp.length<8||!/[A-Z]/.test(mdp)||!/[0-9]/.test(mdp)){showError('⚠ Mot de passe trop faible — min. 8 car., 1 majuscule, 1 chiffre.');return;}
-  if(!cgu){showError('⚠ Tu dois accepter les conditions.');return;}
-  if(btn){btn.disabled=true;btn.querySelector('span').textContent='Création en cours...';}
-
-  try{
-    const {count}=await _supa.from('landing_inscriptions').select('id',{count:'exact',head:true});
-    if((count||0)>=MAX_FOUNDERS){showError('⚠ Toutes les places fondateur sont prises.');if(btn){btn.disabled=false;btn.querySelector('span').textContent='Réserver ma place — 99 $ / an';}return;}
-    const {data:authData,error:authError}=await _supa.auth.signUp({email,password:mdp,options:{data:{prenom,ville}}});
-    if(authError)throw authError;
-    await _supa.from('landing_inscriptions').insert({prenom,email,ville,statut:'inscrit'});
-    document.getElementById('signup-form').style.display='none';
-    const suc=document.getElementById('signup-success');
-    suc.style.display='block';
-    suc.innerHTML=`<div style="padding:40px;text-align:center;border:0.5px solid rgba(212,175,55,0.25);background:rgba(0,0,0,0.6)">
-      <div style="font-size:2rem;margin-bottom:16px">✦</div>
-      <div style="font-family:Playfair Display,serif;font-size:1.4rem;color:#D4AF37;margin-bottom:12px">Bienvenue, ${prenom} !</div>
-      <div style="font-size:0.58rem;color:rgba(255,255,255,0.35);letter-spacing:2px;line-height:2;margin-bottom:20px;font-family:Share Tech Mono,monospace">
-        Ton compte VIBE est créé.<br>
-        Vérifie ton courriel <span style="color:rgba(212,175,55,0.7)">${email}</span><br>
-        pour confirmer ton accès Fondateur.
-      </div>
-      <div style="font-size:0.46rem;color:rgba(212,175,55,0.3);letter-spacing:3px;font-family:Share Tech Mono,monospace">Place Fondateur réservée · 99 $CAD / an</div>
-    </div>`;
-    showSuccess('✦ Compte créé — vérifie ton courriel !');
-    loadStats();
-  }catch(err){
-    if(btn){btn.disabled=false;btn.querySelector('span').textContent='Réserver ma place — 99 $ / an';}
-    showError('⚠ '+(err.message?.includes('already registered')?'Ce courriel est déjà inscrit.':err.message||'Erreur.'));
-  }
-}
 
 // ══════════════════════════════════════════
 // SOS MODE ANGE
@@ -1827,6 +1928,72 @@ async function activateSOS(){
 }
 
 // ══════════════════════════════════════════
+// INSCRIPTION (2 plans : Fondateur / Gratuit)
+// ══════════════════════════════════════════
+function choisirPlan(plan){
+  document.getElementById('plan-choisi').value=plan;
+  const fCard=document.getElementById('planFounder');
+  const gCard=document.getElementById('planFree');
+  const fBadge=document.getElementById('founder-badge');
+  const btn=document.querySelector('#signup-form .btn-submit span');
+  if(plan==='founder'){
+    fCard.classList.add('selected');gCard.classList.remove('selected');
+    if(fBadge)fBadge.style.display='';
+    if(btn)btn.textContent='Réserver ma place — 99 $ / an';
+  }else{
+    gCard.classList.add('selected');fCard.classList.remove('selected');
+    if(fBadge)fBadge.style.display='none';
+    if(btn)btn.textContent='Créer mon compte gratuit';
+  }
+}
+
+async function handleSignup(e){
+  e.preventDefault();
+  const plan=document.getElementById('plan-choisi')?.value||'founder';
+  const estFondateur=(plan==='founder');
+  const prenom=document.getElementById('prenom').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const mdp=document.getElementById('mdp').value;
+  const ville=document.getElementById('ville')?.value||'';
+  const cgu=document.getElementById('cgu').checked;
+  const hp=document.getElementById('hp-field');
+  const btn=document.querySelector('#signup-form .btn-submit');
+
+  if(hp?.value)return;
+  if(!prenom||prenom.length<2){showError('⚠ Prénom invalide.');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showError('⚠ Courriel invalide.');return;}
+  if(mdp.length<8||!/[A-Z]/.test(mdp)||!/[0-9]/.test(mdp)){showError('⚠ Mot de passe trop faible — min. 8 car., 1 majuscule, 1 chiffre.');return;}
+  if(!cgu){showError('⚠ Tu dois accepter les conditions.');return;}
+  if(btn){btn.disabled=true;btn.querySelector('span').textContent='Création en cours...';}
+
+  try{
+    if(estFondateur){
+      const {count}=await _supa.from('landing_inscriptions').select('id',{count:'exact',head:true});
+      if((count||0)>=MAX_FOUNDERS){showError('⚠ Toutes les places fondateur sont prises.');if(btn){btn.disabled=false;btn.querySelector('span').textContent='Réserver ma place — 99 $ / an';}return;}
+    }
+    const {data:authData,error:authError}=await _supa.auth.signUp({email,password:mdp,options:{data:{prenom,ville,plan}}});
+    if(authError)throw authError;
+    await _supa.from('landing_inscriptions').insert({prenom,email,ville,statut:estFondateur?'inscrit':'membre_gratuit'});
+    document.getElementById('signup-form').style.display='none';
+    const suc=document.getElementById('signup-success');
+    suc.style.display='block';
+    const accent=estFondateur?'#D4AF37':'#3bb6ff';
+    const accentRgb=estFondateur?'212,175,55':'0,170,255';
+    suc.innerHTML='<div style="padding:40px;text-align:center;border:1px solid rgba('+accentRgb+',0.3);background:rgba(0,0,0,0.6)">'+
+      '<div style="font-size:2rem;margin-bottom:16px">✦</div>'+
+      '<div style="font-family:Playfair Display,serif;font-size:1.4rem;color:'+accent+';margin-bottom:12px">Bienvenue, '+prenom+' !</div>'+
+      '<div style="font-size:0.58rem;color:rgba(255,255,255,0.72);letter-spacing:2px;line-height:2;margin-bottom:20px;font-family:Share Tech Mono,monospace">'+
+      'Ton compte VIBE est créé.<br>Vérifie ton courriel <span style="color:'+accent+'">'+email+'</span><br>pour confirmer ton accès.</div>'+
+      '<div style="font-size:0.46rem;color:'+accent+';letter-spacing:3px;font-family:Share Tech Mono,monospace">'+(estFondateur?'Place Fondateur réservée · 99 $CAD / an':'Membre Gratuit · Bienvenue dans la communauté')+'</div></div>';
+    showSuccess('✦ Compte créé — vérifie ton courriel !');
+    loadStats();
+  }catch(err){
+    if(btn){btn.disabled=false;btn.querySelector('span').textContent=estFondateur?'Réserver ma place — 99 $ / an':'Créer mon compte gratuit';}
+    showError('⚠ '+(err.message&&err.message.includes('already registered')?'Ce courriel est déjà inscrit.':err.message||'Erreur.'));
+  }
+}
+
+// ══════════════════════════════════════════
 // TRIBUNAL
 // ══════════════════════════════════════════
 async function handleSignalement(e){
@@ -1871,15 +2038,15 @@ function showAdminPanel(){
       ✦ ADMIN PASCAL
       <span style="cursor:pointer;opacity:0.4;font-size:1rem" onclick="document.getElementById('admin-panel').style.display='none'">✕</span>
     </div>
-    <div id="admin-stats" style="font-size:0.48rem;color:rgba(255,255,255,0.3);letter-spacing:2px;margin-bottom:14px;line-height:2;font-family:Share Tech Mono,monospace">Chargement...</div>
+    <div id="admin-stats" style="font-size:0.48rem;color:rgba(255,255,255,0.7);letter-spacing:2px;margin-bottom:14px;line-height:2;font-family:Share Tech Mono,monospace">Chargement...</div>
     <div style="display:grid;gap:6px">
       <button onclick="adminLoad('inscriptions')" style="background:transparent;border:0.5px solid rgba(212,175,55,0.3);color:rgba(212,175,55,0.7);padding:8px;font-size:0.48rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">📋 500 BILLETS — INSCRIPTIONS</button>
       <button onclick="adminLoad('signalements')" style="background:transparent;border:0.5px solid rgba(220,50,50,0.3);color:rgba(220,50,50,0.7);padding:8px;font-size:0.48rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">⚖ SIGNALEMENTS TRIBUNAL</button>
       <button onclick="adminLoad('messages')" style="background:transparent;border:0.5px solid rgba(0,238,255,0.2);color:rgba(0,238,255,0.5);padding:8px;font-size:0.48rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">💬 MESSAGES SALON</button>
       <button onclick="adminLoad('alertes')" style="background:transparent;border:0.5px solid rgba(255,80,80,0.2);color:rgba(255,80,80,0.5);padding:8px;font-size:0.48rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">🚨 ALERTES SOS</button>
-      <button onclick="_supa.auth.signOut().then(()=>location.reload())" style="background:transparent;border:0.5px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.25);padding:6px;font-size:0.44rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">DÉCONNEXION</button>
+      <button onclick="_supa.auth.signOut().then(()=>location.reload())" style="background:transparent;border:0.5px solid rgba(255,255,255,0.38);color:rgba(255,255,255,0.62);padding:6px;font-size:0.44rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">DÉCONNEXION</button>
     </div>
-    <div id="admin-data" style="margin-top:14px;font-size:0.48rem;color:rgba(255,255,255,0.28);line-height:1.9;max-height:280px;overflow-y:auto;font-family:Share Tech Mono,monospace"></div>
+    <div id="admin-data" style="margin-top:14px;font-size:0.48rem;color:rgba(255,255,255,0.68);line-height:1.9;max-height:280px;overflow-y:auto;font-family:Share Tech Mono,monospace"></div>
   `;
   document.body.appendChild(p);
   adminLoadStats();
@@ -1950,8 +2117,342 @@ async function adminLoad(type){
   });
 })();
 
-console.log('%c✦ VIBE 2026 — vibegay.ca','color:#D4AF37;font-weight:bold;font-size:14px;font-family:Share Tech Mono,monospace');
-console.log('%cRéseau LGBTQ+ Canadien · Né à Québec · 500 places fondateur','color:rgba(212,175,55,0.5);font-size:11px;font-family:Share Tech Mono,monospace');
+
+
+
+// ══════════════════════════════════════════
+// GLOBE RÉALISTE (textures NASA — adapté de Lumina Spark)
+// ══════════════════════════════════════════
+(function(){
+  const canvas=document.getElementById('globe-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)return;
+
+  const DAY_URL="https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg";
+  const NIGHT_URL="https://unpkg.com/three-globe/example/img/earth-night.jpg";
+  const cities=[
+    {name:"Québec",lat:46.81,lon:-71.21},
+    {name:"Montréal",lat:45.5,lon:-73.56},
+    {name:"Ottawa",lat:45.42,lon:-75.7},
+    {name:"Toronto",lat:43.65,lon:-79.38},
+    {name:"Vancouver",lat:49.28,lon:-123.12}
+  ];
+
+  let tex=null, rot=0, raf=0;
+  const internal=256;
+  canvas.width=internal;canvas.height=internal;
+  const img=ctx.createImageData(internal,internal);
+  const buf=img.data;
+  const cx=internal/2, cy=internal/2, r=internal/2-4;
+
+  function loadTex(){
+    const load=(url)=>new Promise((res,rej)=>{
+      const im=new Image();im.crossOrigin="anonymous";
+      im.onload=()=>res(im);im.onerror=rej;im.src=url;
+    });
+    return Promise.all([load(DAY_URL),load(NIGHT_URL)]).then(([day,night])=>{
+      const w=1024,h=512;
+      const off=document.createElement("canvas");off.width=w;off.height=h;
+      const o=off.getContext("2d");
+      o.drawImage(day,0,0,w,h);const dD=o.getImageData(0,0,w,h);
+      o.clearRect(0,0,w,h);o.drawImage(night,0,0,w,h);const nD=o.getImageData(0,0,w,h);
+      return {day:dD,night:nD,w,h};
+    });
+  }
+
+  function render(){
+    rot+=0.0018;
+    const tilt=(-18*Math.PI)/180, cosT=Math.cos(tilt), sinT=Math.sin(tilt);
+    const sunX=-0.35,sunY=0.5,sunZ=0.79;
+    for(let y=0;y<internal;y++){
+      for(let x=0;x<internal;x++){
+        const i=(y*internal+x)*4;
+        const dx=(x-cx)/r, dy=(y-cy)/r, d2=dx*dx+dy*dy;
+        if(d2>1){buf[i+3]=0;continue;}
+        const nx=dx, ny=-dy, nz=Math.sqrt(1-d2);
+        const ny2=ny*cosT+nz*sinT, nz2=-ny*sinT+nz*cosT;
+        const lat=Math.asin(ny2), lon=Math.atan2(nx,nz2)-rot;
+        let u=0.5+lon/(2*Math.PI);u=u-Math.floor(u);
+        const v=0.5-lat/Math.PI;
+        const light=Math.max(0,nx*sunX+ny*sunY+nz*sunZ);
+        let R=10,G=20,B=40;
+        if(tex){
+          const tx=Math.min(tex.w-1,Math.floor(u*tex.w));
+          const ty=Math.min(tex.h-1,Math.floor(v*tex.h));
+          const ti=(ty*tex.w+tx)*4;
+          const dR=tex.day.data[ti],dG=tex.day.data[ti+1],dB=tex.day.data[ti+2];
+          const nR=tex.night.data[ti],nG=tex.night.data[ti+1],nB=tex.night.data[ti+2];
+          const k=Math.max(0,Math.min(1,(light-0.05)*3));
+          const lit=0.25+light*0.95;
+          R=dR*lit*k+nR*1.4*(1-k);G=dG*lit*k+nG*1.3*(1-k);B=dB*lit*k+nB*1.0*(1-k);
+        } else {
+          const lit=0.2+light*0.9;R=30*lit+10;G=70*lit+20;B=130*lit+30;
+        }
+        const rim=Math.pow(1-nz,2.5);
+        R+=rim*60;G+=rim*130;B+=rim*220;
+        buf[i]=Math.min(255,R);buf[i+1]=Math.min(255,G);buf[i+2]=Math.min(255,B);buf[i+3]=255;
+      }
+    }
+    ctx.putImageData(img,0,0);
+    ctx.save();
+    const halo=ctx.createRadialGradient(cx,cy,r*0.95,cx,cy,r*1.18);
+    halo.addColorStop(0,"rgba(120,200,255,0.35)");
+    halo.addColorStop(1,"rgba(120,200,255,0)");
+    ctx.globalCompositeOperation="lighter";
+    ctx.fillStyle=halo;ctx.beginPath();ctx.arc(cx,cy,r*1.18,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+    for(const c of cities){
+      const la=(c.lat*Math.PI)/180, lo=(c.lon*Math.PI)/180+rot;
+      const x0=Math.cos(la)*Math.sin(lo), y0=Math.sin(la), z0=Math.cos(la)*Math.cos(lo);
+      const y1=y0*cosT-z0*sinT, z1=y0*sinT+z0*cosT;
+      if(z1<0.05)continue;
+      const px=cx+x0*r, py=cy-y1*r;
+      const pulse=1+Math.sin(Date.now()/350+c.lon)*0.4;
+      ctx.fillStyle="rgba(255,138,207,0.95)";
+      ctx.shadowColor="#ff4dd2";ctx.shadowBlur=12*pulse;
+      ctx.beginPath();ctx.arc(px,py,2.2*pulse,0,Math.PI*2);ctx.fill();
+      ctx.shadowBlur=0;
+    }
+    raf=requestAnimationFrame(render);
+  }
+
+  // Style du canvas (taille affichée + ombre)
+  canvas.style.width='100%';canvas.style.height='100%';
+  canvas.style.filter='drop-shadow(0 20px 50px rgba(0,180,255,0.3))';
+
+  loadTex().then(t=>{tex=t;if(!raf)render();}).catch(()=>{if(!raf)render();});
+})();
+
+// ══════════════════════════════════════════
+// MULTILINGUE — 10 langues (textes principaux)
+// ══════════════════════════════════════════
+const I18N={
+  fr:{
+    nav_home:"Accueil",nav_ange:"Mode Ange",nav_voix:"Voix",nav_reseau:"Réseau",nav_salon:"Salon",nav_tribunal:"Tribunal",
+    hero_sub:"Réseau LGBTQ+ Canadien",hero_origin:"Né à Québec · Canada · 2026",
+    f_label:"✦ Pass Fondateur — Édition Limitée",f_period:"/ an · Renouvelable · Accès complet à la plateforme",f_spots:"places restantes sur 500",
+    btn_founder:"Devenir Fondateur",btn_login:"Se connecter",
+    tag_ange:"// Protection · Mode Ange Gardien",title_ange:"Triple-tap.<br><em>Ta sécurité,</em><br>en 3 secondes.",
+    tag_reseau:"// Le réseau s'étend",title_reseau:"Une communauté<br><em>qui grandit</em>",
+    tag_voix:"// La voix d'abord",title_voix:"Écoute<br><em>avant de voir</em>",
+    tag_salon:"// Communauté · Salon Flottant · Temps Réel",title_salon:"Profils qui <em>flottent.</em><br>Connexions qui se créent.",
+    title_tribunal:"Une justice rendue<br><em>par la communauté.</em>",
+    tag_events:"// Communauté · Événements à venir",title_events:"La scène LGBTQ+<br><em>s'anime.</em>"
+  },
+  en:{
+    nav_home:"Home",nav_ange:"Angel Mode",nav_voix:"Voice",nav_reseau:"Network",nav_salon:"Lounge",nav_tribunal:"Tribunal",
+    hero_sub:"Canadian LGBTQ+ Network",hero_origin:"Born in Québec · Canada · 2026",
+    f_label:"✦ Founder Pass — Limited Edition",f_period:"/ year · Renewable · Full platform access",f_spots:"spots left out of 500",
+    btn_founder:"Become a Founder",btn_login:"Log in",
+    tag_ange:"// Protection · Guardian Angel Mode",title_ange:"Triple-tap.<br><em>Your safety,</em><br>in 3 seconds.",
+    tag_reseau:"// The network grows",title_reseau:"A community<br><em>that's growing</em>",
+    tag_voix:"// Voice first",title_voix:"Listen<br><em>before you see</em>",
+    tag_salon:"// Community · Floating Lounge · Real Time",title_salon:"Profiles that <em>float.</em><br>Connections that form.",
+    title_tribunal:"Justice delivered<br><em>by the community.</em>",
+    tag_events:"// Community · Upcoming Events",title_events:"The LGBTQ+ scene<br><em>comes alive.</em>"
+  },
+  zh:{
+    nav_home:"首页",nav_ange:"天使模式",nav_voix:"语音",nav_reseau:"网络",nav_salon:"沙龙",nav_tribunal:"仲裁",
+    hero_sub:"加拿大 LGBTQ+ 网络",hero_origin:"诞生于魁北克 · 加拿大 · 2026",
+    f_label:"✦ 创始会员通行证 — 限量版",f_period:"/ 年 · 可续费 · 完整平台权限",f_spots:"剩余名额（共500个）",
+    btn_founder:"成为创始会员",btn_login:"登录",
+    tag_ange:"// 保护 · 守护天使模式",title_ange:"轻点三下。<br><em>您的安全，</em><br>三秒内启动。",
+    tag_reseau:"// 网络正在扩展",title_reseau:"一个<br><em>不断成长</em>的社区",
+    tag_voix:"// 语音优先",title_voix:"先聆听<br><em>后见面</em>",
+    tag_salon:"// 社区 · 漂浮沙龙 · 实时",title_salon:"漂浮的<em>个人资料。</em><br>建立的联系。",
+    title_tribunal:"由社区<br><em>主持的正义。</em>",
+    tag_events:"// 社区 · 即将举行的活动",title_events:"LGBTQ+ 场景<br><em>活跃起来。</em>"
+  },
+  pa:{
+    nav_home:"ਮੁੱਖ",nav_ange:"ਏਂਜਲ ਮੋਡ",nav_voix:"ਆਵਾਜ਼",nav_reseau:"ਨੈੱਟਵਰਕ",nav_salon:"ਸੈਲੂਨ",nav_tribunal:"ਟ੍ਰਿਬਿਊਨਲ",
+    hero_sub:"ਕੈਨੇਡੀਅਨ LGBTQ+ ਨੈੱਟਵਰਕ",hero_origin:"ਕਿਊਬੈਕ ਵਿੱਚ ਜਨਮਿਆ · ਕੈਨੇਡਾ · 2026",
+    f_label:"✦ ਫਾਊਂਡਰ ਪਾਸ — ਸੀਮਿਤ ਐਡੀਸ਼ਨ",f_period:"/ ਸਾਲ · ਨਵਿਆਉਣਯੋਗ · ਪੂਰੀ ਪਲੇਟਫਾਰਮ ਪਹੁੰਚ",f_spots:"500 ਵਿੱਚੋਂ ਬਾਕੀ ਥਾਵਾਂ",
+    btn_founder:"ਫਾਊਂਡਰ ਬਣੋ",btn_login:"ਲੌਗ ਇਨ ਕਰੋ",
+    tag_ange:"// ਸੁਰੱਖਿਆ · ਗਾਰਡੀਅਨ ਏਂਜਲ ਮੋਡ",title_ange:"ਤਿੰਨ ਵਾਰ ਟੈਪ ਕਰੋ।<br><em>ਤੁਹਾਡੀ ਸੁਰੱਖਿਆ,</em><br>3 ਸਕਿੰਟਾਂ ਵਿੱਚ।",
+    tag_reseau:"// ਨੈੱਟਵਰਕ ਵਧ ਰਿਹਾ ਹੈ",title_reseau:"ਇੱਕ ਕਮਿਊਨਿਟੀ<br><em>ਜੋ ਵਧ ਰਹੀ ਹੈ</em>",
+    tag_voix:"// ਪਹਿਲਾਂ ਆਵਾਜ਼",title_voix:"ਸੁਣੋ<br><em>ਵੇਖਣ ਤੋਂ ਪਹਿਲਾਂ</em>",
+    tag_salon:"// ਕਮਿਊਨਿਟੀ · ਫਲੋਟਿੰਗ ਸੈਲੂਨ · ਰੀਅਲ ਟਾਈਮ",title_salon:"ਪ੍ਰੋਫਾਈਲ ਜੋ <em>ਤੈਰਦੇ ਹਨ।</em><br>ਕਨੈਕਸ਼ਨ ਜੋ ਬਣਦੇ ਹਨ।",
+    title_tribunal:"ਕਮਿਊਨਿਟੀ ਵੱਲੋਂ<br><em>ਦਿੱਤਾ ਗਿਆ ਨਿਆਂ।</em>",
+    tag_events:"// ਕਮਿਊਨਿਟੀ · ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ",title_events:"LGBTQ+ ਸੀਨ<br><em>ਜੀਵੰਤ ਹੁੰਦਾ ਹੈ।</em>"
+  },
+  es:{
+    nav_home:"Inicio",nav_ange:"Modo Ángel",nav_voix:"Voz",nav_reseau:"Red",nav_salon:"Salón",nav_tribunal:"Tribunal",
+    hero_sub:"Red LGBTQ+ Canadiense",hero_origin:"Nacido en Quebec · Canadá · 2026",
+    f_label:"✦ Pase Fundador — Edición Limitada",f_period:"/ año · Renovable · Acceso completo a la plataforma",f_spots:"plazas restantes de 500",
+    btn_founder:"Hazte Fundador",btn_login:"Iniciar sesión",
+    tag_ange:"// Protección · Modo Ángel Guardián",title_ange:"Triple toque.<br><em>Tu seguridad,</em><br>en 3 segundos.",
+    tag_reseau:"// La red se expande",title_reseau:"Una comunidad<br><em>que crece</em>",
+    tag_voix:"// La voz primero",title_voix:"Escucha<br><em>antes de ver</em>",
+    tag_salon:"// Comunidad · Salón Flotante · Tiempo Real",title_salon:"Perfiles que <em>flotan.</em><br>Conexiones que se crean.",
+    title_tribunal:"Justicia impartida<br><em>por la comunidad.</em>",
+    tag_events:"// Comunidad · Próximos Eventos",title_events:"La escena LGBTQ+<br><em>cobra vida.</em>"
+  },
+  tl:{
+    nav_home:"Home",nav_ange:"Angel Mode",nav_voix:"Boses",nav_reseau:"Network",nav_salon:"Salon",nav_tribunal:"Tribunal",
+    hero_sub:"Canadian LGBTQ+ Network",hero_origin:"Ipinanganak sa Quebec · Canada · 2026",
+    f_label:"✦ Founder Pass — Limited Edition",f_period:"/ taon · Renewable · Buong access sa platform",f_spots:"natitirang puwesto sa 500",
+    btn_founder:"Maging Founder",btn_login:"Mag-log in",
+    tag_ange:"// Proteksyon · Guardian Angel Mode",title_ange:"Triple-tap.<br><em>Ang iyong kaligtasan,</em><br>sa 3 segundo.",
+    tag_reseau:"// Lumalago ang network",title_reseau:"Isang komunidad<br><em>na lumalago</em>",
+    tag_voix:"// Boses muna",title_voix:"Makinig<br><em>bago makita</em>",
+    tag_salon:"// Komunidad · Floating Salon · Real Time",title_salon:"Mga profile na <em>lumulutang.</em><br>Mga koneksyong nabubuo.",
+    title_tribunal:"Hustisyang ibinibigay<br><em>ng komunidad.</em>",
+    tag_events:"// Komunidad · Mga Paparating na Event",title_events:"Ang LGBTQ+ scene<br><em>ay nabubuhay.</em>"
+  },
+  it:{
+    nav_home:"Home",nav_ange:"Modalità Angelo",nav_voix:"Voce",nav_reseau:"Rete",nav_salon:"Salotto",nav_tribunal:"Tribunale",
+    hero_sub:"Rete LGBTQ+ Canadese",hero_origin:"Nato in Québec · Canada · 2026",
+    f_label:"✦ Pass Fondatore — Edizione Limitata",f_period:"/ anno · Rinnovabile · Accesso completo alla piattaforma",f_spots:"posti rimasti su 500",
+    btn_founder:"Diventa Fondatore",btn_login:"Accedi",
+    tag_ange:"// Protezione · Modalità Angelo Custode",title_ange:"Triplo tocco.<br><em>La tua sicurezza,</em><br>in 3 secondi.",
+    tag_reseau:"// La rete si espande",title_reseau:"Una comunità<br><em>che cresce</em>",
+    tag_voix:"// Prima la voce",title_voix:"Ascolta<br><em>prima di vedere</em>",
+    tag_salon:"// Comunità · Salotto Fluttuante · Tempo Reale",title_salon:"Profili che <em>fluttuano.</em><br>Connessioni che nascono.",
+    title_tribunal:"Giustizia resa<br><em>dalla comunità.</em>",
+    tag_events:"// Comunità · Prossimi Eventi",title_events:"La scena LGBTQ+<br><em>prende vita.</em>"
+  },
+  de:{
+    nav_home:"Start",nav_ange:"Engel-Modus",nav_voix:"Stimme",nav_reseau:"Netzwerk",nav_salon:"Salon",nav_tribunal:"Tribunal",
+    hero_sub:"Kanadisches LGBTQ+ Netzwerk",hero_origin:"Geboren in Québec · Kanada · 2026",
+    f_label:"✦ Gründer-Pass — Limitierte Edition",f_period:"/ Jahr · Verlängerbar · Voller Plattformzugang",f_spots:"verbleibende Plätze von 500",
+    btn_founder:"Gründer werden",btn_login:"Anmelden",
+    tag_ange:"// Schutz · Schutzengel-Modus",title_ange:"Dreifach tippen.<br><em>Deine Sicherheit,</em><br>in 3 Sekunden.",
+    tag_reseau:"// Das Netzwerk wächst",title_reseau:"Eine Gemeinschaft<br><em>die wächst</em>",
+    tag_voix:"// Stimme zuerst",title_voix:"Höre zu<br><em>bevor du siehst</em>",
+    tag_salon:"// Gemeinschaft · Schwebender Salon · Echtzeit",title_salon:"Profile die <em>schweben.</em><br>Verbindungen die entstehen.",
+    title_tribunal:"Gerechtigkeit<br><em>durch die Gemeinschaft.</em>",
+    tag_events:"// Gemeinschaft · Kommende Events",title_events:"Die LGBTQ+ Szene<br><em>erwacht.</em>"
+  },
+  pt:{
+    nav_home:"Início",nav_ange:"Modo Anjo",nav_voix:"Voz",nav_reseau:"Rede",nav_salon:"Salão",nav_tribunal:"Tribunal",
+    hero_sub:"Rede LGBTQ+ Canadense",hero_origin:"Nascido em Quebec · Canadá · 2026",
+    f_label:"✦ Passe Fundador — Edição Limitada",f_period:"/ ano · Renovável · Acesso completo à plataforma",f_spots:"vagas restantes de 500",
+    btn_founder:"Torne-se Fundador",btn_login:"Entrar",
+    tag_ange:"// Proteção · Modo Anjo da Guarda",title_ange:"Toque triplo.<br><em>Sua segurança,</em><br>em 3 segundos.",
+    tag_reseau:"// A rede se expande",title_reseau:"Uma comunidade<br><em>que cresce</em>",
+    tag_voix:"// A voz primeiro",title_voix:"Ouça<br><em>antes de ver</em>",
+    tag_salon:"// Comunidade · Salão Flutuante · Tempo Real",title_salon:"Perfis que <em>flutuam.</em><br>Conexões que se criam.",
+    title_tribunal:"Justiça feita<br><em>pela comunidade.</em>",
+    tag_events:"// Comunidade · Próximos Eventos",title_events:"A cena LGBTQ+<br><em>ganha vida.</em>"
+  },
+  ru:{
+    nav_home:"Главная",nav_ange:"Режим Ангела",nav_voix:"Голос",nav_reseau:"Сеть",nav_salon:"Салон",nav_tribunal:"Трибунал",
+    hero_sub:"Канадская ЛГБТК+ сеть",hero_origin:"Создано в Квебеке · Канада · 2026",
+    f_label:"✦ Пропуск Основателя — Лимитированный",f_period:"/ год · Продлеваемый · Полный доступ к платформе",f_spots:"мест осталось из 500",
+    btn_founder:"Стать Основателем",btn_login:"Войти",
+    tag_ange:"// Защита · Режим Ангела-Хранителя",title_ange:"Тройное касание.<br><em>Ваша безопасность,</em><br>за 3 секунды.",
+    tag_reseau:"// Сеть расширяется",title_reseau:"Сообщество<br><em>которое растёт</em>",
+    tag_voix:"// Сначала голос",title_voix:"Слушай<br><em>прежде чем увидеть</em>",
+    tag_salon:"// Сообщество · Плавающий салон · В реальном времени",title_salon:"Профили, которые <em>парят.</em><br>Связи, которые рождаются.",
+    title_tribunal:"Правосудие<br><em>от сообщества.</em>",
+    tag_events:"// Сообщество · Предстоящие события",title_events:"ЛГБТК+ сцена<br><em>оживает.</em>"
+  }
+};
+function setLang(lang){
+  const dict=I18N[lang];if(!dict)return;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');if(dict[k]!==undefined)el.textContent=dict[k];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+    const k=el.getAttribute('data-i18n-html');if(dict[k]!==undefined)el.innerHTML=dict[k];
+  });
+  document.getElementById('langCurrent').textContent=lang.toUpperCase();
+  document.documentElement.setAttribute('lang',lang);
+  document.querySelectorAll('.lang-menu button').forEach(b=>{
+    b.classList.toggle('active',b.getAttribute('data-lang')===lang);
+  });
+  document.getElementById('langMenu').classList.remove('open');
+}
+
+
+// ══════════════════════════════════════════
+// SALON DE LA VOIX — démo audio (adapté de Lumina Spark)
+// SpeechSynthesis natif : fait vraiment parler le navigateur
+// ══════════════════════════════════════════
+(function(){
+  const SCRIPT=[
+    {who:"Léo · 28",text:"Salut… c'est mon premier salon. J'avoue je suis nerveux.",pitch:1.05,rate:0.95},
+    {who:"Sam · 34",text:"Bienvenue Léo. Y'a personne qui va te juger icitte. Juste des voix.",pitch:0.85,rate:0.92},
+    {who:"Léo · 28",text:"C'est weird hein… j'ai pas eu à swiper, à liker, à rien.",pitch:1.05,rate:0.97},
+    {who:"Sam · 34",text:"C'est ça l'idée. Tu parles quand t'es prêt. Pis on écoute.",pitch:0.85,rate:0.9},
+    {who:"Léo · 28",text:"Merci. Honnêtement… ça fait du bien.",pitch:1.05,rate:0.93}
+  ];
+  const WAVE_BARS=32;
+  let playing=false, cancelled=false, waveTimer=null;
+  const synth=('speechSynthesis' in window)?window.speechSynthesis:null;
+  const waveBox=document.getElementById('voixWave');
+  const transcript=document.getElementById('voixTranscript');
+  const dot=document.getElementById('voixDot');
+  const statusEl=document.getElementById('voixStatus');
+  const playBtn=document.getElementById('voixPlay');
+  const playIcon=document.getElementById('voixPlayIcon');
+  const playLabel=document.getElementById('voixPlayLabel');
+
+  if(!waveBox)return;
+  // construire les barres de waveform
+  for(let i=0;i<WAVE_BARS;i++){waveBox.appendChild(document.createElement('span'));}
+  const bars=waveBox.querySelectorAll('span');
+
+  if(!synth){
+    transcript.innerHTML='<span class="voix-idle">⚠ Ton fureteur ne supporte pas la voix synthétique. Essaie Chrome ou Safari.</span>';
+    if(playBtn)playBtn.disabled=true;
+    return;
+  }
+  synth.getVoices();
+
+  function pickFR(){
+    const v=synth.getVoices()||[];
+    return v.find(x=>x.lang&&x.lang.startsWith('fr-CA'))||v.find(x=>x.lang&&x.lang.startsWith('fr'))||v[0];
+  }
+  function animWave(){
+    waveTimer=setInterval(()=>{
+      bars.forEach(b=>{b.style.height=(12+Math.random()*78)+'%';});
+    },120);
+  }
+  function stopWave(){
+    if(waveTimer){clearInterval(waveTimer);waveTimer=null;}
+    bars.forEach(b=>{b.style.height='12%';});
+  }
+  function speak(line){
+    return new Promise(res=>{
+      const u=new SpeechSynthesisUtterance(line.text);
+      const v=pickFR();if(v)u.voice=v;
+      u.lang='fr-CA';u.pitch=line.pitch;u.rate=line.rate;u.volume=1;
+      u.onend=()=>res();u.onerror=()=>res();
+      synth.speak(u);
+    });
+  }
+  function showLine(line){
+    transcript.innerHTML='<div class="voix-who">'+line.who+'</div><div class="voix-said">« '+line.text+' »</div>';
+  }
+  function setIdle(){
+    transcript.innerHTML='<span class="voix-idle">— Silence. Le salon attend ta présence. —</span>';
+  }
+  async function play(){
+    cancelled=false;playing=true;
+    synth.cancel();
+    dot.classList.add('live');statusEl.textContent='EN ONDES';
+    playIcon.textContent='■';playLabel.textContent='Couper';
+    animWave();
+    for(let i=0;i<SCRIPT.length;i++){
+      if(cancelled)break;
+      showLine(SCRIPT[i]);
+      await speak(SCRIPT[i]);
+      await new Promise(r=>setTimeout(r,350));
+    }
+    stop();
+  }
+  function stop(){
+    cancelled=true;playing=false;
+    synth.cancel();stopWave();
+    dot.classList.remove('live');statusEl.textContent='PRÊT';
+    playIcon.textContent='▶';playLabel.textContent='Écouter le salon';
+    setIdle();
+  }
+  window.toggleVoixDemo=function(){ playing?stop():play(); };
+})();
+
 </script>
 </body>
 </html>
