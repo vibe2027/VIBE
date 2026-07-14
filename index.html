@@ -8,7 +8,7 @@
 <meta property="og:url" content="https://vibegay.ca">
 <title>VIBE 2026 — Réseau LGBTQ+ Canadien</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --gold:#D4AF37;--gold2:rgba(212,175,55,0.12);
@@ -787,6 +787,35 @@ footer{
 .lang-menu button{background:transparent;border:none;color:rgba(255,255,255,0.6);font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:1px;padding:8px 10px;text-align:left;cursor:pointer;border-radius:6px;transition:all 0.2s}
 .lang-menu button:hover{background:rgba(212,175,55,0.12);color:var(--gold)}
 .lang-menu button.active{color:var(--gold);background:rgba(212,175,55,0.08)}
+
+/* ══ SALLE D'AUDIENCE + VERDICT ══ */
+.audience-wrap{max-width:720px;margin:50px auto 0;padding:0 24px}
+.audience-title{font-size:0.55rem;letter-spacing:4px;color:rgba(220,50,50,0.55);font-family:'Share Tech Mono',monospace;margin-bottom:18px;text-transform:uppercase}
+.aud-pseudo{width:100%;background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.15);color:#fff;padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:2px;margin-bottom:18px}
+.aud-card{border:0.5px solid rgba(220,50,50,0.2);background:rgba(220,50,50,0.03);padding:20px;margin-bottom:14px}
+.aud-motif{font-size:0.62rem;letter-spacing:2px;color:rgba(255,255,255,0.85);font-family:'Share Tech Mono',monospace;margin-bottom:6px}
+.aud-details{font-size:0.55rem;line-height:1.9;color:rgba(255,255,255,0.5);margin-bottom:14px}
+.aud-counts{font-size:0.48rem;letter-spacing:2px;color:rgba(255,255,255,0.35);font-family:'Share Tech Mono',monospace;margin-bottom:14px}
+.aud-btns{display:flex;gap:12px;flex-wrap:wrap}
+.aud-btn{flex:1;min-width:140px;padding:13px 10px;font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:2px;cursor:pointer;background:transparent;border:1px solid;transition:all 0.3s}
+.aud-btn.innocent{color:#D4AF37;border-color:rgba(212,175,55,0.45)}
+.aud-btn.innocent:hover{background:rgba(212,175,55,0.1)}
+.aud-btn.coupable{color:#DC3232;border-color:rgba(220,50,50,0.45)}
+.aud-btn.coupable:hover{background:rgba(220,50,50,0.1)}
+.aud-empty{font-size:0.55rem;letter-spacing:2px;color:rgba(255,255,255,0.3);font-family:'Share Tech Mono',monospace;padding:20px 0}
+#verdict-overlay{position:fixed;inset:0;z-index:9500;display:none;align-items:center;justify-content:center;flex-direction:column;background:#000}
+#verdict-overlay.show{display:flex}
+#verdict-fx{position:absolute;inset:0;width:100%;height:100%}
+.verdict-text{position:relative;z-index:3;font-family:'Cinzel',Georgia,serif;font-size:clamp(1.6rem,7vw,3.2rem);letter-spacing:12px;opacity:0;font-weight:700;text-align:center}
+.verdict-text.appear{animation:verdict-text-in 2.4s cubic-bezier(0.16,1,0.3,1) 1.6s forwards}
+@keyframes verdict-text-in{0%{opacity:0;letter-spacing:34px;filter:blur(14px)}100%{opacity:1;letter-spacing:12px;filter:blur(0)}}
+.verdict-sub{position:relative;z-index:3;margin-top:16px;font-size:0.52rem;letter-spacing:4px;opacity:0;color:rgba(255,255,255,0.75);font-family:'Share Tech Mono',monospace;text-align:center;padding:0 20px}
+.verdict-sub.appear{animation:verdict-sub-in 1.6s ease 3s forwards}
+@keyframes verdict-sub-in{to{opacity:1}}
+#verdict-close{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:4;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.75);padding:12px 30px;font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:3px;cursor:pointer;opacity:0}
+#verdict-close.appear{animation:verdict-sub-in 1s ease 3.6s forwards}
+#verdict-overlay.shake #verdict-fx{animation:verdict-shake 0.6s ease-in-out 3}
+@keyframes verdict-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-10px,5px)}40%{transform:translate(9px,-6px)}60%{transform:translate(-6px,-5px)}80%{transform:translate(8px,6px)}}
 </style>
 </head>
 <body>
@@ -1077,6 +1106,12 @@ footer{
       <div id="trib-success" style="display:none;padding:14px;text-align:center;font-size:0.6rem;color:rgba(212,175,55,0.7);letter-spacing:2px;font-family:Share Tech Mono,monospace"></div>
       <button type="submit" class="trib-submit">Soumettre au tribunal ↗</button>
     </form>
+
+  <div class="audience-wrap">
+    <div class="audience-title">// Salle d'audience · Vote la communauté</div>
+    <input type="text" id="aud-pseudo" class="aud-pseudo" maxlength="30" placeholder="Ton pseudo de juré (requis pour voter)">
+    <div id="audience-list"><div class="aud-empty">Chargement des dossiers...</div></div>
+  </div>
   </div>
 </section>
 
@@ -1087,7 +1122,7 @@ footer{
   <p class="section-body">Les événements de la communauté, dans ta ville. Présence VIBE confirmée.</p>
   <div class="ev-grid">
     <div class="ev-card">
-      <div class="ev-soon">Bientôt confirmé</div>
+      <div class="ev-soon">À venir</div>
       <div class="ev-date">Été 2026</div>
       <div class="ev-city">📍 Québec</div>
       <div class="ev-title">Lancement officiel VIBE QC</div>
@@ -1095,7 +1130,7 @@ footer{
       <button class="ev-btn" onclick="handleEventInterest(this)">Je suis intéressé ↗</button>
     </div>
     <div class="ev-card">
-      <div class="ev-soon">Bientôt confirmé</div>
+      <div class="ev-soon">À venir</div>
       <div class="ev-date">Été 2026</div>
       <div class="ev-city">📍 Montréal</div>
       <div class="ev-title">Fierté Montréal · VIBE Zone</div>
@@ -1103,7 +1138,7 @@ footer{
       <button class="ev-btn" onclick="handleEventInterest(this)">Je suis intéressé ↗</button>
     </div>
     <div class="ev-card">
-      <div class="ev-soon">Bientôt confirmé</div>
+      <div class="ev-soon">À venir</div>
       <div class="ev-date">Automne 2026</div>
       <div class="ev-city">📍 Toronto</div>
       <div class="ev-title">VIBE East — Salon Flottant Live</div>
@@ -1247,6 +1282,7 @@ function showError(msg){const el=document.getElementById('notif-error');el.textC
   const COLORS=['rgba(212,175,55,0.12)','rgba(180,79,255,0.07)','rgba(0,238,255,0.05)'];
 
   function drawMatrix(){
+  if(window.VIBE_FX_PAUSE)return;
     ctx.fillStyle='rgba(0,0,0,0.08)';
     ctx.fillRect(0,0,cv.width,cv.height);
     ctx.font='12px Share Tech Mono,monospace';
@@ -1524,6 +1560,7 @@ function initStars(){
   }
 }
 function drawUniv(){
+  if(window.VIBE_FX_PAUSE){requestAnimationFrame(drawUniv);return;}
   uCtx.clearRect(0,0,univCanvas.width,univCanvas.height);
   stars.forEach(s=>{
     s.a+=s.speed;
@@ -1545,6 +1582,7 @@ window.addEventListener('resize',()=>{resizeUniv();initStars()});
   const W=180,H=180,cx=W/2;let t=0;
   const COLS=['#D4AF37','#b44fff','#00eeff','#ff3380','#00ff88'];
   function fr(){
+    if(window.VIBE_FX_PAUSE){requestAnimationFrame(fr);return;}
     ctx.clearRect(0,0,W,H);
     const n=12;
     // Lueur centrale
@@ -1631,6 +1669,7 @@ function initSalon(){
 }
 
 function drawSalon(ts){
+  if(window.VIBE_FX_PAUSE){requestAnimationFrame(drawSalon);return;}
   sCtx.clearRect(0,0,salCanvas.width,salCanvas.height);
 
   // Lignes de connexion entre profils proches
@@ -1984,7 +2023,15 @@ async function handleSignup(e){
       '<div style="font-family:Playfair Display,serif;font-size:1.4rem;color:'+accent+';margin-bottom:12px">Bienvenue, '+prenom+' !</div>'+
       '<div style="font-size:0.58rem;color:rgba(255,255,255,0.72);letter-spacing:2px;line-height:2;margin-bottom:20px;font-family:Share Tech Mono,monospace">'+
       'Ton compte VIBE est créé.<br>Vérifie ton courriel <span style="color:'+accent+'">'+email+'</span><br>pour confirmer ton accès.</div>'+
-      '<div style="font-size:0.46rem;color:'+accent+';letter-spacing:3px;font-family:Share Tech Mono,monospace">'+(estFondateur?'Place Fondateur réservée · 99 $CAD / an':'Membre Gratuit · Bienvenue dans la communauté')+'</div></div>';
+      '<div style="font-size:0.46rem;color:'+accent+';letter-spacing:3px;font-family:Share Tech Mono,monospace">'+(estFondateur?'Place Fondateur réservée · 99 $CAD / an':'Membre Gratuit · Bienvenue dans la communauté')+'</div>'+
+      (estFondateur?
+      '<div style="margin-top:26px;padding-top:22px;border-top:1px solid rgba(212,175,55,0.25)">'+
+        '<div style="font-size:0.55rem;color:rgba(255,255,255,0.85);letter-spacing:2px;margin-bottom:16px;font-family:Share Tech Mono,monospace">Complète ton paiement de 99 $CAD pour activer ton Pass Fondateur :</div>'+
+        '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=vibeqbc2026%40hotmail.com&item_name=Pass%20Fondateur%20VIBE%20%E2%80%94%201%20an&amount=99.00&currency_code=CAD" target="_blank" rel="noopener" style="display:inline-block;padding:13px 34px;background:#D4AF37;color:#000;font-family:Share Tech Mono,monospace;font-size:0.6rem;letter-spacing:3px;text-decoration:none;font-weight:700;margin-bottom:12px">PAYER PAR PAYPAL — 99 $</a>'+
+        '<br><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=vibeqbc2026%40hotmail.com&item_name=Pass%20Fondateur%20VIBE%20%E2%80%94%201%20an&amount=99.00&currency_code=CAD" target="_blank" rel="noopener" style="display:inline-block;padding:13px 34px;background:transparent;border:1px solid #D4AF37;color:#D4AF37;font-family:Share Tech Mono,monospace;font-size:0.6rem;letter-spacing:3px;text-decoration:none;font-weight:700;margin-bottom:14px">💳 CARTE DE CRÉDIT — 99 $</a>'+
+        '<div style="font-size:0.44rem;color:rgba(255,255,255,0.45);letter-spacing:1.5px;font-family:Share Tech Mono,monospace;margin-bottom:10px">Visa · Mastercard · Aucun compte PayPal requis</div>'+
+        '<div style="font-size:0.5rem;color:rgba(255,255,255,0.6);letter-spacing:1.5px;line-height:2;font-family:Share Tech Mono,monospace;margin-top:8px">ou par <span style="color:#D4AF37">Virement Interac</span> à :<br><span style="color:#fff;user-select:all">vibeqbc2026@hotmail.com</span><br>Indique ton courriel d\'inscription dans le message du virement.<br>Ton statut Fondateur est activé dès réception (max 24 h).</div>'+
+      '</div>':'')+'</div>';
     showSuccess('✦ Compte créé — vérifie ton courriel !');
     loadStats();
   }catch(err){
@@ -2162,6 +2209,7 @@ async function adminLoad(type){
   }
 
   function render(){
+    if(window.VIBE_FX_PAUSE){raf=requestAnimationFrame(render);return;}
     rot+=0.0018;
     const tilt=(-18*Math.PI)/180, cosT=Math.cos(tilt), sinT=Math.sin(tilt);
     const sunX=-0.35,sunY=0.5,sunZ=0.79;
@@ -2453,6 +2501,236 @@ function setLang(lang){
   window.toggleVoixDemo=function(){ playing?stop():play(); };
 })();
 
+
+// ══════════════════════════════════════════
+// TRIBUNAL — SALLE D'AUDIENCE + VERDICT CINÉMATIQUE
+// ══════════════════════════════════════════
+window.VIBE_FX_PAUSE=false;
+(function(){
+const ov=document.getElementById('verdict-overlay');
+const vcv=document.getElementById('verdict-fx');
+const vctx=vcv.getContext('2d');
+let VW,VH,vraf=null,vt=0,vmode='ange';
+let vFeathers=[],vDust=[],vEmbers=[],vSmoke=[],vFlames=[];
+function vResize(){VW=vcv.width=innerWidth;VH=vcv.height=innerHeight}
+window.addEventListener('resize',vResize);
+
+function drawAngelFX(){
+  const bg=vctx.createLinearGradient(0,0,0,VH);
+  bg.addColorStop(0,'#131007');bg.addColorStop(0.5,'#0a0805');bg.addColorStop(1,'#030302');
+  vctx.fillStyle=bg;vctx.fillRect(0,0,VW,VH);
+  const cx=VW/2,intro=Math.min(vt/120,1);
+  vctx.save();vctx.globalCompositeOperation='screen';
+  for(let i=0;i<7;i++){
+    const ang=(i-3)*0.16+Math.sin(vt*0.004+i)*0.03,w0=30+i*8,len=VH*1.15;
+    vctx.save();vctx.translate(cx,-40);vctx.rotate(ang);
+    const g=vctx.createLinearGradient(0,0,0,len);
+    const al=(0.10+0.05*Math.sin(vt*0.01+i*2))*intro;
+    g.addColorStop(0,'rgba(255,236,170,'+(al*1.6)+')');
+    g.addColorStop(0.5,'rgba(255,220,140,'+al+')');
+    g.addColorStop(1,'rgba(255,200,100,0)');
+    vctx.fillStyle=g;vctx.beginPath();
+    vctx.moveTo(-w0*0.3,0);vctx.lineTo(w0*0.3,0);vctx.lineTo(w0*2.2,len);vctx.lineTo(-w0*2.2,len);
+    vctx.closePath();vctx.fill();vctx.restore();
+  }
+  const core=vctx.createRadialGradient(cx,VH*0.16,4,cx,VH*0.16,320);
+  core.addColorStop(0,'rgba(255,252,235,'+(0.9*intro)+')');
+  core.addColorStop(0.15,'rgba(255,238,180,'+(0.5*intro)+')');
+  core.addColorStop(0.5,'rgba(255,215,130,'+(0.14*intro)+')');
+  core.addColorStop(1,'rgba(255,200,100,0)');
+  vctx.fillStyle=core;vctx.fillRect(0,0,VW,VH);vctx.restore();
+  if(vDust.length<90&&Math.random()<0.9)vDust.push({x:Math.random()*VW,y:Math.random()*VH,r:0.6+Math.random()*2.8,a:0,amax:0.12+Math.random()*0.4,vy:-(0.08+Math.random()*0.3),vx:(Math.random()-0.5)*0.2,ph:Math.random()*Math.PI*2,blur:Math.random()>0.7});
+  vctx.save();vctx.globalCompositeOperation='screen';
+  for(const p of vDust){
+    p.ph+=0.02;p.x+=p.vx+Math.sin(p.ph)*0.15;p.y+=p.vy;p.a=Math.min(p.a+0.004,p.amax*intro);
+    if(p.y<-10){p.y=VH+10;p.x=Math.random()*VW;}
+    vctx.beginPath();vctx.arc(p.x,p.y,p.blur?p.r*2.4:p.r,0,Math.PI*2);
+    vctx.fillStyle='rgba(255,232,168,'+(p.blur?p.a*0.35:p.a)+')';
+    vctx.shadowColor='rgba(255,232,168,0.8)';vctx.shadowBlur=p.blur?18:6;vctx.fill();
+  }
+  vctx.shadowBlur=0;vctx.restore();
+  if(vFeathers.length<14&&Math.random()<0.05)vFeathers.push({x:cx+(Math.random()-0.5)*VW*0.55,y:-30,sway:Math.random()*Math.PI*2,swaySpeed:0.015+Math.random()*0.02,fall:0.5+Math.random()*0.7,size:9+Math.random()*13,rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.05,a:0});
+  for(const f of vFeathers){
+    f.sway+=f.swaySpeed;f.rot+=f.rotV+Math.sin(f.sway)*0.02;
+    f.x+=Math.sin(f.sway)*1.6;f.y+=f.fall+Math.cos(f.sway*0.7)*0.3;f.a=Math.min(f.a+0.02,0.9);
+    if(f.y>VH+40){f.y=-30;f.x=cx+(Math.random()-0.5)*VW*0.55;f.a=0;}
+    vctx.save();vctx.translate(f.x,f.y);vctx.rotate(f.rot);vctx.globalAlpha=f.a*intro;
+    const fg=vctx.createLinearGradient(0,-f.size,0,f.size);
+    fg.addColorStop(0,'rgba(255,255,250,0.95)');fg.addColorStop(1,'rgba(255,240,205,0.55)');
+    vctx.fillStyle=fg;vctx.shadowColor='rgba(255,240,200,0.7)';vctx.shadowBlur=10;
+    vctx.beginPath();vctx.moveTo(0,-f.size);
+    vctx.quadraticCurveTo(f.size*0.55,-f.size*0.2,0,f.size);
+    vctx.quadraticCurveTo(-f.size*0.55,-f.size*0.2,0,-f.size);vctx.fill();
+    vctx.strokeStyle='rgba(255,255,255,0.5)';vctx.lineWidth=0.7;
+    vctx.beginPath();vctx.moveTo(0,-f.size*0.85);vctx.lineTo(0,f.size*0.85);vctx.stroke();
+    vctx.restore();
+  }
+  const vg=vctx.createRadialGradient(cx,VH/2,VH*0.3,cx,VH/2,VH*0.95);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.55)');
+  vctx.fillStyle=vg;vctx.fillRect(0,0,VW,VH);
+}
+function firePal(v){
+  if(v>0.8)return 'rgba(255,250,220,'+v+')';
+  if(v>0.6)return 'rgba(255,200,60,'+v+')';
+  if(v>0.35)return 'rgba(255,110,20,'+(v*0.95)+')';
+  if(v>0.15)return 'rgba(190,40,8,'+(v*0.85)+')';
+  return 'rgba(80,12,4,'+(v*0.7)+')';
+}
+function drawDevilFX(){
+  const intro=Math.min(vt/100,1);
+  const bg=vctx.createLinearGradient(0,0,0,VH);
+  bg.addColorStop(0,'#010101');bg.addColorStop(0.62,'#0c0302');bg.addColorStop(1,'#2a0602');
+  vctx.fillStyle=bg;vctx.fillRect(0,0,VW,VH);
+  const spawnN=Math.floor(6*intro)+2;
+  for(let i=0;i<spawnN;i++)vFlames.push({x:Math.random()*VW,y:VH+8,r:14+Math.random()*26,life:1,vx:(Math.random()-0.5)*0.9,vy:-(2.2+Math.random()*3.4),ph:Math.random()*Math.PI*2});
+  vctx.save();vctx.globalCompositeOperation='screen';
+  vFlames=vFlames.filter(p=>p.life>0.02);
+  for(const p of vFlames){
+    p.ph+=0.09;p.x+=p.vx+Math.sin(p.ph)*1.1;p.y+=p.vy;p.life*=0.962;p.r*=0.985;
+    const g=vctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+    g.addColorStop(0,firePal(p.life));g.addColorStop(0.6,firePal(p.life*0.5));g.addColorStop(1,'rgba(0,0,0,0)');
+    vctx.fillStyle=g;vctx.beginPath();vctx.arc(p.x,p.y,p.r,0,Math.PI*2);vctx.fill();
+  }
+  vctx.restore();
+  if(vEmbers.length<70)for(let i=0;i<3;i++)vEmbers.push({x:Math.random()*VW,y:VH+5,r:0.6+Math.random()*1.8,vx:(Math.random()-0.5)*1.6,vy:-(1.5+Math.random()*3.5),a:0.5+Math.random()*0.5,ph:Math.random()*Math.PI*2});
+  vctx.save();vctx.globalCompositeOperation='screen';
+  vEmbers=vEmbers.filter(p=>p.a>0.03&&p.y>-10);
+  for(const p of vEmbers){
+    p.ph+=0.12;p.x+=p.vx+Math.sin(p.ph)*0.8;p.y+=p.vy;p.a*=0.985;
+    vctx.beginPath();vctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    vctx.fillStyle='rgba(255,'+(120+Math.floor(100*p.a))+',30,'+p.a+')';
+    vctx.shadowColor='rgba(255,120,20,0.9)';vctx.shadowBlur=10;vctx.fill();
+  }
+  vctx.shadowBlur=0;vctx.restore();
+  if(vSmoke.length<26&&Math.random()<0.5)vSmoke.push({x:Math.random()*VW,y:VH*0.9,r:35+Math.random()*70,vx:(Math.random()-0.5)*0.5,vy:-(0.5+Math.random()*0.9),a:0,amax:0.10+Math.random()*0.12,ph:Math.random()*Math.PI*2});
+  vSmoke=vSmoke.filter(p=>p.y>-p.r);
+  for(const p of vSmoke){
+    p.ph+=0.012;p.x+=p.vx+Math.sin(p.ph)*0.5;p.y+=p.vy;p.r+=0.25;
+    p.a=p.y>VH*0.35?Math.min(p.a+0.002,p.amax):p.a*0.995;
+    const g=vctx.createRadialGradient(p.x,p.y,p.r*0.2,p.x,p.y,p.r);
+    g.addColorStop(0,'rgba(60,10,6,'+p.a+')');g.addColorStop(1,'rgba(10,2,2,0)');
+    vctx.fillStyle=g;vctx.beginPath();vctx.arc(p.x,p.y,p.r,0,Math.PI*2);vctx.fill();
+  }
+  const eyeIn=Math.max(0,Math.min((vt-90)/110,1));
+  if(eyeIn>0){
+    const ex=VW/2,ey=VH*0.30,gap=Math.min(VW*0.085,64);
+    let blink=1;const bt=vt%420;if(bt>400)blink=Math.max(0.08,1-(bt-400)/8*(bt<410?1:-1));
+    for(const sd of[-1,1]){
+      const x=ex+sd*gap;
+      const glow=vctx.createRadialGradient(x,ey,2,x,ey,90);
+      glow.addColorStop(0,'rgba(255,60,15,'+(0.5*eyeIn)+')');
+      glow.addColorStop(0.35,'rgba(200,30,8,'+(0.22*eyeIn)+')');
+      glow.addColorStop(1,'rgba(0,0,0,0)');
+      vctx.save();vctx.globalCompositeOperation='screen';
+      vctx.fillStyle=glow;vctx.fillRect(x-95,ey-95,190,190);
+      const flick=0.9+0.1*Math.sin(vt*0.15+sd);
+      vctx.translate(x,ey);vctx.scale(1,blink);
+      const eg=vctx.createRadialGradient(0,0,1,0,0,22);
+      eg.addColorStop(0,'rgba(255,245,200,'+(0.95*eyeIn*flick)+')');
+      eg.addColorStop(0.4,'rgba(255,120,25,'+(0.9*eyeIn*flick)+')');
+      eg.addColorStop(1,'rgba(160,20,5,0)');
+      vctx.fillStyle=eg;vctx.beginPath();vctx.ellipse(0,0,24,11,0,0,Math.PI*2);vctx.fill();
+      vctx.globalCompositeOperation='source-over';
+      vctx.fillStyle='rgba(5,0,0,'+(0.95*eyeIn)+')';
+      vctx.beginPath();vctx.ellipse(0,0,3.2,10,0,0,Math.PI*2);vctx.fill();
+      vctx.restore();
+    }
+  }
+  const vg=vctx.createRadialGradient(VW/2,VH/2,VH*0.22,VW/2,VH/2,VH*0.9);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.72)');
+  vctx.fillStyle=vg;vctx.fillRect(0,0,VW,VH);
+}
+function vLoop(){vt++;if(vmode==='ange')drawAngelFX();else drawDevilFX();vraf=requestAnimationFrame(vLoop);}
+
+window.montrerVerdict=function(m){
+  vmode=m;vResize();vt=0;
+  vFeathers=[];vDust=[];vEmbers=[];vSmoke=[];vFlames=[];
+  window.VIBE_FX_PAUSE=true;
+  const txt=document.getElementById('verdict-text');
+  const sub=document.getElementById('verdict-sub');
+  txt.className='verdict-text';sub.className='verdict-sub';
+  document.getElementById('verdict-close').className='';
+  ov.classList.remove('shake');
+  if(m==='ange'){
+    txt.textContent='NON COUPABLE';txt.style.color='#FFEBB0';
+    txt.style.textShadow='0 0 40px rgba(255,225,150,0.9),0 0 110px rgba(255,210,120,0.5)';
+    sub.textContent='La communauté a tranché · Innocence reconnue';
+  }else{
+    txt.textContent='COUPABLE';txt.style.color='#FF3A16';
+    txt.style.textShadow='0 0 40px rgba(255,60,20,0.9),0 0 110px rgba(200,20,0,0.55)';
+    sub.textContent='Verdict de la communauté · 7 jours en lecture seule';
+    setTimeout(()=>ov.classList.add('shake'),900);
+  }
+  ov.classList.add('show');
+  requestAnimationFrame(()=>{
+    txt.classList.add('appear');sub.classList.add('appear');
+    document.getElementById('verdict-close').classList.add('appear');
+  });
+  if(vraf)cancelAnimationFrame(vraf);
+  vLoop();
+};
+window.fermerVerdict=function(){
+  ov.classList.remove('show','shake');
+  if(vraf)cancelAnimationFrame(vraf);
+  window.VIBE_FX_PAUSE=false;
+};
+})();
+
+// Salle d'audience : liste des dossiers + vote
+async function chargerAudience(){
+  const list=document.getElementById('audience-list');
+  if(!list)return;
+  try{
+    const{data,error}=await _supa.from('tribunal_signalements')
+      .select('id,motif,details,created_at,votes_coupable,votes_innocent')
+      .eq('statut','en_examen').order('created_at',{ascending:false}).limit(5);
+    if(error)throw error;
+    if(!data||!data.length){list.innerHTML='<div class="aud-empty">Aucun dossier en examen. La communauté est en paix.</div>';return;}
+    list.innerHTML=data.map(d=>{
+      const det=d.details?String(d.details).replace(/</g,'&lt;').slice(0,200):'';
+      const mot=String(d.motif||'').replace(/</g,'&lt;');
+      return '<div class="aud-card">'+
+        '<div class="aud-motif">⚖ '+mot+'</div>'+
+        (det?'<div class="aud-details">'+det+'</div>':'')+
+        '<div class="aud-counts">Coupable : '+(d.votes_coupable||0)+' · Innocent : '+(d.votes_innocent||0)+'</div>'+
+        '<div class="aud-btns">'+
+        '<button class="aud-btn innocent" onclick="voterVerdict(\''+d.id+'\',\'innocent\',this)">☩ NON COUPABLE</button>'+
+        '<button class="aud-btn coupable" onclick="voterVerdict(\''+d.id+'\',\'coupable\',this)">▼ COUPABLE</button>'+
+        '</div></div>';
+    }).join('');
+  }catch(e){list.innerHTML='<div class="aud-empty">Salle d\'audience indisponible.</div>';}
+}
+async function voterVerdict(id,verdict,btn){
+  const pin=document.getElementById('aud-pseudo');
+  const pseudo=(pin&&pin.value?pin.value:'').trim()||localStorage.getItem('vibe_jure')||'';
+  if(pseudo.length<2){if(pin){pin.focus();pin.style.borderColor='rgba(220,50,50,0.7)';}return;}
+  localStorage.setItem('vibe_jure',pseudo);
+  if(btn)btn.disabled=true;
+  try{
+    const{data,error}=await _supa.rpc('voter_tribunal',{p_signalement:id,p_pseudo:pseudo,p_verdict:verdict});
+    if(error)throw error;
+    if(data&&data.ok){
+      montrerVerdict(verdict==='innocent'?'ange':'demon');
+      chargerAudience();
+    }else if(data&&data.error==='deja_vote'){
+      if(btn){btn.textContent='DÉJÀ VOTÉ';setTimeout(()=>chargerAudience(),1500);}
+    }else{
+      if(btn){btn.disabled=false;}
+    }
+  }catch(e){if(btn)btn.disabled=false;}
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const pin=document.getElementById('aud-pseudo');
+  if(pin&&localStorage.getItem('vibe_jure'))pin.value=localStorage.getItem('vibe_jure');
+  chargerAudience();
+});
+
 </script>
+<div id="verdict-overlay">
+  <canvas id="verdict-fx"></canvas>
+  <div class="verdict-text" id="verdict-text"></div>
+  <div class="verdict-sub" id="verdict-sub"></div>
+  <button id="verdict-close" onclick="fermerVerdict()">Fermer ✕</button>
+</div>
 </body>
 </html>
