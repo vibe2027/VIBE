@@ -1052,12 +1052,8 @@ footer{
   </div>
 
   <div class="salon-chat">
-    <div class="chat-head">// Messages en temps réel — Supabase Realtime</div>
-    <div id="live-chat-msgs"></div>
-  </div>
-  <div class="salon-send">
-    <input class="chat-input" id="chat-input" type="text" placeholder="Envoie un message au salon..." maxlength="200" onkeydown="if(event.key==='Enter')sendChatMsg()">
-    <button class="chat-send-btn" onclick="sendChatMsg()">Envoyer ↗</button>
+    <div class="chat-head">// Salon privé — Aucune conversation publique. Choisis quelqu'un, parlez juste entre vous.</div>
+    <div id="annuaire-membres" style="display:flex;flex-wrap:wrap;gap:10px;padding:8px 0;min-height:80px"></div>
   </div>
 </section>
 
@@ -1797,7 +1793,9 @@ function renderChat(){
     const isGhost=m.mode==='fantome';
     const cls=isGhost?'cn-ghost':m.prenom==='VIBE'?'cn-cyan':'cn-gold';
     const name=isGhost?'◉ Fantôme':`${m.prenom}${m.ville?'·'+m.ville:''}`;
-    return `<div class="chat-msg"><span class="${cls}">${name}</span><span class="ct">${m.message}</span></div>`;
+    const clickable=!isGhost&&m.expediteur&&(!CURRENT_USER||m.expediteur!==CURRENT_USER.id);
+    const attr=clickable?` onclick="ouvrirPrive('${m.expediteur}','${(m.prenom||'Membre').replace(/'/g,'')}')" style="cursor:pointer;text-decoration:underline dotted rgba(212,175,55,0.4)" title="Message privé"`:'';
+    return `<div class="chat-msg"><span class="${cls}"${attr}>${name}</span><span class="ct">${m.message}</span></div>`;
   }).join('');
   el.scrollTop=el.scrollHeight;
 }
@@ -1833,14 +1831,15 @@ async function sendChatMsg(){
     await _supa.from('salon_messages').insert({
       prenom:CURRENT_USER.user_metadata?.prenom||'Membre',
       ville:CURRENT_USER.user_metadata?.ville||'QC',
-      message:msg.slice(0,200),mode:'normal'
+      message:msg.slice(0,200),mode:'normal',
+      expediteur:CURRENT_USER.id
     });
     // L'utilisateur parle — animer son profil
     if(salProfs.length){salProfs[0].speaking=true;salProfs[0].speakTimer=150;}
   }catch(e){showError('⚠ Erreur envoi.');}
 }
 
-loadChatMsgs();subscribeChat();
+chargerAnnuaire();
 
 // ══════════════════════════════════════════
 // STATS SUPABASE
@@ -2640,31 +2639,6 @@ function drawDevilFX(){
     g.addColorStop(0,'rgba(60,10,6,'+p.a+')');g.addColorStop(1,'rgba(10,2,2,0)');
     vctx.fillStyle=g;vctx.beginPath();vctx.arc(p.x,p.y,p.r,0,Math.PI*2);vctx.fill();
   }
-  const eyeIn=Math.max(0,Math.min((vt-90)/110,1));
-  if(eyeIn>0){
-    const ex=VW/2,ey=VH*0.30,gap=Math.min(VW*0.085,64);
-    let blink=1;const bt=vt%420;if(bt>400)blink=Math.max(0.08,1-(bt-400)/8*(bt<410?1:-1));
-    for(const sd of[-1,1]){
-      const x=ex+sd*gap;
-      const glow=vctx.createRadialGradient(x,ey,2,x,ey,90);
-      glow.addColorStop(0,'rgba(255,60,15,'+(0.5*eyeIn)+')');
-      glow.addColorStop(0.35,'rgba(200,30,8,'+(0.22*eyeIn)+')');
-      glow.addColorStop(1,'rgba(0,0,0,0)');
-      vctx.save();vctx.globalCompositeOperation='screen';
-      vctx.fillStyle=glow;vctx.fillRect(x-95,ey-95,190,190);
-      const flick=0.9+0.1*Math.sin(vt*0.15+sd);
-      vctx.translate(x,ey);vctx.scale(1,blink);
-      const eg=vctx.createRadialGradient(0,0,1,0,0,22);
-      eg.addColorStop(0,'rgba(255,245,200,'+(0.95*eyeIn*flick)+')');
-      eg.addColorStop(0.4,'rgba(255,120,25,'+(0.9*eyeIn*flick)+')');
-      eg.addColorStop(1,'rgba(160,20,5,0)');
-      vctx.fillStyle=eg;vctx.beginPath();vctx.ellipse(0,0,24,11,0,0,Math.PI*2);vctx.fill();
-      vctx.globalCompositeOperation='source-over';
-      vctx.fillStyle='rgba(5,0,0,'+(0.95*eyeIn)+')';
-      vctx.beginPath();vctx.ellipse(0,0,3.2,10,0,0,Math.PI*2);vctx.fill();
-      vctx.restore();
-    }
-  }
   const vg=vctx.createRadialGradient(VW/2,VH/2,VH*0.22,VW/2,VH/2,VH*0.9);
   vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.72)');
   vctx.fillStyle=vg;vctx.fillRect(0,0,VW,VH);
@@ -2754,7 +2728,135 @@ document.addEventListener('DOMContentLoaded',()=>{
   chargerAudience();
 });
 
+
+// ── Réinitialisation du mot de passe (lien du courriel) ──
+_supa.auth.onAuthStateChange((event)=>{
+  if(event==='PASSWORD_RECOVERY'){
+    document.getElementById('reset-modal').classList.add('open');
+  }
+});
+async function handleResetPassword(e){
+  e.preventDefault();
+  const p1=document.getElementById('reset-pass1').value;
+  const p2=document.getElementById('reset-pass2').value;
+  if(p1!==p2){showError('⚠ Les deux mots de passe correspondent pas.');return;}
+  try{
+    const {error}=await _supa.auth.updateUser({password:p1});
+    if(error)throw error;
+    document.getElementById('reset-modal').classList.remove('open');
+    showSuccess('✦ Mot de passe changé ! T\'es connecté.');
+    setTimeout(()=>location.reload(),1600);
+  }catch(err){showError('⚠ '+(err.message||'Erreur.'));}
+}
+
+// ══ MESSAGERIE PRIVÉE ══
+let priveAvec=null,priveNom='',priveChan=null;
+function ouvrirPrive(uid,nom){
+  if(!CURRENT_USER){showError('⚠ Connecte-toi pour écrire en privé.');openLogin();return;}
+  if(uid===CURRENT_USER.id)return;
+  priveAvec=uid;priveNom=nom;
+  document.getElementById('prive-nom').textContent=nom;
+  document.getElementById('prive-modal').classList.add('open');
+  chargerPrive();
+  if(priveChan)_supa.removeChannel(priveChan);
+  priveChan=_supa.channel('mp_'+uid)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages_prives'},p=>{
+      const m=p.new;
+      if((m.expediteur===priveAvec&&m.destinataire===CURRENT_USER.id)||(m.expediteur===CURRENT_USER.id&&m.destinataire===priveAvec)){
+        ajouterPriveMsg(m);
+      }
+    }).subscribe();
+}
+function fermerPrive(){
+  document.getElementById('prive-modal').classList.remove('open');
+  if(priveChan){_supa.removeChannel(priveChan);priveChan=null;}
+  priveAvec=null;
+}
+document.getElementById('prive-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)fermerPrive()});
+function ajouterPriveMsg(m){
+  const el=document.getElementById('prive-msgs');
+  const moi=m.expediteur===CURRENT_USER.id;
+  const d=document.createElement('div');
+  d.style.cssText='margin-bottom:8px;text-align:'+(moi?'right':'left');
+  d.innerHTML='<span style="color:'+(moi?'#FFE9A8':'#D4AF37')+'">'+(moi?'Toi':m.expediteur_pseudo.replace(/</g,'&lt;'))+'</span> · <span style="color:rgba(255,255,255,0.85)">'+m.contenu.replace(/</g,'&lt;')+'</span>';
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+async function chargerPrive(){
+  const el=document.getElementById('prive-msgs');
+  el.innerHTML='<div style="color:rgba(255,255,255,0.35)">Chargement...</div>';
+  try{
+    const {data,error}=await _supa.from('messages_prives').select('*')
+      .or('and(expediteur.eq.'+CURRENT_USER.id+',destinataire.eq.'+priveAvec+'),and(expediteur.eq.'+priveAvec+',destinataire.eq.'+CURRENT_USER.id+')')
+      .order('created_at',{ascending:true}).limit(80);
+    if(error)throw error;
+    el.innerHTML='';
+    if(!data||!data.length){el.innerHTML='<div style="color:rgba(255,255,255,0.35)">Aucun message. Brise la glace.</div>';return;}
+    data.forEach(ajouterPriveMsg);
+  }catch(e){el.innerHTML='<div style="color:rgba(220,50,50,0.7)">Erreur de chargement.</div>';}
+}
+async function envoyerPrive(){
+  const inp=document.getElementById('prive-input');
+  const txt=inp.value.trim();if(!txt||!priveAvec)return;
+  inp.value='';
+  try{
+    const {error}=await _supa.from('messages_prives').insert({
+      expediteur:CURRENT_USER.id,destinataire:priveAvec,
+      expediteur_pseudo:CURRENT_USER.user_metadata?.prenom||'Membre',
+      contenu:txt
+    });
+    if(error)throw error;
+  }catch(e){showError('⚠ Message pas envoyé.');}
+}
+
+// ══ ANNUAIRE DU SALON PRIVÉ ══
+async function chargerAnnuaire(){
+  const el=document.getElementById('annuaire-membres');if(!el)return;
+  if(!CURRENT_USER){
+    el.innerHTML='<div style="font-size:0.55rem;letter-spacing:2px;color:rgba(255,255,255,0.4);font-family:Share Tech Mono,monospace;padding:14px 0">Connecte-toi pour voir les membres et leur écrire en privé. <a href="#" onclick="openLogin();return false" style="color:#D4AF37">Connexion →</a></div>';
+    return;
+  }
+  try{
+    const {data,error}=await _supa.rpc('annuaire_membres');
+    if(error)throw error;
+    const membres=(data||[]).filter(m=>m.id!==CURRENT_USER.id);
+    if(!membres.length){el.innerHTML='<div style="font-size:0.55rem;letter-spacing:2px;color:rgba(255,255,255,0.4);font-family:Share Tech Mono,monospace;padding:14px 0">Aucun autre membre pour l\'instant.</div>';return;}
+    el.innerHTML=membres.map(m=>
+      '<div onclick="ouvrirPrive(\''+m.id+'\',\''+String(m.nom).replace(/[\'<>]/g,'')+'\')" style="cursor:pointer;border:1px solid rgba(212,175,55,0.4);padding:10px 16px;font-family:Share Tech Mono,monospace;font-size:0.56rem;letter-spacing:2px;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:8px">'+
+      '<span style="width:8px;height:8px;border-radius:50%;background:'+(m.en_ligne?'#3AE06E':'rgba(255,255,255,0.25)')+';box-shadow:'+(m.en_ligne?'0 0 8px rgba(58,224,110,0.8)':'none')+'"></span>'+
+      String(m.nom).replace(/</g,'&lt;')+(m.ville?' <span style="color:rgba(212,175,55,0.6)">· '+String(m.ville).replace(/</g,'&lt;')+'</span>':'')+
+      ' <span style="color:rgba(212,175,55,0.8)">💬</span></div>'
+    ).join('');
+  }catch(e){el.innerHTML='<div style="font-size:0.55rem;color:rgba(220,50,50,0.6);font-family:Share Tech Mono,monospace">Annuaire indisponible.</div>';}
+}
 </script>
+<div class="modal-overlay" id="reset-modal">
+  <div class="modal-box">
+    <div class="modal-title">Nouveau mot de passe</div>
+    <div style="font-size:0.5rem;color:rgba(212,175,55,0.6);letter-spacing:2px;margin-bottom:18px;font-family:Share Tech Mono,monospace">// Choisis ton nouveau mot de passe //</div>
+    <form id="reset-form" onsubmit="handleResetPassword(event)">
+      <div class="form-group">
+        <label class="form-label">Nouveau mot de passe</label>
+        <input class="form-field" type="password" id="reset-pass1" minlength="8" placeholder="Minimum 8 caractères" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirme-le</label>
+        <input class="form-field" type="password" id="reset-pass2" minlength="8" placeholder="Encore une fois" required>
+      </div>
+      <button type="submit" class="modal-submit">Enregistrer ✦</button>
+    </form>
+  </div>
+</div>
+<div class="modal-overlay" id="prive-modal">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-title" style="font-size:0.85rem">Privé · <span id="prive-nom" style="color:#D4AF37"></span></div>
+    <div style="font-size:0.46rem;color:rgba(212,175,55,0.55);letter-spacing:2px;margin-bottom:12px;font-family:Share Tech Mono,monospace">// Seulement vous deux voyez ces messages //</div>
+    <div id="prive-msgs" style="height:260px;overflow-y:auto;border:0.5px solid rgba(212,175,55,0.2);padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.35);font-family:Share Tech Mono,monospace;font-size:0.58rem;line-height:2"></div>
+    <div style="display:flex;gap:8px">
+      <input class="form-field" type="text" id="prive-input" maxlength="1000" placeholder="Ton message privé..." style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();envoyerPrive();}">
+      <button type="button" class="modal-submit" style="width:auto;padding:0 18px;margin:0" onclick="envoyerPrive()">↗</button>
+    </div>
+  </div>
+</div>
 <div id="verdict-overlay">
   <canvas id="verdict-fx"></canvas>
   <div class="verdict-text" id="verdict-text"></div>
