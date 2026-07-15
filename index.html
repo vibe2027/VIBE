@@ -1200,8 +1200,12 @@ footer{
       </div>
       <input id="hp-field" type="text" style="display:none" tabindex="-1" autocomplete="off">
       <div class="cgu-row">
+        <input type="checkbox" id="age18" required>
+        <label for="age18">Je confirme avoir <b style="color:#D4AF37;font-weight:400">18 ans ou plus</b></label>
+      </div>
+      <div class="cgu-row">
         <input type="checkbox" id="cgu" required>
-        <label for="cgu">J'accepte les <a href="#inscription">conditions d'utilisation</a> et la <a href="#inscription">politique de confidentialité</a> (Loi 25 · LPRPDE)</label>
+        <label for="cgu">J'accepte les <a href="/conditions.html" target="_blank">conditions d'utilisation</a> et la <a href="/confidentialite.html" target="_blank">politique de confidentialité</a> (Loi 25 · LPRPDE)</label>
       </div>
       <button type="submit" class="btn-submit" id="submit-btn"><span id="submit-label">Réserver ma place — 99 $ / an</span></button>
       <p class="form-note">Paiement sécurisé · SSL · Aucune donnée vendue · Loi 25 conforme</p>
@@ -1212,9 +1216,10 @@ footer{
 <!-- FOOTER -->
 <footer>
   <div class="footer-brand">VIBE 2026</div>
+  <div style="font-size:0.5rem;letter-spacing:3px;color:rgba(212,175,55,0.6);margin:6px 0 10px;font-family:Share Tech Mono,monospace">RÉSERVÉ AUX 18 ANS ET PLUS</div>
   <div class="footer-links">
-    <a href="#inscription">Confidentialité</a>
-    <a href="#inscription">Conditions</a>
+    <a href="/confidentialite.html">Confidentialité</a>
+    <a href="/conditions.html">Conditions</a>
     <a href="#ange-section">Mode Ange</a>
     <a href="#salon-section">Salon</a>
     <a href="#tribunal-section">Tribunal</a>
@@ -2002,6 +2007,8 @@ async function handleSignup(e){
   if(!prenom||prenom.length<2){showError('⚠ Prénom invalide.');return;}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showError('⚠ Courriel invalide.');return;}
   if(mdp.length<8||!/[A-Z]/.test(mdp)||!/[0-9]/.test(mdp)){showError('⚠ Mot de passe trop faible — min. 8 car., 1 majuscule, 1 chiffre.');return;}
+  const age18=document.getElementById('age18')?.checked;
+  if(!age18){showError('⚠ VIBE est réservé aux 18 ans et plus.');return;}
   if(!cgu){showError('⚠ Tu dois accepter les conditions.');return;}
   if(btn){btn.disabled=true;btn.querySelector('span').textContent='Création en cours...';}
 
