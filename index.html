@@ -2194,6 +2194,7 @@ async function adminLoad(type){
   ];
 
   let tex=null, rot=0, raf=0;
+  let gDragging=false, gLastX=0, gVel=0, gLastTouch=0;
   const internal=256;
   canvas.width=internal;canvas.height=internal;
   const img=ctx.createImageData(internal,internal);
@@ -2217,7 +2218,10 @@ async function adminLoad(type){
 
   function render(){
     if(window.VIBE_FX_PAUSE){raf=requestAnimationFrame(render);return;}
-    rot+=0.0018;
+    // Interaction : inertie + reprise de la rotation auto après 2,5 s d'inactivité
+    if(gDragging){/* rot contrôlé par le doigt */}
+    else if(Math.abs(gVel)>0.00005){rot+=gVel;gVel*=0.95;}
+    else if(Date.now()-gLastTouch>2500){rot+=0.0018;}
     const tilt=(-18*Math.PI)/180, cosT=Math.cos(tilt), sinT=Math.sin(tilt);
     const sunX=-0.35,sunY=0.5,sunZ=0.79;
     for(let y=0;y<internal;y++){
@@ -2275,6 +2279,24 @@ async function adminLoad(type){
   // Style du canvas (taille affichée + ombre)
   canvas.style.width='100%';canvas.style.height='100%';
   canvas.style.filter='drop-shadow(0 20px 50px rgba(0,180,255,0.3))';
+  canvas.style.touchAction='pan-y';
+  canvas.style.cursor='grab';
+
+  // ── Contrôles : glisser pour tourner, inertie au relâchement ──
+  canvas.addEventListener('pointerdown',e=>{
+    gDragging=true;gLastX=e.clientX;gVel=0;gLastTouch=Date.now();
+    canvas.setPointerCapture(e.pointerId);
+    canvas.style.cursor='grabbing';
+  });
+  canvas.addEventListener('pointermove',e=>{
+    if(!gDragging)return;
+    const w=canvas.getBoundingClientRect().width||1;
+    const d=(e.clientX-gLastX)/w*Math.PI*1.4;
+    rot+=d;gVel=d;gLastX=e.clientX;gLastTouch=Date.now();
+  });
+  function endDrag(){gDragging=false;gLastTouch=Date.now();canvas.style.cursor='grab';}
+  canvas.addEventListener('pointerup',endDrag);
+  canvas.addEventListener('pointercancel',endDrag);
 
   loadTex().then(t=>{tex=t;if(!raf)render();}).catch(()=>{if(!raf)render();});
 })();
