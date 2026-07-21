@@ -2112,6 +2112,7 @@ function showAdminPanel(){
       <button onclick="adminLoad('messages')" style="background:transparent;border:0.5px solid rgba(0,238,255,0.2);color:rgba(0,238,255,0.5);padding:8px;font-size:0.48rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">💬 MESSAGES SALON</button>
       <button onclick="adminLoad('alertes')" style="background:transparent;border:0.5px solid rgba(255,80,80,0.2);color:rgba(255,80,80,0.5);padding:8px;font-size:0.48rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">🚨 ALERTES SOS</button>
       <button onclick="adminLoad('profils')" style="background:transparent;border:0.5px solid rgba(212,175,55,0.3);color:rgba(212,175,55,0.7);padding:8px;font-size:0.48rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">🛡 PROFILS À VÉRIFIER</button>
+      <button onclick="adminLoad('acces')" style="background:transparent;border:0.5px solid rgba(180,79,255,0.35);color:rgba(180,79,255,0.8);padding:8px;font-size:0.48rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">🎁 ACCÈS & CO-FONDATEURS</button>
       <button onclick="_supa.auth.signOut().then(()=>location.reload())" style="background:transparent;border:0.5px solid rgba(255,255,255,0.38);color:rgba(255,255,255,0.62);padding:6px;font-size:0.44rem;letter-spacing:2px;cursor:pointer;font-family:Share Tech Mono,monospace">DÉCONNEXION</button>
     </div>
     <div id="admin-data" style="margin-top:14px;font-size:0.48rem;color:rgba(255,255,255,0.68);line-height:1.9;max-height:280px;overflow-y:auto;font-family:Share Tech Mono,monospace"></div>
@@ -2160,9 +2161,47 @@ async function adminLoad(type){
           `<button onclick="adminVerifierPhoto('${r.id}',this)" style="background:transparent;border:0.5px solid rgba(212,175,55,0.5);color:#D4AF37;padding:4px 8px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">✓ VÉRIFIER</button>`+
           `<button onclick="adminSuspendreProfil('${r.id}',this)" style="background:transparent;border:0.5px solid rgba(220,50,50,0.5);color:rgba(220,50,50,0.8);padding:4px 8px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">✕ SUSPECT</button>`+
         `</div>`).join('');
+    }else if(type==='acces'){
+      html=`<div style="color:rgba(180,79,255,0.6);margin-bottom:10px">OFFRIR UN ACCÈS FONDATEUR GRATUIT</div>`+
+        `<div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">`+
+          `<input id="acces-email" placeholder="courriel du membre" style="flex:1;min-width:140px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.2);color:#fff;padding:6px 8px;font-size:0.48rem;font-family:Share Tech Mono,monospace">`+
+          `<input id="acces-mois" type="number" placeholder="mois (0=à vie)" value="12" style="width:90px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.2);color:#fff;padding:6px 8px;font-size:0.48rem;font-family:Share Tech Mono,monospace">`+
+          `<button onclick="adminOffrirAcces(this)" style="background:rgba(180,79,255,0.8);border:none;color:#000;padding:6px 12px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">🎁 OFFRIR</button>`+
+        `</div>`+
+        `<div style="color:rgba(180,79,255,0.6);margin-bottom:10px">AJOUTER UN CO-FONDATEUR</div>`+
+        `<div style="font-size:0.42rem;color:rgba(255,255,255,0.4);margin-bottom:8px;line-height:1.6">Donne accès complet au panneau admin de la plateforme (vérification photos, signalements, offrir accès). N'inclut PAS Stripe, Supabase ou GitHub — ces accès se donnent séparément, directement dans ces plateformes.</div>`+
+        `<div style="display:flex;gap:6px">`+
+          `<input id="cofondateur-email" placeholder="courriel du co-fondateur" style="flex:1;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.2);color:#fff;padding:6px 8px;font-size:0.48rem;font-family:Share Tech Mono,monospace">`+
+          `<button onclick="adminAjouterCofondateur(this)" style="background:transparent;border:0.5px solid rgba(180,79,255,0.5);color:rgba(180,79,255,0.9);padding:6px 12px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">+ AJOUTER</button>`+
+        `</div>`;
     }
     el.innerHTML=html||'Aucune donnée.';
   }catch(err){el.innerHTML='Erreur: '+err.message;}
+}
+
+async function adminOffrirAcces(btn){
+  const email=document.getElementById('acces-email').value.trim();
+  const mois=parseInt(document.getElementById('acces-mois').value,10)||0;
+  if(!email){showError('⚠ Courriel requis.');return;}
+  btn.disabled=true;btn.textContent='...';
+  try{
+    const {data:rows,error:eSearch}=await _supa.from('profiles').select('id,real_email').eq('real_email',email).limit(1);
+    if(eSearch||!rows?.length){showError('⚠ Membre introuvable.');btn.disabled=false;btn.textContent='🎁 OFFRIR';return;}
+    const {data,error}=await _supa.rpc('admin_offrir_acces',{p_id:rows[0].id,p_mois:mois});
+    if(error||!data?.ok){showError('⚠ '+(data?.error||'Erreur.'));btn.disabled=false;btn.textContent='🎁 OFFRIR';return;}
+    showSuccess('✦ Accès offert !');btn.textContent='✓ FAIT';
+  }catch(e){showError('⚠ Erreur.');btn.disabled=false;btn.textContent='🎁 OFFRIR';}
+}
+
+async function adminAjouterCofondateur(btn){
+  const email=document.getElementById('cofondateur-email').value.trim();
+  if(!email){showError('⚠ Courriel requis.');return;}
+  btn.disabled=true;btn.textContent='...';
+  try{
+    const {data,error}=await _supa.rpc('admin_ajouter_cofondateur',{p_email:email});
+    if(error||!data?.ok){showError('⚠ '+(data?.error||'Erreur.'));btn.disabled=false;btn.textContent='+ AJOUTER';return;}
+    showSuccess('✦ Co-fondateur ajouté ! Il doit créer un compte avec ce courriel.');btn.textContent='✓ FAIT';
+  }catch(e){showError('⚠ Erreur.');btn.disabled=false;btn.textContent='+ AJOUTER';}
 }
 
 async function adminVerifierPhoto(id,btn){
