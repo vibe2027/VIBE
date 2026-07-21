@@ -7,6 +7,13 @@
 <meta property="og:title" content="VIBE 2026 — Réseau LGBTQ+ Canadien">
 <meta property="og:url" content="https://vibegay.ca">
 <title>VIBE 2026 — Réseau LGBTQ+ Canadien</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="theme-color" content="#0a0a0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VIBE">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -1258,6 +1265,9 @@ footer{
       </div>
       <button class="submit-btn" type="submit"><span>Entrer dans VIBE ✦</span></button>
     </form>
+    <div style="margin-top:10px;text-align:center">
+      <a href="#" onclick="handleMagicLink();return false;" style="color:rgba(180,79,255,0.7);text-decoration:none;font-size:0.5rem;letter-spacing:2px;font-family:Share Tech Mono,monospace">✉ Recevoir un lien de connexion (sans mot de passe)</a>
+    </div>
     <div style="margin-top:14px;text-align:center;font-size:.5rem;color:rgba(255,255,255,.18);letter-spacing:2px;font-family:Share Tech Mono,monospace">
       Pas encore membre ? <a href="#inscription" onclick="closeLogin()" style="color:rgba(212,175,55,.45);text-decoration:none">S'inscrire →</a>
     </div>
@@ -1928,6 +1938,16 @@ async function handleForgotPassword(){
   try{
     await _supa.auth.resetPasswordForEmail(email,{redirectTo:'https://vibegay.ca'});
     showSuccess('✦ Courriel de réinitialisation envoyé !');closeLogin();
+  }catch(e){showError('⚠ '+(e.message||'Erreur.'));}
+}
+
+async function handleMagicLink(){
+  const email=document.getElementById('login-email').value.trim();
+  if(!email){showError('⚠ Entre ton courriel d\'abord.');return;}
+  try{
+    const {error}=await _supa.auth.signInWithOtp({email,options:{emailRedirectTo:'https://vibegay.ca'}});
+    if(error)throw error;
+    showSuccess('✦ Lien envoyé à '+email+' — clique dessus pour entrer directement.');closeLogin();
   }catch(e){showError('⚠ '+(e.message||'Erreur.'));}
 }
 
@@ -3163,5 +3183,34 @@ async function bloquerDepuisPrive(){
   <div class="verdict-sub" id="verdict-sub"></div>
   <button id="verdict-close" onclick="fermerVerdict()">Fermer ✕</button>
 </div>
+<button id="pwa-install-btn" style="display:none;position:fixed;bottom:18px;right:18px;z-index:9999;background:#D4AF37;color:#000;border:none;padding:12px 18px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:2px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5)">📲 INSTALLER L'APP</button>
+<div id="pwa-ios-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#111;color:#fff;padding:12px 16px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:1px;text-align:center;border-top:1px solid rgba(212,175,55,0.4)">
+  Pour installer VIBE : appuie sur <b style="color:#D4AF37">Partager</b> ⬆️ puis <b style="color:#D4AF37">Sur l'écran d'accueil</b>
+  <span onclick="document.getElementById('pwa-ios-banner').style.display='none'" style="float:right;cursor:pointer;opacity:0.5">✕</span>
+</div>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}
+let pwaDeferred=null;
+window.addEventListener('beforeinstallprompt',(e)=>{
+  e.preventDefault();pwaDeferred=e;
+  document.getElementById('pwa-install-btn').style.display='block';
+});
+document.getElementById('pwa-install-btn').onclick=async()=>{
+  if(!pwaDeferred)return;
+  pwaDeferred.prompt();
+  await pwaDeferred.userChoice;
+  pwaDeferred=null;
+  document.getElementById('pwa-install-btn').style.display='none';
+};
+window.addEventListener('appinstalled',()=>{document.getElementById('pwa-install-btn').style.display='none';});
+// iOS Safari n'a pas de prompt d'installation natif — on guide manuellement.
+(function(){
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone=window.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches;
+  if(isIOS&&!isStandalone){
+    setTimeout(()=>{document.getElementById('pwa-ios-banner').style.display='block';},3000);
+  }
+})();
+</script>
 </body>
 </html>
