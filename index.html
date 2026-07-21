@@ -1184,7 +1184,6 @@ footer{
 
     <form id="signup-form" onsubmit="handleSignup(event)">
       <input type="hidden" id="plan-choisi" value="founder">
-      <input type="text" id="hp-field" name="site-web" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true">
       <div class="fbadge" id="founder-badge">
         <div class="fb-l">✦ Pass Fondateur</div>
         <div class="fb-p">99 $<span style="font-size:0.9rem;color:rgba(212,175,55,0.45)">CAD</span></div>
@@ -1211,7 +1210,7 @@ footer{
           <option>Vancouver</option><option>Ottawa</option><option>Calgary</option><option>Autre</option>
         </select>
       </div>
-      <input id="hp-field" type="text" style="display:none" tabindex="-1" autocomplete="off">
+      <input id="hp-field" type="text" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="cgu-row">
         <input type="checkbox" id="age18" required>
         <label for="age18">Je confirme avoir <b style="color:#D4AF37;font-weight:400">18 ans ou plus</b></label>
