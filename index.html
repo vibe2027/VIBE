@@ -1039,6 +1039,27 @@ footer{
     <p class="section-body">Tu entres dans la pièce. Les autres membres dérivent autour de toi. Tu t'approches — tu entends leur musique. Tu t'éloignes — elle s'estompe. Comme dans un vrai bar. En temps réel.</p>
   </div>
 
+  <div class="salon-picker" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px">
+    <div class="salon-card" data-salon="flottant" onclick="entrerSalon('flottant',this)" style="cursor:pointer;border:2px solid #D4AF37;background:rgba(212,175,55,0.12);padding:16px 12px;text-align:center;transition:all .2s">
+      <div style="font-size:1.8rem;margin-bottom:6px">🌊</div>
+      <div style="font-family:Share Tech Mono,monospace;font-size:0.56rem;letter-spacing:2px;color:#D4AF37;font-weight:700">SALON FLOTTANT</div>
+      <div style="font-family:Share Tech Mono,monospace;font-size:0.42rem;letter-spacing:1px;color:rgba(255,255,255,0.5);margin-top:4px">Jaser en général</div>
+      <div style="margin-top:10px;font-family:Share Tech Mono,monospace;font-size:0.44rem;letter-spacing:2px;color:#D4AF37">ENTRER →</div>
+    </div>
+    <div class="salon-card" data-salon="voix" onclick="entrerSalon('voix',this)" style="cursor:pointer;border:2px solid rgba(212,175,55,0.3);background:rgba(255,255,255,0.02);padding:16px 12px;text-align:center;transition:all .2s">
+      <div style="font-size:1.8rem;margin-bottom:6px">🎙</div>
+      <div style="font-family:Share Tech Mono,monospace;font-size:0.56rem;letter-spacing:2px;color:rgba(212,175,55,0.85);font-weight:700">SALON DE LA VOIX</div>
+      <div style="font-family:Share Tech Mono,monospace;font-size:0.42rem;letter-spacing:1px;color:rgba(255,255,255,0.5);margin-top:4px">Écouter avant de voir</div>
+      <div style="margin-top:10px;font-family:Share Tech Mono,monospace;font-size:0.44rem;letter-spacing:2px;color:rgba(212,175,55,0.6)">ENTRER →</div>
+    </div>
+    <div class="salon-card" data-salon="fantomes" onclick="entrerSalon('fantomes',this)" style="cursor:pointer;border:2px solid rgba(180,180,255,0.3);background:rgba(255,255,255,0.02);padding:16px 12px;text-align:center;transition:all .2s">
+      <div style="font-size:1.8rem;margin-bottom:6px">👻</div>
+      <div style="font-family:Share Tech Mono,monospace;font-size:0.56rem;letter-spacing:2px;color:rgba(180,180,255,0.85);font-weight:700">SALLE DES FANTÔMES</div>
+      <div style="font-family:Share Tech Mono,monospace;font-size:0.42rem;letter-spacing:1px;color:rgba(255,255,255,0.5);margin-top:4px">Anonyme, incognito</div>
+      <div style="margin-top:10px;font-family:Share Tech Mono,monospace;font-size:0.44rem;letter-spacing:2px;color:rgba(180,180,255,0.6)">ENTRER →</div>
+    </div>
+  </div>
+
   <div class="salon-immersif">
     <canvas id="salon-canvas"></canvas>
     <div class="salon-vignette"></div>
@@ -1065,12 +1086,12 @@ footer{
     </div>
   </div>
 
-  <div class="salon-tabs" style="display:flex;gap:8px;margin:16px 0 10px;flex-wrap:wrap">
+  <div class="salon-tabs" id="salon-tabs" style="display:flex;gap:8px;margin:16px 0 10px;flex-wrap:wrap">
     <button class="salon-tab-btn" data-salon="flottant" onclick="switchSalon('flottant')" style="background:#D4AF37;color:#000;border:none;padding:9px 16px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:2px;cursor:pointer;font-weight:700">🌊 SALON FLOTTANT</button>
     <button class="salon-tab-btn" data-salon="voix" onclick="switchSalon('voix')" style="background:transparent;color:rgba(212,175,55,0.6);border:1px solid rgba(212,175,55,0.3);padding:9px 16px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:2px;cursor:pointer">🎙 SALON DE LA VOIX</button>
     <button class="salon-tab-btn" data-salon="fantomes" onclick="switchSalon('fantomes')" style="background:transparent;color:rgba(180,180,255,0.6);border:1px solid rgba(180,180,255,0.3);padding:9px 16px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:2px;cursor:pointer">👻 SALLE DES FANTÔMES</button>
   </div>
-  <div class="salon-chatbox" style="border:0.5px solid rgba(255,255,255,0.1);padding:14px;background:rgba(255,255,255,0.02)">
+  <div class="salon-chatbox" id="salon-chatbox" style="border:0.5px solid rgba(255,255,255,0.1);padding:14px;background:rgba(255,255,255,0.02)">
     <div id="live-chat-msgs"></div>
     <div style="display:flex;gap:8px;margin-top:10px">
       <input type="text" id="chat-input" class="chat-input" maxlength="200" placeholder="Écris dans le salon..." style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();sendChatMsg();}">
@@ -1810,6 +1831,19 @@ function subscribeChat(){
     }).subscribe();
 }
 
+const SALON_COLORS={flottant:'#D4AF37',voix:'#D4AF37',fantomes:'rgba(180,180,255,0.85)'};
+function entrerSalon(nom,cardEl){
+  document.querySelectorAll('.salon-card').forEach(c=>{
+    const actif=c.dataset.salon===nom;
+    c.style.borderColor=actif?(SALON_COLORS[c.dataset.salon]||'#D4AF37'):'rgba(255,255,255,0.15)';
+    c.style.background=actif?'rgba(212,175,55,0.12)':'rgba(255,255,255,0.02)';
+  });
+  switchSalon(nom);
+  const box=document.getElementById('salon-chatbox');
+  if(box)box.scrollIntoView({behavior:'smooth',block:'center'});
+  const inp=document.getElementById('chat-input');
+  if(inp)setTimeout(()=>inp.focus(),400);
+}
 function switchSalon(nom){
   if(currentSalon===nom)return;
   currentSalon=nom;
@@ -1818,6 +1852,11 @@ function switchSalon(nom){
     b.style.background=actif?'#D4AF37':'transparent';
     b.style.color=actif?'#000':'rgba(212,175,55,0.6)';
     b.style.fontWeight=actif?'700':'400';
+  });
+  document.querySelectorAll('.salon-card').forEach(c=>{
+    const actif=c.dataset.salon===nom;
+    c.style.borderColor=actif?(SALON_COLORS[c.dataset.salon]||'#D4AF37'):'rgba(255,255,255,0.15)';
+    c.style.background=actif?'rgba(212,175,55,0.12)':'rgba(255,255,255,0.02)';
   });
   loadChatMsgs();
   subscribeChat();
