@@ -922,7 +922,7 @@ footer{
     </div>
 
     <div class="founder-block">
-      <div class="f-label" data-i18n="f_label">✦ Pass Fondateur — Édition Limitée</div>
+      <div class="f-label" data-i18n="f_label">✦ Pass Pionnier — Édition Limitée</div>
       <div class="f-price">99 $<span style="font-size:1.2rem;color:rgba(212,175,55,0.5)">CAD</span></div>
       <div class="f-period" data-i18n="f_period">/ an · Renouvelable · Accès complet à la plateforme</div>
       <div class="f-spots">
@@ -932,7 +932,7 @@ footer{
     </div>
 
     <div class="hero-btns">
-      <a href="#inscription" class="btn-gold"><span data-i18n="btn_founder">Devenir Fondateur</span></a>
+      <a href="#inscription" class="btn-gold"><span data-i18n="btn_founder">Devenir Pionnier</span></a>
       <button class="btn-outline" onclick="openLogin()" data-i18n="btn_login">Se connecter</button>
     </div>
   </div>
@@ -948,8 +948,8 @@ footer{
 
 <!-- TICKER -->
 <div class="ticker"><span class="ticker-inner">
-  VIBE · LGBTQ+ · QUÉBEC · MONTRÉAL · TORONTO · VANCOUVER · OTTAWA · CALGARY · MODE ANGE · PROTECTION ACTIVE · SALON FLOTTANT · TRIBUNAL COMMUNAUTAIRE · FONDATEURS · 99$/AN · RÉSEAU SÉCURISÉ · DONNÉES SOUVERAINES · FIERTÉ · COMMUNAUTÉ ·&nbsp;
-  VIBE · LGBTQ+ · QUÉBEC · MONTRÉAL · TORONTO · VANCOUVER · OTTAWA · CALGARY · MODE ANGE · PROTECTION ACTIVE · SALON FLOTTANT · TRIBUNAL COMMUNAUTAIRE · FONDATEURS · 99$/AN · RÉSEAU SÉCURISÉ · DONNÉES SOUVERAINES · FIERTÉ · COMMUNAUTÉ ·&nbsp;
+  VIBE · LGBTQ+ · QUÉBEC · MONTRÉAL · TORONTO · VANCOUVER · OTTAWA · CALGARY · MODE ANGE · PROTECTION ACTIVE · SALON FLOTTANT · TRIBUNAL COMMUNAUTAIRE · PIONNIERS · 99$/AN · RÉSEAU SÉCURISÉ · DONNÉES SOUVERAINES · FIERTÉ · COMMUNAUTÉ ·&nbsp;
+  VIBE · LGBTQ+ · QUÉBEC · MONTRÉAL · TORONTO · VANCOUVER · OTTAWA · CALGARY · MODE ANGE · PROTECTION ACTIVE · SALON FLOTTANT · TRIBUNAL COMMUNAUTAIRE · PIONNIERS · 99$/AN · RÉSEAU SÉCURISÉ · DONNÉES SOUVERAINES · FIERTÉ · COMMUNAUTÉ ·&nbsp;
 </span></div>
 
 <!-- ANGE GARDIEN -->
@@ -1190,7 +1190,7 @@ footer{
 
     <div class="plan-choice">
       <button type="button" class="plan-card plan-founder selected" id="planFounder" onclick="choisirPlan('founder')">
-        <div class="plan-tag">✦ Fondateur</div>
+        <div class="plan-tag">✦ Pionnier</div>
         <div class="plan-price">99 $<span>CAD/an</span></div>
         <div class="plan-desc">Accès complet · Édition limitée · 500 places</div>
         <div class="plan-check">✓ Choisi</div>
@@ -1206,7 +1206,7 @@ footer{
     <form id="signup-form" onsubmit="handleSignup(event)">
       <input type="hidden" id="plan-choisi" value="founder">
       <div class="fbadge" id="founder-badge">
-        <div class="fb-l">✦ Pass Fondateur</div>
+        <div class="fb-l">✦ Pass Pionnier</div>
         <div class="fb-p">99 $<span style="font-size:0.9rem;color:rgba(212,175,55,0.45)">CAD</span></div>
         <div class="fb-s">par année · Accès complet · Renouvelable</div>
         <div class="fb-r" id="form-spots">... places restantes</div>
@@ -1865,14 +1865,14 @@ async function handleSignup(e){
       '<div style="font-family:Playfair Display,serif;font-size:1.4rem;color:'+accent+';margin-bottom:12px">Bienvenue, '+prenom+' !</div>'+
       '<div style="font-size:0.58rem;color:rgba(255,255,255,0.72);letter-spacing:2px;line-height:2;margin-bottom:20px;font-family:Share Tech Mono,monospace">'+
       'Ton compte VIBE est créé.<br>Vérifie ton courriel <span style="color:'+accent+'">'+email+'</span><br>pour confirmer ton accès.</div>'+
-      '<div style="font-size:0.46rem;color:'+accent+';letter-spacing:3px;font-family:Share Tech Mono,monospace">'+(estFondateur?'Place Fondateur réservée · 99 $CAD / an':'Membre Gratuit · Bienvenue dans la communauté')+'</div>'+
+      '<div style="font-size:0.46rem;color:'+accent+';letter-spacing:3px;font-family:Share Tech Mono,monospace">'+(estFondateur?'Place Pionnier réservée · 99 $CAD / an':'Membre Gratuit · Bienvenue dans la communauté')+'</div>'+
       (estFondateur?
       '<div style="margin-top:26px;padding-top:22px;border-top:1px solid rgba(212,175,55,0.25)">'+
-        '<div style="font-size:0.55rem;color:rgba(255,255,255,0.85);letter-spacing:2px;margin-bottom:16px;font-family:Share Tech Mono,monospace">Complète ton paiement de 99 $CAD pour activer ton Pass Fondateur :</div>'+
+        '<div style="font-size:0.55rem;color:rgba(255,255,255,0.85);letter-spacing:2px;margin-bottom:16px;font-family:Share Tech Mono,monospace">Complète ton paiement de 99 $CAD pour activer ton Pass Pionnier :</div>'+
         '<a href="https://buy.stripe.com/28E3cx85P6UI9YM6xm3wQ01" target="_blank" rel="noopener" style="display:inline-block;padding:13px 34px;background:#D4AF37;color:#000;font-family:Share Tech Mono,monospace;font-size:0.6rem;letter-spacing:3px;text-decoration:none;font-weight:700;margin-bottom:12px">💳 VISA / MASTERCARD — 99 $</a>'+
-        '<br><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=vibeqbc2026%40hotmail.com&item_name=Pass%20Fondateur%20VIBE%20%E2%80%94%201%20an&amount=99.00&currency_code=CAD" target="_blank" rel="noopener" style="display:inline-block;padding:13px 34px;background:transparent;border:1px solid #D4AF37;color:#D4AF37;font-family:Share Tech Mono,monospace;font-size:0.6rem;letter-spacing:3px;text-decoration:none;font-weight:700;margin-bottom:14px">PAYER PAR PAYPAL — 99 $</a>'+
+        '<br><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=vibeqbc2026%40hotmail.com&item_name=Pass%20Pionnier%20VIBE%20%E2%80%94%201%20an&amount=99.00&currency_code=CAD" target="_blank" rel="noopener" style="display:inline-block;padding:13px 34px;background:transparent;border:1px solid #D4AF37;color:#D4AF37;font-family:Share Tech Mono,monospace;font-size:0.6rem;letter-spacing:3px;text-decoration:none;font-weight:700;margin-bottom:14px">PAYER PAR PAYPAL — 99 $</a>'+
         '<div style="font-size:0.44rem;color:rgba(255,255,255,0.45);letter-spacing:1.5px;font-family:Share Tech Mono,monospace;margin-bottom:10px">Paiement sécurisé Stripe — Visa · Mastercard · Amex</div>'+
-        '<div style="font-size:0.5rem;color:rgba(255,255,255,0.6);letter-spacing:1.5px;line-height:2;font-family:Share Tech Mono,monospace;margin-top:8px">ou par <span style="color:#D4AF37">Virement Interac</span> à :<br><span style="color:#fff;user-select:all">vibeqbc2026@hotmail.com</span><br>Indique ton courriel d\'inscription dans le message du virement.<br>Ton statut Fondateur est activé dès réception (max 24 h).</div>'+
+        '<div style="font-size:0.5rem;color:rgba(255,255,255,0.6);letter-spacing:1.5px;line-height:2;font-family:Share Tech Mono,monospace;margin-top:8px">ou par <span style="color:#D4AF37">Virement Interac</span> à :<br><span style="color:#fff;user-select:all">vibeqbc2026@hotmail.com</span><br>Indique ton courriel d\'inscription dans le message du virement.<br>Ton statut Pionnier est activé dès réception (max 24 h).</div>'+
       '</div>':'')+'</div>';
     showSuccess('✦ Compte créé — vérifie ton courriel !');
     loadStats();
@@ -2243,8 +2243,8 @@ const I18N={
   fr:{
     nav_home:"Accueil",nav_ange:"Mode Ange",nav_voix:"Voix",nav_reseau:"Réseau",nav_salon:"Salon",nav_tribunal:"Tribunal",
     hero_sub:"Réseau LGBTQ+ Canadien",hero_origin:"Né à Québec · Canada · 2026",
-    f_label:"✦ Pass Fondateur — Édition Limitée",f_period:"/ an · Renouvelable · Accès complet à la plateforme",f_spots:"places restantes sur 500",
-    btn_founder:"Devenir Fondateur",btn_login:"Se connecter",
+    f_label:"✦ Pass Pionnier — Édition Limitée",f_period:"/ an · Renouvelable · Accès complet à la plateforme",f_spots:"places restantes sur 500",
+    btn_founder:"Devenir Pionnier",btn_login:"Se connecter",
     tag_ange:"// Protection · Mode Ange Gardien",title_ange:"Triple-tap.<br><em>Ta sécurité,</em><br>en 3 secondes.",
     tag_reseau:"// Le réseau s'étend",title_reseau:"Une communauté<br><em>qui grandit</em>",
     tag_voix:"// La voix d'abord",title_voix:"Écoute<br><em>avant de voir</em>",
@@ -2831,6 +2831,7 @@ function ouvrirMonProfil(){
       document.getElementById('pf-bio').value=data.bio||'';
       document.getElementById('pf-langue').value=data.langue||'fr';
       document.getElementById('pf-partage-distance').checked=data.partage_distance!==false;
+      document.getElementById('pf-carte-lien').style.display=data.is_founder?'block':'none';
       pfIntention=data.intention||'jaser';
       if(data.photo_url)document.getElementById('pf-photo-prev').innerHTML='<img src="'+escHtml(data.photo_url)+'" alt="Photo de profil" style="width:100%;height:100%;object-fit:cover">';
     }else{
@@ -2898,6 +2899,17 @@ function renduIntChips(){
   box.innerHTML=Object.entries(INTENTIONS).map(([k,v])=>
     '<button onclick="decFiltreIntention=decFiltreIntention===\''+k+'\'?null:\''+k+'\';renduIntChips();chargerDecouverte()" style="background:'+(decFiltreIntention===k?'rgba(212,175,55,0.9)':'transparent')+';border:1px solid rgba(212,175,55,0.4);color:'+(decFiltreIntention===k?'#000':'rgba(255,255,255,0.7)')+';padding:8px 10px;font-family:Share Tech Mono,monospace;font-size:0.48rem;letter-spacing:1px;cursor:pointer">'+v+'</button>').join('');
 }
+async function ouvrirCartePionnier(){
+  try{
+    const {data}=await _supa.rpc('ma_carte_pionnier');
+    if(!data||data.ok===false){showError('⚠ Carte indisponible.');return;}
+    document.getElementById('cp-numero').textContent='N° '+String(data.numero).padStart(3,'0');
+    document.getElementById('cp-nom').textContent=data.nom;
+    const d=new Date(data.membre_depuis);
+    document.getElementById('cp-depuis').textContent='MEMBRE DEPUIS '+d.toLocaleDateString('fr-CA',{year:'numeric',month:'long'}).toUpperCase();
+    document.getElementById('carte-pionnier-modal').classList.add('open');
+  }catch(e){showError('⚠ Erreur.');}
+}
 let maPosition=null,maPositionTentee=false;
 async function obtenirMaPosition(){
   if(maPosition||maPositionTentee)return maPosition;
@@ -2958,7 +2970,7 @@ async function chargerDecouverte(){
         '<div style="width:100%;aspect-ratio:1;background:rgba(212,175,55,0.06);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative">'+photo+
         (m.en_ligne?'<span style="position:absolute;top:8px;right:8px;width:11px;height:11px;border-radius:50%;background:#3AE06E;box-shadow:0 0 10px rgba(58,224,110,0.9);border:2px solid #0a0a10"></span>':'')+
         (m.verifie?'<span style="position:absolute;bottom:8px;right:8px;background:#D4AF37;color:#000;font-size:0.5rem;padding:2px 6px;font-family:Share Tech Mono,monospace">✓</span>':'')+
-        (m.fondateur?'<span style="position:absolute;top:8px;left:8px;background:#D4AF37;color:#000;font-size:0.42rem;letter-spacing:1px;padding:2px 6px;font-family:Share Tech Mono,monospace;font-weight:bold">✦ FONDATEUR</span>':'')+
+        (m.fondateur?'<span style="position:absolute;top:8px;left:8px;background:#D4AF37;color:#000;font-size:0.42rem;letter-spacing:1px;padding:2px 6px;font-family:Share Tech Mono,monospace;font-weight:bold">✦ PIONNIER</span>':'')+
         (m.boost?'<span style="position:absolute;top:'+(m.fondateur?'26px':'8px')+';left:8px;background:#00EEFF;color:#000;font-size:0.42rem;letter-spacing:1px;padding:2px 6px;font-family:Share Tech Mono,monospace;font-weight:bold">🚀 BOOSTÉ</span>':'')+'</div>'+
         '<div style="padding:9px 10px;font-family:Share Tech Mono,monospace">'+
         '<div style="font-size:0.58rem;letter-spacing:1px;color:#fff">'+nom+(m.age?' · '+m.age:'')+'</div>'+
@@ -2972,7 +2984,7 @@ function ouvrirFiche(m){
   fmCourant=m;
   document.getElementById('fm-photo').innerHTML=m.photo?'<img src="'+escHtml(m.photo)+'" alt="Photo de '+escHtml(m.nom)+'" style="width:100%;height:100%;object-fit:cover">':'✦';
   document.getElementById('fm-nom').textContent=m.nom+(m.age?' · '+m.age:'');
-  document.getElementById('fm-meta').textContent=(m.ville||'')+(m.distance_km!=null?'  ·  📍 '+(m.distance_km<1?'< 1 km':m.distance_km+' km'):'')+(m.verifie?'  ·  ✓ PHOTO VÉRIFIÉE':'')+(m.fondateur?'  ·  ✦ FONDATEUR':'')+(m.boost?'  ·  🚀 BOOSTÉ':'')+(m.en_ligne?'  ·  EN LIGNE':'');
+  document.getElementById('fm-meta').textContent=(m.ville||'')+(m.distance_km!=null?'  ·  📍 '+(m.distance_km<1?'< 1 km':m.distance_km+' km'):'')+(m.verifie?'  ·  ✓ PHOTO VÉRIFIÉE':'')+(m.fondateur?'  ·  ✦ PIONNIER':'')+(m.boost?'  ·  🚀 BOOSTÉ':'')+(m.en_ligne?'  ·  EN LIGNE':'');
   document.getElementById('fm-intention').textContent=INTENTIONS[m.intention]||'';
   document.getElementById('fm-bio').textContent=m.bio||'';
   document.getElementById('fiche-modal').classList.add('open');
@@ -3083,7 +3095,22 @@ async function bloquerDepuisPrive(){
         <label for="pf-partage-distance" style="font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:1px;color:rgba(255,255,255,0.75)">📍 Montrer ma distance aux autres membres (jamais ta position exacte — juste la distance approximative)</label>
       </div>
       <button type="submit" class="modal-submit" id="pf-save">Enregistrer mon profil ✦</button>
+      <div id="pf-carte-lien" style="display:none;text-align:center;margin-top:14px">
+        <a href="#" onclick="ouvrirCartePionnier();return false" style="color:#D4AF37;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:2px;text-decoration:underline">✦ Voir ma carte Pionnier</a>
+      </div>
     </form>
+  </div>
+</div>
+<div class="modal-overlay" id="carte-pionnier-modal">
+  <div class="modal-box" style="max-width:340px;text-align:center">
+    <div id="carte-pionnier-contenu" style="border:1px solid #D4AF37;background:linear-gradient(155deg,rgba(212,175,55,0.14),rgba(0,0,0,0.85));padding:28px 20px;font-family:Share Tech Mono,monospace">
+      <div style="font-size:0.5rem;letter-spacing:4px;color:rgba(212,175,55,0.7)">VIBE · RÉSEAU LGBTQ+</div>
+      <div style="font-family:Playfair Display,serif;font-size:1.6rem;color:#D4AF37;margin:14px 0 4px">✦ PIONNIER</div>
+      <div id="cp-numero" style="font-size:1.1rem;letter-spacing:3px;color:#fff;margin-bottom:14px">N° —</div>
+      <div id="cp-nom" style="font-size:0.6rem;letter-spacing:2px;color:rgba(255,255,255,0.85)"></div>
+      <div id="cp-depuis" style="font-size:0.44rem;letter-spacing:1px;color:rgba(255,255,255,0.45);margin-top:6px"></div>
+    </div>
+    <button onclick="document.getElementById('carte-pionnier-modal').classList.remove('open')" style="margin-top:16px;background:transparent;border:1px solid rgba(212,175,55,0.4);color:#D4AF37;padding:8px 20px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:2px;cursor:pointer">FERMER</button>
   </div>
 </div>
 <div class="modal-overlay" id="fiche-modal">
