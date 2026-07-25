@@ -2799,6 +2799,7 @@ function ouvrirMonProfil(){
       document.getElementById('pf-ville').value=data.city||'';
       document.getElementById('pf-bio').value=data.bio||'';
       document.getElementById('pf-langue').value=data.langue||'fr';
+      document.getElementById('pf-partage-distance').checked=data.partage_distance!==false;
       pfIntention=data.intention||'jaser';
       if(data.photo_url)document.getElementById('pf-photo-prev').innerHTML='<img src="'+escHtml(data.photo_url)+'" alt="Photo de profil" style="width:100%;height:100%;object-fit:cover">';
     }else{
@@ -2844,6 +2845,7 @@ async function sauverProfil(e){
       city:document.getElementById('pf-ville').value.trim().slice(0,40),
       bio:document.getElementById('pf-bio').value.trim().slice(0,300),
       langue:document.getElementById('pf-langue').value,
+      partage_distance:document.getElementById('pf-partage-distance').checked,
       intention:pfIntention,
       is_online:true,
       updated_at:new Date().toISOString()
@@ -2865,6 +2867,17 @@ function renduIntChips(){
   box.innerHTML=Object.entries(INTENTIONS).map(([k,v])=>
     '<button onclick="decFiltreIntention=decFiltreIntention===\''+k+'\'?null:\''+k+'\';renduIntChips();chargerDecouverte()" style="background:'+(decFiltreIntention===k?'rgba(212,175,55,0.9)':'transparent')+';border:1px solid rgba(212,175,55,0.4);color:'+(decFiltreIntention===k?'#000':'rgba(255,255,255,0.7)')+';padding:8px 10px;font-family:Share Tech Mono,monospace;font-size:0.48rem;letter-spacing:1px;cursor:pointer">'+v+'</button>').join('');
 }
+let maPosition=null,maPositionTentee=false;
+async function obtenirMaPosition(){
+  if(maPosition||maPositionTentee)return maPosition;
+  maPositionTentee=true;
+  try{
+    const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:6000,maximumAge:600000}));
+    maPosition={lat:pos.coords.latitude,lon:pos.coords.longitude};
+    if(CURRENT_USER)_supa.from('profiles').update({latitude:maPosition.lat,longitude:maPosition.lon}).eq('id',CURRENT_USER.id).then(()=>{});
+  }catch(e){maPosition=null;}
+  return maPosition;
+}
 async function chargerDecouverte(){
   const el=document.getElementById('annuaire-membres');if(!el)return;
   renduIntChips();
@@ -2873,8 +2886,9 @@ async function chargerDecouverte(){
     return;
   }
   try{
+    const pos=await obtenirMaPosition();
     const ville=document.getElementById('dec-ville')?.value.trim()||null;
-    const {data,error}=await _supa.rpc('decouverte',{p_ville:ville||null,p_intention:decFiltreIntention,p_age_min:18,p_age_max:99});
+    const {data,error}=await _supa.rpc('decouverte',{p_ville:ville||null,p_intention:decFiltreIntention,p_age_min:18,p_age_max:99,p_lat:pos?.lat??null,p_lon:pos?.lon??null});
     if(error)throw error;
     if(data&&data.ok===false){el.innerHTML='';return;}
     const membres=data||[];
@@ -2890,6 +2904,7 @@ async function chargerDecouverte(){
         '<div style="padding:9px 10px;font-family:Share Tech Mono,monospace">'+
         '<div style="font-size:0.58rem;letter-spacing:1px;color:#fff">'+nom+(m.age?' · '+m.age:'')+'</div>'+
         '<div style="font-size:0.46rem;letter-spacing:1px;color:rgba(212,175,55,0.75);margin-top:3px">'+(INTENTIONS[m.intention]||'')+(m.ville?' · '+String(m.ville).replace(/</g,'&lt;'):'')+'</div>'+
+        (m.distance_km!=null?'<div style="font-size:0.44rem;letter-spacing:1px;color:rgba(0,238,255,0.75);margin-top:2px">📍 '+(m.distance_km<1?'moins de 1 km':m.distance_km+' km')+'</div>':'')+
         '</div></div>';
     }).join('');
   }catch(e){el.innerHTML='<div style="grid-column:1/-1;font-size:0.55rem;color:rgba(220,50,50,0.6);font-family:Share Tech Mono,monospace">Découverte indisponible.</div>';}
@@ -2898,7 +2913,7 @@ function ouvrirFiche(m){
   fmCourant=m;
   document.getElementById('fm-photo').innerHTML=m.photo?'<img src="'+escHtml(m.photo)+'" alt="Photo de '+escHtml(m.nom)+'" style="width:100%;height:100%;object-fit:cover">':'✦';
   document.getElementById('fm-nom').textContent=m.nom+(m.age?' · '+m.age:'');
-  document.getElementById('fm-meta').textContent=(m.ville||'')+(m.verifie?'  ·  ✓ PHOTO VÉRIFIÉE':'')+(m.fondateur?'  ·  ✦ FONDATEUR':'')+(m.en_ligne?'  ·  EN LIGNE':'');
+  document.getElementById('fm-meta').textContent=(m.ville||'')+(m.distance_km!=null?'  ·  📍 '+(m.distance_km<1?'< 1 km':m.distance_km+' km'):'')+(m.verifie?'  ·  ✓ PHOTO VÉRIFIÉE':'')+(m.fondateur?'  ·  ✦ FONDATEUR':'')+(m.en_ligne?'  ·  EN LIGNE':'');
   document.getElementById('fm-intention').textContent=INTENTIONS[m.intention]||'';
   document.getElementById('fm-bio').textContent=m.bio||'';
   document.getElementById('fiche-modal').classList.add('open');
@@ -3003,6 +3018,10 @@ async function bloquerDepuisPrive(){
         <div id="pf-intentions" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px"></div></div>
       <div class="form-group"><label class="form-label">Bio</label>
         <textarea class="form-field" id="pf-bio" maxlength="300" placeholder="Qui t'es, qu'est-ce que tu cherches..." style="height:70px;resize:none"></textarea></div>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px">
+        <input type="checkbox" id="pf-partage-distance" checked style="width:16px;height:16px;accent-color:#D4AF37">
+        <label for="pf-partage-distance" style="font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:1px;color:rgba(255,255,255,0.75)">📍 Montrer ma distance aux autres membres (jamais ta position exacte — juste la distance approximative)</label>
+      </div>
       <button type="submit" class="modal-submit" id="pf-save">Enregistrer mon profil ✦</button>
     </form>
   </div>
