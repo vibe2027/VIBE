@@ -1087,6 +1087,7 @@ footer{
       <button onclick="ouvrirMonProfil()" style="background:#D4AF37;color:#000;border:none;padding:10px 16px;font-family:Share Tech Mono,monospace;font-size:0.52rem;letter-spacing:2px;cursor:pointer;font-weight:700">✦ MON PROFIL</button>
       <input type="text" id="dec-ville" placeholder="Ville..." style="background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.18);color:#fff;padding:10px 12px;font-family:Share Tech Mono,monospace;font-size:0.52rem;letter-spacing:1px;width:110px" onkeydown="if(event.key==='Enter')chargerDecouverte()">
       <div id="dec-intentions" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      <div id="dec-identites" style="display:flex;gap:6px;flex-wrap:wrap"></div>
     </div>
     <div id="annuaire-membres" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:4px 0;min-height:80px"></div>
   </div>
@@ -2815,13 +2816,18 @@ async function chargerAnnuaire(){
 // PROFILS · DÉCOUVERTE · BLOCAGE
 // ══════════════════════════════════════════
 const INTENTIONS={jaser:'💬 Jaser',rencontre:'☕ Rencontre',cesoir:'🔥 Ce soir',amitie:'🤝 Amitié',serieux:'💛 Sérieux'};
-let decFiltreIntention=null, pfIntention='jaser', fmCourant=null;
+const IDENTITES={gay:'Gay',lesbienne:'Lesbienne',bi:'Bi',trans:'Trans',nonbinaire:'Non-binaire'};
+let decFiltreIdentite=null;
+let decFiltreIntention=null, pfIntention='jaser', pfIdentites=[], fmCourant=null;
 
 function ouvrirMonProfil(){
   if(!CURRENT_USER){showError('⚠ Connecte-toi d\'abord.');openLogin();return;}
   const box=document.getElementById('pf-intentions');
   box.innerHTML=Object.entries(INTENTIONS).map(([k,v])=>
     '<button type="button" data-int="'+k+'" onclick="pfIntention=\''+k+'\';majIntBtns()" style="background:transparent;border:1px solid rgba(212,175,55,0.4);color:rgba(255,255,255,0.75);padding:8px 12px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:1px;cursor:pointer">'+v+'</button>').join('');
+  const idBox=document.getElementById('pf-identites');
+  idBox.innerHTML=Object.entries(IDENTITES).map(([k,v])=>
+    '<button type="button" data-id="'+k+'" onclick="pfIdentites=pfIdentites.includes(\''+k+'\')?pfIdentites.filter(x=>x!==\''+k+'\'):[...pfIdentites,\''+k+'\'];majIdentBtns()" style="background:transparent;border:1px solid rgba(212,175,55,0.4);color:rgba(255,255,255,0.75);padding:8px 12px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:1px;cursor:pointer">'+v+'</button>').join('');
   _supa.from('profiles').select('*').eq('id',CURRENT_USER.id).maybeSingle().then(({data})=>{
     if(data){
       document.getElementById('pf-nom').value=data.display_name||data.username||'';
@@ -2832,14 +2838,24 @@ function ouvrirMonProfil(){
       document.getElementById('pf-partage-distance').checked=data.partage_distance!==false;
       document.getElementById('pf-carte-lien').style.display=data.is_founder?'block':'none';
       pfIntention=data.intention||'jaser';
+      pfIdentites=Array.isArray(data.identites)?data.identites:[];
       if(data.photo_url)document.getElementById('pf-photo-prev').innerHTML='<img src="'+escHtml(data.photo_url)+'" alt="Photo de profil" style="width:100%;height:100%;object-fit:cover">';
     }else{
       document.getElementById('pf-nom').value=CURRENT_USER.user_metadata?.prenom||'';
       document.getElementById('pf-ville').value=CURRENT_USER.user_metadata?.ville||'';
+      pfIdentites=[];
     }
     majIntBtns();
+    majIdentBtns();
   });
   document.getElementById('profil-modal').classList.add('open');
+}
+function majIdentBtns(){
+  document.querySelectorAll('#pf-identites button').forEach(b=>{
+    const on=pfIdentites.includes(b.dataset.id);
+    b.style.background=on?'rgba(212,175,55,0.9)':'transparent';
+    b.style.color=on?'#000':'rgba(255,255,255,0.75)';
+  });
 }
 function majIntBtns(){
   document.querySelectorAll('#pf-intentions button').forEach(b=>{
@@ -2878,6 +2894,7 @@ async function sauverProfil(e){
       langue:document.getElementById('pf-langue').value,
       partage_distance:document.getElementById('pf-partage-distance').checked,
       intention:pfIntention,
+      identites:pfIdentites,
       is_online:true,
       updated_at:new Date().toISOString()
     };
@@ -2897,6 +2914,9 @@ function renduIntChips(){
   const box=document.getElementById('dec-intentions');if(!box)return;
   box.innerHTML=Object.entries(INTENTIONS).map(([k,v])=>
     '<button onclick="decFiltreIntention=decFiltreIntention===\''+k+'\'?null:\''+k+'\';renduIntChips();chargerDecouverte()" style="background:'+(decFiltreIntention===k?'rgba(212,175,55,0.9)':'transparent')+';border:1px solid rgba(212,175,55,0.4);color:'+(decFiltreIntention===k?'#000':'rgba(255,255,255,0.7)')+';padding:8px 10px;font-family:Share Tech Mono,monospace;font-size:0.48rem;letter-spacing:1px;cursor:pointer">'+v+'</button>').join('');
+  const idBox=document.getElementById('dec-identites');if(!idBox)return;
+  idBox.innerHTML=Object.entries(IDENTITES).map(([k,v])=>
+    '<button onclick="decFiltreIdentite=decFiltreIdentite===\''+k+'\'?null:\''+k+'\';renduIntChips();chargerDecouverte()" style="background:'+(decFiltreIdentite===k?'rgba(212,175,55,0.9)':'transparent')+';border:1px solid rgba(212,175,55,0.4);color:'+(decFiltreIdentite===k?'#000':'rgba(255,255,255,0.7)')+';padding:8px 10px;font-family:Share Tech Mono,monospace;font-size:0.48rem;letter-spacing:1px;cursor:pointer">'+v+'</button>').join('');
 }
 async function ouvrirCartePionnier(){
   try{
@@ -2957,7 +2977,7 @@ async function chargerDecouverte(){
   try{
     const pos=await obtenirMaPosition();
     const ville=document.getElementById('dec-ville')?.value.trim()||null;
-    const {data,error}=await _supa.rpc('decouverte',{p_ville:ville||null,p_intention:decFiltreIntention,p_age_min:18,p_age_max:99,p_lat:pos?.lat??null,p_lon:pos?.lon??null});
+    const {data,error}=await _supa.rpc('decouverte',{p_ville:ville||null,p_intention:decFiltreIntention,p_age_min:18,p_age_max:99,p_lat:pos?.lat??null,p_lon:pos?.lon??null,p_identite:decFiltreIdentite});
     if(error)throw error;
     if(data&&data.ok===false){el.innerHTML='';return;}
     const membres=data||[];
@@ -2984,7 +3004,7 @@ function ouvrirFiche(m){
   document.getElementById('fm-photo').innerHTML=m.photo?'<img src="'+escHtml(m.photo)+'" alt="Photo de '+escHtml(m.nom)+'" style="width:100%;height:100%;object-fit:cover">':'✦';
   document.getElementById('fm-nom').textContent=m.nom+(m.age?' · '+m.age:'');
   document.getElementById('fm-meta').textContent=(m.ville||'')+(m.distance_km!=null?'  ·  📍 '+(m.distance_km<1?'< 1 km':m.distance_km+' km'):'')+(m.verifie?'  ·  ✓ PHOTO VÉRIFIÉE':'')+(m.fondateur?'  ·  ✦ PIONNIER':'')+(m.boost?'  ·  🚀 BOOSTÉ':'')+(m.en_ligne?'  ·  EN LIGNE':'');
-  document.getElementById('fm-intention').textContent=INTENTIONS[m.intention]||'';
+  document.getElementById('fm-intention').textContent=(Array.isArray(m.identites)&&m.identites.length?m.identites.map(k=>IDENTITES[k]||k).join(' · ')+'  ·  ':'')+(INTENTIONS[m.intention]||'');
   document.getElementById('fm-bio').textContent=m.bio||'';
   document.getElementById('fiche-modal').classList.add('open');
   if(m.id)_supa.rpc('enregistrer_vue',{p_vu_id:m.id}).then(()=>{}).catch(()=>{});
@@ -3087,6 +3107,8 @@ async function bloquerDepuisPrive(){
         </select></div>
       <div class="form-group"><label class="form-label">Intention du moment</label>
         <div id="pf-intentions" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px"></div></div>
+      <div class="form-group"><label class="form-label">Identité (choix multiples)</label>
+        <div id="pf-identites" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px"></div></div>
       <div class="form-group"><label class="form-label">Bio</label>
         <textarea class="form-field" id="pf-bio" maxlength="300" placeholder="Qui t'es, qu'est-ce que tu cherches..." style="height:70px;resize:none"></textarea></div>
       <div class="form-group" style="display:flex;align-items:center;gap:10px">
