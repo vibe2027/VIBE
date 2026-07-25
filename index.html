@@ -1590,6 +1590,13 @@ function entrerSalon(nom,cardEl){
   const inp=document.getElementById('chat-input');
   if(inp)setTimeout(()=>inp.focus(),400);
 }
+function allerVersVille(ville){
+  const champ=document.getElementById('dec-ville');
+  if(champ)champ.value=ville;
+  if(typeof chargerDecouverte==='function')chargerDecouverte();
+  const cible=document.getElementById('annuaire-membres')||document.getElementById('salon-section');
+  if(cible)cible.scrollIntoView({behavior:'smooth',block:'center'});
+}
 function switchSalon(nom){
   if(currentSalon===nom)return;
   currentSalon=nom;
@@ -2053,6 +2060,16 @@ async function adminSuspendreProfil(id,btn){
     {name:"Toronto",lat:43.65,lon:-79.38},
     {name:"Vancouver",lat:49.28,lon:-123.12}
   ];
+  cities.forEach(c=>c.nb=0);
+  (async()=>{
+    try{
+      const {data}=await _supa.rpc('membres_par_ville');
+      (data||[]).forEach(row=>{
+        const c=cities.find(c=>c.name.toLowerCase()===String(row.ville).toLowerCase());
+        if(c)c.nb=row.nb;
+      });
+    }catch(e){}
+  })();
 
   let tex=null, rot=0, raf=0;
   let gDragging=false, gLastX=0, gVel=0, gLastTouch=0;
@@ -2126,13 +2143,23 @@ async function adminSuspendreProfil(id,btn){
       const la=(c.lat*Math.PI)/180, lo=(c.lon*Math.PI)/180+rot;
       const x0=Math.cos(la)*Math.sin(lo), y0=Math.sin(la), z0=Math.cos(la)*Math.cos(lo);
       const y1=y0*cosT-z0*sinT, z1=y0*sinT+z0*cosT;
-      if(z1<0.05)continue;
+      if(z1<0.05){c.visible=false;continue;}
       const px=cx+x0*r, py=cy-y1*r;
-      const pulse=1+Math.sin(Date.now()/350+c.lon)*0.4;
-      ctx.fillStyle="rgba(255,138,207,0.95)";
-      ctx.shadowColor="#ff4dd2";ctx.shadowBlur=12*pulse;
-      ctx.beginPath();ctx.arc(px,py,2.2*pulse,0,Math.PI*2);ctx.fill();
+      c.visible=true;c.px=px;c.py=py;
+      const actif=c.nb>0;
+      const pulse=1+Math.sin(Date.now()/350+c.lon)*(actif?0.5:0.25);
+      const taille=(actif?2.6+Math.min(4,Math.log(c.nb+1)*1.6):1.6)*pulse;
+      c.hitR=Math.max(10,taille*2.4);
+      ctx.fillStyle=actif?"rgba(58,224,110,0.95)":"rgba(255,138,207,0.6)";
+      ctx.shadowColor=actif?"#3AE06E":"#ff4dd2";ctx.shadowBlur=(actif?16:10)*pulse;
+      ctx.beginPath();ctx.arc(px,py,taille,0,Math.PI*2);ctx.fill();
       ctx.shadowBlur=0;
+      if(actif){
+        ctx.font="9px 'Share Tech Mono',monospace";
+        ctx.fillStyle="rgba(58,224,110,0.95)";
+        ctx.textAlign="center";
+        ctx.fillText(String(c.nb),px,py-taille-5);
+      }
     }
     raf=requestAnimationFrame(render);
   }
@@ -2144,8 +2171,9 @@ async function adminSuspendreProfil(id,btn){
   canvas.style.cursor='grab';
 
   // ── Contrôles : glisser pour tourner, inertie au relâchement ──
+  let gDragDist=0;
   canvas.addEventListener('pointerdown',e=>{
-    gDragging=true;gLastX=e.clientX;gVel=0;gLastTouch=Date.now();
+    gDragging=true;gLastX=e.clientX;gVel=0;gLastTouch=Date.now();gDragDist=0;
     canvas.setPointerCapture(e.pointerId);
     canvas.style.cursor='grabbing';
   });
@@ -2154,8 +2182,23 @@ async function adminSuspendreProfil(id,btn){
     const w=canvas.getBoundingClientRect().width||1;
     const d=(e.clientX-gLastX)/w*Math.PI*1.4;
     rot+=d;gVel=d;gLastX=e.clientX;gLastTouch=Date.now();
+    gDragDist+=Math.abs(e.movementX||0)+Math.abs(e.movementY||0);
   });
-  function endDrag(){gDragging=false;gLastTouch=Date.now();canvas.style.cursor='grab';}
+  function endDrag(e){
+    gDragging=false;gLastTouch=Date.now();canvas.style.cursor='grab';
+    if(gDragDist<6&&e&&typeof e.clientX==='number'){
+      const rect=canvas.getBoundingClientRect();
+      const scale=internal/rect.width;
+      const mx=(e.clientX-rect.left)*scale, my=(e.clientY-rect.top)*scale;
+      let meilleure=null,meilleureDist=Infinity;
+      for(const c of cities){
+        if(!c.visible)continue;
+        const dist=Math.hypot(mx-c.px,my-c.py);
+        if(dist<=c.hitR&&dist<meilleureDist){meilleure=c;meilleureDist=dist;}
+      }
+      if(meilleure&&typeof allerVersVille==='function')allerVersVille(meilleure.name);
+    }
+  }
   canvas.addEventListener('pointerup',endDrag);
   canvas.addEventListener('pointercancel',endDrag);
 
