@@ -11,149 +11,59 @@ Une plateforme communautaire sécurisée conçue pour les personnes LGBTQ+ au Ca
 
 ## 🚀 Stack Technique
 
-- **Frontend:** HTML5, CSS3, JavaScript (Vanilla + Canvas APIs)
-- **Backend:** Supabase (PostgreSQL + Realtime)
+- **Frontend:** un seul fichier `index.html` (HTML5, CSS3, JavaScript vanilla — pas de framework, pas de build)
+- **Backend:** Supabase (PostgreSQL + Realtime + Auth)
 - **Auth:** Supabase Auth (Email/Password)
-- **Hosting:** Vercel
-- **Domain:** vibegay.ca
+- **Paiements:** Stripe (Payment Link), PayPal, virement Interac — activation manuelle du statut Fondateur, aucune réconciliation automatique pour l'instant
+- **Hosting:** GitHub Pages
+- **Domain:** vibegay.ca (DNS via Namecheap)
 
 ## 📁 Structure du Projet
 
 ```
 VIBE/
-├── index.html              # Page principale (SPA)
-├── _redirects             # Config Vercel
-├── CNAME                  # Domain custom
-├── bg.png                 # Ressources visuelles
-├── js/
-│   ├── config.js          # Supabase init & auth
-│   ├── salons.js          # Système de salons
-│   └── ui-salons.js       # UI pour salons
-├── sql/
-│   └── schema.sql         # Schema PostgreSQL
-├── .env.example           # Template env
-└── README.md              # Cette doc
+├── index.html              # Page principale (tout le site : HTML/CSS/JS)
+├── bande-annonce.html       # Page bande-annonce
+├── conditions.html          # Conditions d'utilisation
+├── confidentialite.html     # Politique de confidentialité (Loi 25 / LPRPDE)
+├── manifest.json            # Manifest PWA
+├── sw.js                    # Service worker PWA
+├── _redirects                # Config de redirection
+├── CNAME                    # Domaine custom (GitHub Pages)
+├── bg.png, icon-*.png       # Ressources visuelles
+├── js/                      # Fichiers non utilisés actuellement (non chargés par index.html) —
+│   │                          conservés pour référence future, à nettoyer ou réintégrer
+│   ├── config.js
+│   ├── salons.js
+│   └── ui-salons.js
+└── README.md
 ```
 
-## 🔧 Installation & Setup
+> ⚠️ Les fichiers dans `js/` ne sont **pas** chargés par `index.html`. Toute la logique
+> Supabase/salons/auth actuellement en production est inline dans `index.html`.
 
-### Prérequis
-- Compte Supabase (https://supabase.com)
-- Vercel connecté au repo GitHub
+## 🔧 Déploiement
 
-### 1. Créer projet Supabase
+Le site est un fichier statique servi par **GitHub Pages** (repo `vibe2027/VIBE`, branche `main`).
+Pousser sur `main` déploie automatiquement.
 
-1. Aller sur [supabase.com](https://supabase.com)
-2. Créer un nouveau projet
-3. Aller à **SQL Editor** et exécuter `sql/schema.sql` entièrement
-4. Copier les credentials:
-   - **Project URL** → `VITE_SUPABASE_URL`
-   - **Anon Key** → `VITE_SUPABASE_ANON_KEY`
+Les credentials Supabase (URL + clé anon) sont codés en dur dans `index.html` (c'est
+normal et attendu pour la clé **anon** de Supabase — la sécurité repose sur les
+règles RLS côté base de données, pas sur le secret de cette clé).
 
-### 2. Configurer variables d'env
+## 💳 Paiements — état actuel
 
-Copier `.env.example` → `.env.local`:
-```bash
-cp .env.example .env.local
-```
-
-Remplir avec tes credentials Supabase:
-```env
-VITE_SUPABASE_URL=https://xxx.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGc...
-VITE_APP_ENV=development
-```
-
-### 3. Deploy sur Vercel
-
-1. Push les changements vers GitHub
-2. Dans Vercel, ajouter les env vars dans **Settings → Environment Variables**
-3. Vercel va auto-deployer
-
-### 4. Tester
-
-Aller à [vibegay.ca](https://vibegay.ca) ou ton URL Vercel
-
-## 💬 Système de Salons
-
-### Catégories
-
-#### Par Villes 🏙️
-- Montréal, Toronto, Vancouver, Ottawa, Québec
-- Accès: Tous les membres
-
-#### Par Thèmes 💬
-- Santé Mentale
-- Événements Pride
-- Rencontres
-- Carrière & Finance
-- Arts & Culture
-- Actualité & Engagement
-- Accès: Tous les membres
-
-#### Par Accès 👑
-- **Lounge Fondateurs** — Privé (Founders only)
-- **Salle Modérateurs** — Privé (Moderators only)
-- **Réseau SOS** — Privé (Members, coordinateurs)
-
-### Utiliser les Salons dans le Code
-
-```javascript
-// Initialiser
-await window.vibeSalons.init(supabaseClient);
-
-// Charger les salons disponibles
-const categories = await window.vibeSalons.loadSalons();
-
-// Rejoindre un salon
-await window.vibeSalons.joinSalon('mtl');
-
-// Envoyer un message
-await window.vibeSalons.sendMessage('mtl', 'Bonjour tout le monde!');
-
-// Écouter les nouveaux messages
-window.addEventListener('salon-new-message', (event) => {
-  console.log('Nouveau message:', event.detail);
-});
-```
+Le plan Fondateur (99 $CAD/an) propose 3 méthodes : Stripe (lien de paiement direct),
+PayPal, et virement Interac. **Aucune de ces méthodes ne met à jour automatiquement**
+le statut dans la table `landing_inscriptions` — la réconciliation entre paiement
+reçu et statut Fondateur confirmé se fait manuellement.
 
 ## 🔐 Sécurité & RLS
 
-Toutes les tables utilisent **Row Level Security (RLS)**:
-- Users ne voient que leurs propres données
-- Messages visibles seulement dans salons autorisés
-- Modérateurs peuvent supprimer messages
-- Fondateurs ont accès complet
-
-## 🛠️ Dépannage
-
-### Supabase non connecté
-```
-⚠️ Supabase credentials not configured
-```
-→ Vérifie `.env.local` et les variables Vercel
-
-### Messages ne s'envoient pas
-```
-❌ Error: Not authenticated
-```
-→ L'utilisateur doit être connecté. Vérifie `signInUser()` est appelé
-
-### Salons non visibles
-```
-Salon not found: salon_id
-```
-→ Vérifie la table `salons` dans Supabase. Réexécute `schema.sql`
-
-## 📊 Roadmap
-
-- [ ] Implémentation complète du chat en temps réel
-- [ ] Système de notifications push
-- [ ] Gestion des media (photos, vidéos)
-- [ ] Appels audio/vidéo groupés
-- [ ] App mobile (React Native)
-- [ ] Modération IA assistée
-- [ ] Système de badges et achievements
+Les tables Supabase utilisent Row Level Security (RLS). Un audit de sécurité a corrigé :
+GPS exposé dans les alertes SOS, emails exposés dans les inscriptions, permissions
+UPDATE ouvertes, exécution anonyme de fonctions privilégiées, et une politique RLS
+récursive sur `profiles`.
 
 ## 📝 Licence
 
@@ -161,8 +71,8 @@ VIBE est propriétaire. © 2026 VIBE Network.
 
 ## 📞 Support
 
-Issues GitHub ou contact@vibegay.ca
+Issues GitHub.
 
 ---
 
-**Mise à jour:** 1er juillet 2026
+**Mise à jour:** 25 juillet 2026
