@@ -1072,12 +1072,8 @@ footer{
     </div>
   </div>
 
-  <div class="salon-tabs" id="salon-tabs" style="display:flex;gap:8px;margin:16px 0 10px;flex-wrap:wrap">
-    <button class="salon-tab-btn" data-salon="flottant" onclick="switchSalon('flottant')" style="background:#D4AF37;color:#000;border:none;padding:9px 16px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:2px;cursor:pointer;font-weight:700">🌊 SALON FLOTTANT</button>
-    <button class="salon-tab-btn" data-salon="voix" onclick="switchSalon('voix')" style="background:transparent;color:rgba(212,175,55,0.6);border:1px solid rgba(212,175,55,0.3);padding:9px 16px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:2px;cursor:pointer">🎙 SALON DE LA VOIX</button>
-    <button class="salon-tab-btn" data-salon="fantomes" onclick="switchSalon('fantomes')" style="background:transparent;color:rgba(180,180,255,0.6);border:1px solid rgba(180,180,255,0.3);padding:9px 16px;font-family:Share Tech Mono,monospace;font-size:0.5rem;letter-spacing:2px;cursor:pointer">👻 SALLE DES FANTÔMES</button>
-  </div>
   <div class="salon-chatbox" id="salon-chatbox" style="border:0.5px solid rgba(255,255,255,0.1);padding:14px;background:rgba(255,255,255,0.02)">
+    <div id="salon-actif-label" style="font-family:Share Tech Mono,monospace;font-size:0.46rem;letter-spacing:2px;color:#D4AF37;font-weight:700;margin-bottom:10px">🌊 SALON FLOTTANT</div>
     <div id="live-chat-msgs"></div>
     <div style="display:flex;gap:8px;margin-top:10px">
       <input type="text" id="chat-input" class="chat-input" maxlength="200" placeholder="Écris dans le salon..." style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();sendChatMsg();}">
@@ -1631,6 +1627,9 @@ function allerVersVille(ville){
 function switchSalon(nom){
   if(currentSalon===nom)return;
   currentSalon=nom;
+  const LABELS={flottant:'🌊 SALON FLOTTANT',voix:'🎙 SALON DE LA VOIX',fantomes:'👻 SALLE DES FANTÔMES'};
+  const lbl=document.getElementById('salon-actif-label');
+  if(lbl){lbl.textContent=LABELS[nom]||'';lbl.style.color=SALON_COLORS[nom]||'#D4AF37'}
   document.querySelectorAll('.salon-tab-btn').forEach(b=>{
     const actif=b.dataset.salon===nom;
     b.style.background=actif?'#D4AF37':'transparent';
