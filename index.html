@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <meta name="description" content="VIBE — L'application LGBTQ+ de nouvelle génération, née à Québec.">
-<meta property="og:title" content="VIBE 2026 — Réseau LGBTQ+ Canadien">
+<meta property="og:title" content="VIBE — Réseau LGBTQ+ Canadien">
 <meta property="og:description" content="VIBE — L'application LGBTQ+ de nouvelle génération, née à Québec.">
 <meta property="og:image" content="https://vibegay.ca/bg.png">
 <meta property="og:url" content="https://vibegay.ca">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="VIBE 2026 — Réseau LGBTQ+ Canadien">
+<meta name="twitter:title" content="VIBE — Réseau LGBTQ+ Canadien">
 <meta name="twitter:description" content="VIBE — L'application LGBTQ+ de nouvelle génération, née à Québec.">
 <meta name="twitter:image" content="https://vibegay.ca/bg.png">
-<title>VIBE 2026 — Réseau LGBTQ+ Canadien</title>
+<title>VIBE — Réseau LGBTQ+ Canadien</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/icon-192.png">
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -22,6 +22,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="VIBE">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1208,7 +1211,7 @@ footer{
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-brand">VIBE 2026</div>
+  <div class="footer-brand">VIBE</div>
   <div style="font-size:0.5rem;letter-spacing:3px;color:rgba(212,175,55,0.6);margin:6px 0 10px;font-family:Share Tech Mono,monospace">RÉSERVÉ AUX 18 ANS ET PLUS</div>
   <div class="footer-links">
     <a href="/confidentialite.html">Confidentialité</a>
@@ -2149,7 +2152,7 @@ async function adminLoad(type){
       ({data}=await _supa.rpc('admin_profils_a_verifier'));
       html=`<div style="color:rgba(212,175,55,0.5);margin-bottom:8px">PROFILS À VÉRIFIER (${data?.length||0})</div>`+
         (data||[]).map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.04);padding:8px 0;display:flex;align-items:center;gap:8px">`+
-          (r.photo?`<img src="${r.photo}" style="width:40px;height:40px;object-fit:cover;border-radius:4px">`:'')+
+          (r.photo?`<img src="${r.photo}" alt="Photo envoyée" style="width:40px;height:40px;object-fit:cover;border-radius:4px">`:'')+
           `<div style="flex:1"><span style="color:rgba(212,175,55,0.7)">${r.nom}</span> · ${r.age||'?'} ans · ${r.ville||'N/A'}<br><span style="opacity:.45">${r.courriel||''} · ${new Date(r.cree_le).toLocaleDateString('fr-CA')}</span></div>`+
           `<button onclick="adminVerifierPhoto('${r.id}',this)" style="background:transparent;border:0.5px solid rgba(212,175,55,0.5);color:#D4AF37;padding:4px 8px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">✓ VÉRIFIER</button>`+
           `<button onclick="adminSuspendreProfil('${r.id}',this)" style="background:transparent;border:0.5px solid rgba(220,50,50,0.5);color:rgba(220,50,50,0.8);padding:4px 8px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">✕ SUSPECT</button>`+
@@ -2866,7 +2869,7 @@ function ajouterPriveMsg(m){
     wrap.appendChild(box);el.appendChild(wrap);
     _supa.storage.from('messages-photos').createSignedUrl(m.photo_path,3600).then(({data})=>{
       if(!data?.signedUrl)return;
-      box.innerHTML='<img src="'+data.signedUrl+'" style="width:100%;height:100%;object-fit:cover;filter:blur(22px);transition:filter .3s">'+
+      box.innerHTML='<img src="'+data.signedUrl+'" alt="Photo privée floutée" style="width:100%;height:100%;object-fit:cover;filter:blur(22px);transition:filter .3s">'+
         '<div class="reveal-hint" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);color:#fff;font-size:0.46rem;letter-spacing:1px;font-family:Share Tech Mono,monospace;text-align:center;padding:8px">👁 Appuie pour révéler</div>';
     });
   }
@@ -2966,7 +2969,7 @@ function ouvrirMonProfil(){
       document.getElementById('pf-bio').value=data.bio||'';
       document.getElementById('pf-langue').value=data.langue||'fr';
       pfIntention=data.intention||'jaser';
-      if(data.photo_url)document.getElementById('pf-photo-prev').innerHTML='<img src="'+data.photo_url+'" style="width:100%;height:100%;object-fit:cover">';
+      if(data.photo_url)document.getElementById('pf-photo-prev').innerHTML='<img src="'+data.photo_url+'" alt="Photo de profil" style="width:100%;height:100%;object-fit:cover">';
     }else{
       document.getElementById('pf-nom').value=CURRENT_USER.user_metadata?.prenom||'';
       document.getElementById('pf-ville').value=CURRENT_USER.user_metadata?.ville||'';
@@ -2985,7 +2988,7 @@ function majIntBtns(){
 function previsPhoto(inp){
   const f=inp.files&&inp.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=e=>{document.getElementById('pf-photo-prev').innerHTML='<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover">';};
+  r.onload=e=>{document.getElementById('pf-photo-prev').innerHTML='<img src="'+e.target.result+'" alt="Aperçu de la photo choisie" style="width:100%;height:100%;object-fit:cover">';};
   r.readAsDataURL(f);
 }
 async function sauverProfil(e){
@@ -3047,11 +3050,12 @@ async function chargerDecouverte(){
     if(!membres.length){el.innerHTML='<div style="grid-column:1/-1;font-size:0.55rem;letter-spacing:2px;color:rgba(255,255,255,0.4);font-family:Share Tech Mono,monospace;padding:14px 0">Aucun membre avec ces filtres. Sois le premier à compléter ton profil ✦</div>';return;}
     el.innerHTML=membres.map(m=>{
       const nom=String(m.nom).replace(/</g,'&lt;');
-      const photo=m.photo?'<img src="'+m.photo+'" style="width:100%;height:100%;object-fit:cover" loading="lazy">':'<span style="font-size:1.6rem;color:rgba(212,175,55,0.5)">✦</span>';
+      const photo=m.photo?'<img src="'+m.photo+'" alt="Photo de '+nom+'" style="width:100%;height:100%;object-fit:cover" loading="lazy">':'<span style="font-size:1.6rem;color:rgba(212,175,55,0.5)">✦</span>';
       return '<div onclick=\'ouvrirFiche('+JSON.stringify(m).replace(/'/g,"&#39;")+')\' style="cursor:pointer;border:1px solid rgba(212,175,55,0.3);background:rgba(255,255,255,0.02)">'+
         '<div style="width:100%;aspect-ratio:1;background:rgba(212,175,55,0.06);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative">'+photo+
         (m.en_ligne?'<span style="position:absolute;top:8px;right:8px;width:11px;height:11px;border-radius:50%;background:#3AE06E;box-shadow:0 0 10px rgba(58,224,110,0.9);border:2px solid #0a0a10"></span>':'')+
-        (m.verifie?'<span style="position:absolute;bottom:8px;right:8px;background:#D4AF37;color:#000;font-size:0.5rem;padding:2px 6px;font-family:Share Tech Mono,monospace">✓</span>':'')+'</div>'+
+        (m.verifie?'<span style="position:absolute;bottom:8px;right:8px;background:#D4AF37;color:#000;font-size:0.5rem;padding:2px 6px;font-family:Share Tech Mono,monospace">✓</span>':'')+
+        (m.fondateur?'<span style="position:absolute;top:8px;left:8px;background:#D4AF37;color:#000;font-size:0.42rem;letter-spacing:1px;padding:2px 6px;font-family:Share Tech Mono,monospace;font-weight:bold">✦ FONDATEUR</span>':'')+'</div>'+
         '<div style="padding:9px 10px;font-family:Share Tech Mono,monospace">'+
         '<div style="font-size:0.58rem;letter-spacing:1px;color:#fff">'+nom+(m.age?' · '+m.age:'')+'</div>'+
         '<div style="font-size:0.46rem;letter-spacing:1px;color:rgba(212,175,55,0.75);margin-top:3px">'+(INTENTIONS[m.intention]||'')+(m.ville?' · '+String(m.ville).replace(/</g,'&lt;'):'')+'</div>'+
@@ -3061,9 +3065,9 @@ async function chargerDecouverte(){
 }
 function ouvrirFiche(m){
   fmCourant=m;
-  document.getElementById('fm-photo').innerHTML=m.photo?'<img src="'+m.photo+'" style="width:100%;height:100%;object-fit:cover">':'✦';
+  document.getElementById('fm-photo').innerHTML=m.photo?'<img src="'+m.photo+'" alt="Photo de '+m.nom+'" style="width:100%;height:100%;object-fit:cover">':'✦';
   document.getElementById('fm-nom').textContent=m.nom+(m.age?' · '+m.age:'');
-  document.getElementById('fm-meta').textContent=(m.ville||'')+(m.verifie?'  ·  ✓ PHOTO VÉRIFIÉE':'')+(m.en_ligne?'  ·  EN LIGNE':'');
+  document.getElementById('fm-meta').textContent=(m.ville||'')+(m.verifie?'  ·  ✓ PHOTO VÉRIFIÉE':'')+(m.fondateur?'  ·  ✦ FONDATEUR':'')+(m.en_ligne?'  ·  EN LIGNE':'');
   document.getElementById('fm-intention').textContent=INTENTIONS[m.intention]||'';
   document.getElementById('fm-bio').textContent=m.bio||'';
   document.getElementById('fiche-modal').classList.add('open');
