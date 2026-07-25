@@ -2939,13 +2939,13 @@ async function voirMesVisites(){
   try{
     const {data}=await _supa.rpc('qui_ma_vu');
     if(data&&data.ok===false){
-      if(data.error==='achat_requis'){showError('⚠ Achète "Qui m\\'a consulté" pour voir la liste.');}
+      if(data.error==='achat_requis'){showError('⚠ Achète "Qui m\'a consulté" pour voir la liste.');}
       return;
     }
     const liste=data||[];
-    if(!liste.length){showSuccess('Personne n\\'a consulté ton profil récemment.');return;}
+    if(!liste.length){showSuccess('Personne n\'a consulté ton profil récemment.');return;}
     const texte=liste.slice(0,10).map(v=>v.nom).join(', ');
-    showSuccess('👁 T\\'as été vu par : '+texte+(liste.length>10?'...':''));
+    showSuccess('👁 T\'as été vu par : '+texte+(liste.length>10?'...':''));
   }catch(e){showError('⚠ Erreur.');}
 }
 async function chargerDecouverte(){
