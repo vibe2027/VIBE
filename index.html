@@ -504,7 +504,8 @@ body{
 .np-track{font-size:0.62rem;color:var(--gold);letter-spacing:2px;margin-bottom:3px;font-family:'Share Tech Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .np-artist{font-size:0.46rem;color:rgba(255,255,255,0.68);letter-spacing:2px;font-family:'Share Tech Mono',monospace}
 .eq-bars{display:flex;gap:2px;align-items:flex-end;height:20px}
-.eq-bar{width:3px;border-radius:1px;background:var(--gold);animation:eq .8s ease-in-out infinite alternate}
+.eq-bar{width:3px;border-radius:1px;background:var(--gold);height:6px;animation-play-state:paused;opacity:0.35}
+#eq-bars.playing .eq-bar{animation:eq .8s ease-in-out infinite alternate;animation-play-state:running;opacity:1}
 @keyframes eq{from{height:3px;opacity:.3}to{height:20px;opacity:1}}
 
 /* CHAT */
@@ -1056,13 +1057,13 @@ footer{
       </div>
       <div class="salon-mode">MODE SALON · TEMPS RÉEL</div>
     </div>
-    <div class="now-playing">
-      <div class="disc">🎵</div>
+    <div class="now-playing" id="now-playing" onclick="toggleMusique()" style="cursor:pointer" title="Jouer / pause">
+      <div class="disc" id="music-disc">🎵</div>
       <div class="np-info">
         <div class="np-track" id="np-track">Nuit de Québec</div>
         <div class="np-artist" id="np-artist">VIBE Ambient · Salon Flottant</div>
       </div>
-      <div class="eq-bars">
+      <div class="eq-bars" id="eq-bars">
         <div class="eq-bar" style="animation-delay:.0s"></div>
         <div class="eq-bar" style="animation-delay:.12s"></div>
         <div class="eq-bar" style="animation-delay:.24s"></div>
@@ -1070,6 +1071,8 @@ footer{
         <div class="eq-bar" style="animation-delay:.48s"></div>
       </div>
     </div>
+    <div id="music-styles" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"></div>
+    <audio id="bg-audio" loop preload="none"></audio>
   </div>
 
   <div class="salon-chatbox" id="salon-chatbox" style="border:0.5px solid rgba(255,255,255,0.1);padding:14px;background:rgba(255,255,255,0.02)">
@@ -1534,20 +1537,64 @@ function drawSalon(ts){
 setTimeout(()=>{resizeSalon();initSalon();requestAnimationFrame(drawSalon)},200);
 window.addEventListener('resize',()=>{resizeSalon();initSalon()});
 
-// Rotation musique
-const tracks=[
-  ['Nuit de Québec','VIBE Ambient · Salon Flottant'],
-  ['Brouillard d\'hiver','VIBE Chill · Mode Fantôme'],
-  ['Lumière de la fierté','VIBE Pride · 2026'],
-  ['Âmes connectées','VIBE Deep · Salon Flottant'],
-  ['Aurora Borealis','VIBE Electronic · Late Night'],
-];
-let ti=0;
-setInterval(()=>{
-  ti=(ti+1)%tracks.length;
-  document.getElementById('np-track').textContent=tracks[ti][0];
-  document.getElementById('np-artist').textContent=tracks[ti][1];
-},8000);
+// ══════════════════════════════════════════
+// MUSIQUE D'AMBIANCE — vrais fichiers audio, style au choix
+// ══════════════════════════════════════════
+// IMPORTANT: les 'src' sont vides — il manque les fichiers audio réels.
+// Pascal doit fournir des URL publiques (ou des fichiers à héberger dans /audio/)
+// pour chaque style avant que la lecture fonctionne.
+const MUSIC_STYLES={
+  ambient:{nom:'Nuit de Québec',artiste:'VIBE Ambient · Salon Flottant',src:''},
+  synthwave:{nom:'Néon Nocturne',artiste:'VIBE Synthwave · Late Night',src:''},
+  lounge:{nom:'Salon Feutré',artiste:'VIBE Lounge · Chill',src:''},
+  pride:{nom:'Lumière de la Fierté',artiste:'VIBE Pride · 2026',src:''},
+};
+const bgAudio=document.getElementById('bg-audio');
+let musicStyle=localStorage.getItem('vibe_music_style')||'ambient';
+
+function majMusicUI(){
+  const s=MUSIC_STYLES[musicStyle];
+  document.getElementById('np-track').textContent=s.nom;
+  document.getElementById('np-artist').textContent=s.artiste;
+  document.querySelectorAll('#music-styles button').forEach(b=>{
+    const on=b.dataset.style===musicStyle;
+    b.style.background=on?'rgba(212,175,55,0.9)':'transparent';
+    b.style.color=on?'#000':'rgba(255,255,255,0.7)';
+  });
+  document.getElementById('eq-bars').classList.toggle('playing',!bgAudio.paused);
+}
+function rendreStylesMusique(){
+  const box=document.getElementById('music-styles');if(!box)return;
+  box.innerHTML=Object.entries(MUSIC_STYLES).map(([k,v])=>
+    '<button type="button" data-style="'+k+'" onclick="event.stopPropagation();choisirStyleMusique(\''+k+'\')" style="background:transparent;border:1px solid rgba(212,175,55,0.4);color:rgba(255,255,255,0.7);padding:6px 10px;font-family:Share Tech Mono,monospace;font-size:0.42rem;letter-spacing:1px;cursor:pointer">'+v.nom+'</button>').join('');
+}
+function choisirStyleMusique(k){
+  musicStyle=k;
+  localStorage.setItem('vibe_music_style',k);
+  const s=MUSIC_STYLES[k];
+  const jouait=!bgAudio.paused;
+  if(!s.src){majMusicUI();showError('⚠ Fichier audio pas encore ajouté pour ce style.');return;}
+  bgAudio.src=s.src;
+  if(jouait)bgAudio.play().catch(()=>{});
+  majMusicUI();
+}
+function toggleMusique(){
+  const s=MUSIC_STYLES[musicStyle];
+  if(!s.src){showError('⚠ Fichier audio pas encore ajouté pour ce style.');return;}
+  if(bgAudio.paused){
+    if(!bgAudio.src)bgAudio.src=s.src;
+    bgAudio.play().then(majMusicUI).catch(()=>{
+      showError('⚠ Le navigateur bloque la lecture auto. Retape sur ▶.');
+    });
+  }else{
+    bgAudio.pause();
+    majMusicUI();
+  }
+}
+bgAudio.addEventListener('play',majMusicUI);
+bgAudio.addEventListener('pause',majMusicUI);
+rendreStylesMusique();
+majMusicUI();
 
 // ══════════════════════════════════════════
 // CHAT SALON SUPABASE REALTIME — 3 salons distincts
