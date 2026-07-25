@@ -1254,6 +1254,9 @@ footer{
 </div>
 
 <script>
+function escHtml(s){
+  return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 // ══════════════════════════════════════════
 // SUPABASE
 // ══════════════════════════════════════════
@@ -1775,10 +1778,10 @@ function renderChat(){
   el.innerHTML=chatMsgs.slice(-6).map(m=>{
     const isGhost=m.mode==='fantome';
     const cls=isGhost?'cn-ghost':m.prenom==='VIBE'?'cn-cyan':'cn-gold';
-    const name=isGhost?'👻 Fantôme':`${m.prenom}${m.ville?'·'+m.ville:''}`;
+    const name=isGhost?'👻 Fantôme':`${escHtml(m.prenom)}${m.ville?'·'+escHtml(m.ville):''}`;
     const clickable=!isGhost&&m.expediteur&&(!CURRENT_USER||m.expediteur!==CURRENT_USER.id);
-    const attr=clickable?` onclick="ouvrirPrive('${m.expediteur}','${(m.prenom||'Membre').replace(/'/g,'')}')" style="cursor:pointer;text-decoration:underline dotted rgba(212,175,55,0.4)" title="Message privé"`:'';
-    return `<div class="chat-msg"><span class="${cls}"${attr}>${name}</span><span class="ct">${m.message}</span></div>`;
+    const attr=clickable?` onclick="ouvrirPrive('${m.expediteur}','${escHtml((m.prenom||'Membre').replace(/'/g,''))}')" style="cursor:pointer;text-decoration:underline dotted rgba(212,175,55,0.4)" title="Message privé"`:'';
+    return `<div class="chat-msg"><span class="${cls}"${attr}>${name}</span><span class="ct">${escHtml(m.message)}</span></div>`;
   }).join('');
   el.scrollTop=el.scrollHeight;
 }
@@ -2141,10 +2144,10 @@ async function adminLoad(type){
         (data||[]).map((r,i)=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.04);padding:6px 0"><span style="color:rgba(212,175,55,0.7)">#${i+1} ${r.prenom}</span> · ${r.email}<br><span style="opacity:.45">${r.ville||'N/A'} · ${r.statut} · ${new Date(r.created_at).toLocaleDateString('fr-CA')}</span></div>`).join('');
     }else if(type==='signalements'){
       ({data}=await _supa.from('tribunal_signalements').select('pseudo_reporter,motif,details,statut,created_at').order('created_at',{ascending:false}).limit(20));
-      html=`<div style="color:rgba(220,50,50,0.5);margin-bottom:8px">SIGNALEMENTS</div>`+(data||[]).map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.04);padding:6px 0"><span style="color:rgba(220,50,50,0.7)">${r.motif}</span> par ${r.pseudo_reporter}<br><span style="opacity:.45">${r.details||''} · ${r.statut}</span></div>`).join('');
+      html=`<div style="color:rgba(220,50,50,0.5);margin-bottom:8px">SIGNALEMENTS</div>`+(data||[]).map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.04);padding:6px 0"><span style="color:rgba(220,50,50,0.7)">${escHtml(r.motif)}</span> par ${escHtml(r.pseudo_reporter)}<br><span style="opacity:.45">${escHtml(r.details||'')} · ${escHtml(r.statut)}</span></div>`).join('');
     }else if(type==='messages'){
       ({data}=await _supa.from('salon_messages').select('prenom,ville,message,created_at').order('created_at',{ascending:false}).limit(20));
-      html=`<div style="color:rgba(0,238,255,0.4);margin-bottom:8px">MESSAGES SALON</div>`+(data||[]).map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.04);padding:6px 0"><span style="color:rgba(0,238,255,0.6)">${r.prenom}·${r.ville||'QC'}</span>: ${r.message}</div>`).join('');
+      html=`<div style="color:rgba(0,238,255,0.4);margin-bottom:8px">MESSAGES SALON</div>`+(data||[]).map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.04);padding:6px 0"><span style="color:rgba(0,238,255,0.6)">${escHtml(r.prenom)}·${escHtml(r.ville||'QC')}</span>: ${escHtml(r.message)}</div>`).join('');
     }else if(type==='alertes'){
       ({data}=await _supa.from('ange_alerts').select('latitude,longitude,statut,notes,created_at').order('created_at',{ascending:false}).limit(20));
       html=`<div style="color:rgba(255,80,80,0.5);margin-bottom:8px">ALERTES SOS</div>`+(data||[]).map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.04);padding:6px 0"><span style="color:rgba(255,80,80,0.7)">GPS: ${r.latitude||'?'},${r.longitude||'?'}</span><br><span style="opacity:.45">${r.notes||''} · ${r.statut}</span></div>`).join('');
@@ -2152,7 +2155,7 @@ async function adminLoad(type){
       ({data}=await _supa.rpc('admin_profils_a_verifier'));
       html=`<div style="color:rgba(212,175,55,0.5);margin-bottom:8px">PROFILS À VÉRIFIER (${data?.length||0})</div>`+
         (data||[]).map(r=>`<div style="border-bottom:0.5px solid rgba(255,255,255,0.04);padding:8px 0;display:flex;align-items:center;gap:8px">`+
-          (r.photo?`<img src="${r.photo}" alt="Photo envoyée" style="width:40px;height:40px;object-fit:cover;border-radius:4px">`:'')+
+          (r.photo?`<img src="${escHtml(r.photo)}" alt="Photo envoyée" style="width:40px;height:40px;object-fit:cover;border-radius:4px">`:'')+
           `<div style="flex:1"><span style="color:rgba(212,175,55,0.7)">${r.nom}</span> · ${r.age||'?'} ans · ${r.ville||'N/A'}<br><span style="opacity:.45">${r.courriel||''} · ${new Date(r.cree_le).toLocaleDateString('fr-CA')}</span></div>`+
           `<button onclick="adminVerifierPhoto('${r.id}',this)" style="background:transparent;border:0.5px solid rgba(212,175,55,0.5);color:#D4AF37;padding:4px 8px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">✓ VÉRIFIER</button>`+
           `<button onclick="adminSuspendreProfil('${r.id}',this)" style="background:transparent;border:0.5px solid rgba(220,50,50,0.5);color:rgba(220,50,50,0.8);padding:4px 8px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">✕ SUSPECT</button>`+
@@ -2969,7 +2972,7 @@ function ouvrirMonProfil(){
       document.getElementById('pf-bio').value=data.bio||'';
       document.getElementById('pf-langue').value=data.langue||'fr';
       pfIntention=data.intention||'jaser';
-      if(data.photo_url)document.getElementById('pf-photo-prev').innerHTML='<img src="'+data.photo_url+'" alt="Photo de profil" style="width:100%;height:100%;object-fit:cover">';
+      if(data.photo_url)document.getElementById('pf-photo-prev').innerHTML='<img src="'+escHtml(data.photo_url)+'" alt="Photo de profil" style="width:100%;height:100%;object-fit:cover">';
     }else{
       document.getElementById('pf-nom').value=CURRENT_USER.user_metadata?.prenom||'';
       document.getElementById('pf-ville').value=CURRENT_USER.user_metadata?.ville||'';
@@ -3049,8 +3052,8 @@ async function chargerDecouverte(){
     const membres=data||[];
     if(!membres.length){el.innerHTML='<div style="grid-column:1/-1;font-size:0.55rem;letter-spacing:2px;color:rgba(255,255,255,0.4);font-family:Share Tech Mono,monospace;padding:14px 0">Aucun membre avec ces filtres. Sois le premier à compléter ton profil ✦</div>';return;}
     el.innerHTML=membres.map(m=>{
-      const nom=String(m.nom).replace(/</g,'&lt;');
-      const photo=m.photo?'<img src="'+m.photo+'" alt="Photo de '+nom+'" style="width:100%;height:100%;object-fit:cover" loading="lazy">':'<span style="font-size:1.6rem;color:rgba(212,175,55,0.5)">✦</span>';
+      const nom=escHtml(m.nom);
+      const photo=m.photo?'<img src="'+escHtml(m.photo)+'" alt="Photo de '+nom+'" style="width:100%;height:100%;object-fit:cover" loading="lazy">':'<span style="font-size:1.6rem;color:rgba(212,175,55,0.5)">✦</span>';
       return '<div onclick=\'ouvrirFiche('+JSON.stringify(m).replace(/'/g,"&#39;")+')\' style="cursor:pointer;border:1px solid rgba(212,175,55,0.3);background:rgba(255,255,255,0.02)">'+
         '<div style="width:100%;aspect-ratio:1;background:rgba(212,175,55,0.06);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative">'+photo+
         (m.en_ligne?'<span style="position:absolute;top:8px;right:8px;width:11px;height:11px;border-radius:50%;background:#3AE06E;box-shadow:0 0 10px rgba(58,224,110,0.9);border:2px solid #0a0a10"></span>':'')+
@@ -3065,7 +3068,7 @@ async function chargerDecouverte(){
 }
 function ouvrirFiche(m){
   fmCourant=m;
-  document.getElementById('fm-photo').innerHTML=m.photo?'<img src="'+m.photo+'" alt="Photo de '+m.nom+'" style="width:100%;height:100%;object-fit:cover">':'✦';
+  document.getElementById('fm-photo').innerHTML=m.photo?'<img src="'+escHtml(m.photo)+'" alt="Photo de '+escHtml(m.nom)+'" style="width:100%;height:100%;object-fit:cover">':'✦';
   document.getElementById('fm-nom').textContent=m.nom+(m.age?' · '+m.age:'');
   document.getElementById('fm-meta').textContent=(m.ville||'')+(m.verifie?'  ·  ✓ PHOTO VÉRIFIÉE':'')+(m.fondateur?'  ·  ✦ FONDATEUR':'')+(m.en_ligne?'  ·  EN LIGNE':'');
   document.getElementById('fm-intention').textContent=INTENTIONS[m.intention]||'';
