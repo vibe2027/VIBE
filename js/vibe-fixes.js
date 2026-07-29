@@ -1,6 +1,5 @@
 /**
- * VIBE — Corrections plateforme (vibegay.ca) v4
- * Tarifs finaux + Mode Fantôme + 2 salons + identité + Ange + légal
+ * VIBE — Corrections plateforme v5 (tarifs + Stripe + SEO + salons)
  */
 (function () {
   'use strict';
@@ -39,8 +38,91 @@
     document.head.appendChild(s);
   }
 
+  /** SEO : canonical + JSON-LD */
+  function injectSEO() {
+    if (document.getElementById('vibe-seo-jsonld')) return;
+    if (!document.querySelector('link[rel="canonical"]')) {
+      var can = document.createElement('link');
+      can.rel = 'canonical';
+      can.href = 'https://vibegay.ca' + (location.pathname === '/' ? '/' : location.pathname);
+      document.head.appendChild(can);
+    }
+    if (!document.querySelector('meta[name="keywords"]')) {
+      var kw = document.createElement('meta');
+      kw.name = 'keywords';
+      kw.content =
+        'LGBTQ,gay,lesbienne,trans,rencontre,Québec,Montréal,Canada,VIBE,Mode Ange,salon,dating';
+      document.head.appendChild(kw);
+    }
+    var ld = document.createElement('script');
+    ld.id = 'vibe-seo-jsonld';
+    ld.type = 'application/ld+json';
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'VIBE',
+      url: 'https://vibegay.ca',
+      applicationCategory: 'SocialNetworkingApplication',
+      operatingSystem: 'Web',
+      inLanguage: ['fr-CA', 'en'],
+      description:
+        'Réseau social et de rencontres LGBTQ+ né à Québec. Mode Ange, salons en temps réel, Tribunal communautaire.',
+      offers: {
+        '@type': 'Offer',
+        price: '99',
+        priceCurrency: 'CAD',
+        description: 'Pass Pionnier — 1 an, 1 seul versement'
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Vibegay.ca',
+        url: 'https://vibegay.ca',
+        email: 'vibeqbc2026@hotmail.com',
+        address: { '@type': 'PostalAddress', addressLocality: 'Québec', addressCountry: 'CA' }
+      }
+    });
+    document.head.appendChild(ld);
+  }
+
+  /** Brancher Stripe EXTRA_LINKS depuis stripe-config.js */
+  function wireStripe() {
+    var cfg = window.VIBE_STRIPE;
+    if (!cfg) return;
+    if (typeof window.EXTRA_LINKS === 'undefined') window.EXTRA_LINKS = {};
+    ['boost', 'fantome', 'visites'].forEach(function (k) {
+      if (cfg[k]) window.EXTRA_LINKS[k] = cfg[k];
+    });
+    // Remplacer acheterExtra pour utiliser vibeCheckout si dispo
+    if (typeof window.acheterExtra === 'function' && !window.acheterExtra._vibePatched) {
+      var orig = window.acheterExtra;
+      window.acheterExtra = function (type) {
+        if (!window.CURRENT_USER) {
+          if (typeof showError === 'function') showError('\u26a0 Connecte-toi pour acheter.');
+          if (typeof openLogin === 'function') openLogin();
+          return;
+        }
+        if (cfg[type]) {
+          window.vibeCheckout(type);
+          return;
+        }
+        return orig(type);
+      };
+      window.acheterExtra._vibePatched = true;
+    }
+  }
+
+  /** Vérifier liens internes critiques */
+  function checkLinks() {
+    var critical = ['/conditions.html', '/confidentialite.html', '/manifest.json'];
+    critical.forEach(function (path) {
+      fetch(path, { method: 'HEAD', cache: 'no-store' }).catch(function () {});
+    });
+  }
+
   function removeFantomesSalon() {
-    document.querySelectorAll('.salon-card[data-salon="fantomes"]').forEach(function (el) { el.remove(); });
+    document.querySelectorAll('.salon-card[data-salon="fantomes"]').forEach(function (el) {
+      el.remove();
+    });
   }
 
   function fixModeFantomeText() {
@@ -80,7 +162,15 @@
       '<div id="signup-identites" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">' +
       ['gay', 'lesbienne', 'bi', 'trans', 'nonbinaire', 'queer', 'autre']
         .map(function (id) {
-          var labels = { gay: 'Gay', lesbienne: 'Lesbienne', bi: 'Bi', trans: 'Trans', nonbinaire: 'Non-binaire', queer: 'Queer', autre: 'Autre' };
+          var labels = {
+            gay: 'Gay',
+            lesbienne: 'Lesbienne',
+            bi: 'Bi',
+            trans: 'Trans',
+            nonbinaire: 'Non-binaire',
+            queer: 'Queer',
+            autre: 'Autre'
+          };
           return '<button type="button" data-id="' + id + '" class="id-chip">' + labels[id] + '</button>';
         })
         .join('') +
@@ -119,7 +209,9 @@
         .join('') +
       '</div>' +
       '<div style="margin-top:12px;padding:12px;border:1px solid rgba(212,175,55,0.35);background:rgba(212,175,55,0.06);font-size:0.46rem;letter-spacing:1px;color:rgba(255,255,255,0.7);font-family:Share Tech Mono,monospace;line-height:1.8">' +
-      '\u2726 <b style="color:#D4AF37">PIONNIER</b> \u2014 500 places \u00b7 <b style="color:#D4AF37">' + TARIFS.pionnier + ' CAD</b> \u00b7 <b>1 seul versement</b> \u00b7 1 an complet \u00b7 pas de renouvellement automatique' +
+      '\u2726 <b style="color:#D4AF37">PIONNIER</b> \u2014 500 places \u00b7 <b style="color:#D4AF37">' +
+      TARIFS.pionnier +
+      ' CAD</b> \u00b7 <b>1 seul versement</b> \u00b7 1 an complet \u00b7 pas de renouvellement automatique' +
       '</div>';
     plan.insertAdjacentElement('afterend', box);
   }
@@ -137,7 +229,10 @@
       if (!prices[key] || btn.parentElement.querySelector('.extra-price')) return;
       var p = document.createElement('div');
       p.className = 'extra-price';
-      p.style.cssText = 'margin-top:8px;font-size:0.55rem;font-weight:700;color:' + colors[key] + ';font-family:Share Tech Mono,monospace;letter-spacing:1px';
+      p.style.cssText =
+        'margin-top:8px;font-size:0.55rem;font-weight:700;color:' +
+        colors[key] +
+        ';font-family:Share Tech Mono,monospace;letter-spacing:1px';
       p.textContent = prices[key];
       btn.insertAdjacentElement('afterend', p);
     });
@@ -199,6 +294,8 @@
 
   function runAll() {
     injectCSS();
+    injectSEO();
+    wireStripe();
     removeFantomesSalon();
     fixModeFantomeText();
     badgeAngeGratuit();
@@ -212,6 +309,7 @@
 
   ready(function () {
     runAll();
+    checkLinks();
     setTimeout(runAll, 800);
     setTimeout(runAll, 2500);
   });
