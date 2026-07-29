@@ -1,9 +1,11 @@
 /**
- * VIBE — Corrections plateforme v5 (tarifs + Stripe + SEO + salons)
+ * VIBE — Corrections v6
+ * Compteur Pionnier corrigé + Stripe + SEO + 2 salons + tarifs
  */
 (function () {
   'use strict';
 
+  var MAX_PIONNIERS = 500;
   var TARIFS = {
     pionnier: '99 $',
     mois1: '19,99 $',
@@ -19,6 +21,66 @@
   function ready(fn) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
     else fn();
+  }
+
+  function getSupa() {
+    try {
+      if (window._supa) return window._supa;
+      if (window.supabase && window.supabase.createClient) {
+        return window.supabase.createClient(
+          'https://fhksytcoyjtcrkmhnoyw.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZoa3N5dGNveWp0Y3JrbWhub3l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1OTkzODIsImV4cCI6MjA5MjE3NTM4Mn0.nW9xgEQSuXlq96d53AFE7jUADmr04YdMoD9hCNmw64k'
+        );
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  /**
+   * BUG FIX: les inscrits GRATUITS ne doivent PAS réduire les 500 places Pionnier.
+   * On compte seulement statut pionnier / inscrit payé / is_founder.
+   */
+  async function fixPioneerCounter() {
+    var sb = getSupa();
+    var used = 0;
+    try {
+      if (sb) {
+        var r1 = await sb
+          .from('landing_inscriptions')
+          .select('id', { count: 'exact', head: true })
+          .in('statut', ['inscrit', 'pionnier', 'paye', 'founder', 'fondateur']);
+        var r2 = await sb
+          .from('profiles')
+          .select('id', { count: 'exact', head: true })
+          .eq('is_founder', true);
+        used = Math.max(r1.count || 0, r2.count || 0);
+      }
+    } catch (e) {
+      used = 0;
+    }
+    var restants = Math.max(0, MAX_PIONNIERS - used);
+    var pct = ((used / MAX_PIONNIERS) * 100).toFixed(0);
+
+    var ids = ['spots-left', 'lh-places', 'stat-spots', 'form-spots'];
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (id === 'form-spots') el.textContent = restants + ' places restantes';
+      else el.textContent = String(restants);
+    });
+    var fill = document.getElementById('spots-fill');
+    if (fill) fill.style.width = 100 - parseFloat(pct) + '%';
+  }
+
+  function patchLoadStats() {
+    if (typeof window.loadStats !== 'function' || window.loadStats._vibePioneerFixed) return;
+    var orig = window.loadStats;
+    window.loadStats = async function () {
+      var r = await orig.apply(this, arguments);
+      await fixPioneerCounter();
+      return r;
+    };
+    window.loadStats._vibePioneerFixed = true;
   }
 
   function injectCSS() {
@@ -38,7 +100,6 @@
     document.head.appendChild(s);
   }
 
-  /** SEO : canonical + JSON-LD */
   function injectSEO() {
     if (document.getElementById('vibe-seo-jsonld')) return;
     if (!document.querySelector('link[rel="canonical"]')) {
@@ -47,13 +108,21 @@
       can.href = 'https://vibegay.ca' + (location.pathname === '/' ? '/' : location.pathname);
       document.head.appendChild(can);
     }
+    if (!document.querySelector('meta[name="robots"]')) {
+      var robots = document.createElement('meta');
+      robots.name = 'robots';
+      robots.content = 'index,follow,max-image-preview:large';
+      document.head.appendChild(robots);
+    }
     if (!document.querySelector('meta[name="keywords"]')) {
       var kw = document.createElement('meta');
       kw.name = 'keywords';
       kw.content =
-        'LGBTQ,gay,lesbienne,trans,rencontre,Québec,Montréal,Canada,VIBE,Mode Ange,salon,dating';
+        'LGBTQ,gay,lesbienne,bi,trans,rencontre,Québec,Montréal,Toronto,Canada,VIBE,Mode Ange,dating queer';
       document.head.appendChild(kw);
     }
+    // Google Search Console : colle ton code de vérification ici si besoin
+    // <meta name="google-site-verification" content="TON_CODE">
     var ld = document.createElement('script');
     ld.id = 'vibe-seo-jsonld';
     ld.type = 'application/ld+json';
@@ -61,6 +130,7 @@
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
       name: 'VIBE',
+      alternateName: 'vibegay.ca',
       url: 'https://vibegay.ca',
       applicationCategory: 'SocialNetworkingApplication',
       operatingSystem: 'Web',
@@ -78,13 +148,12 @@
         name: 'Vibegay.ca',
         url: 'https://vibegay.ca',
         email: 'vibeqbc2026@hotmail.com',
-        address: { '@type': 'PostalAddress', addressLocality: 'Québec', addressCountry: 'CA' }
+        address: { '@type': 'PostalAddress', addressLocality: 'Québec', addressRegion: 'QC', addressCountry: 'CA' }
       }
     });
     document.head.appendChild(ld);
   }
 
-  /** Brancher Stripe EXTRA_LINKS depuis stripe-config.js */
   function wireStripe() {
     var cfg = window.VIBE_STRIPE;
     if (!cfg) return;
@@ -92,31 +161,21 @@
     ['boost', 'fantome', 'visites'].forEach(function (k) {
       if (cfg[k]) window.EXTRA_LINKS[k] = cfg[k];
     });
-    // Remplacer acheterExtra pour utiliser vibeCheckout si dispo
     if (typeof window.acheterExtra === 'function' && !window.acheterExtra._vibePatched) {
-      var orig = window.acheterExtra;
       window.acheterExtra = function (type) {
         if (!window.CURRENT_USER) {
           if (typeof showError === 'function') showError('\u26a0 Connecte-toi pour acheter.');
           if (typeof openLogin === 'function') openLogin();
           return;
         }
-        if (cfg[type]) {
+        if (cfg[type] && typeof window.vibeCheckout === 'function') {
           window.vibeCheckout(type);
           return;
         }
-        return orig(type);
+        if (typeof showError === 'function') showError('\u26a0 Bient\u00f4t disponible.');
       };
       window.acheterExtra._vibePatched = true;
     }
-  }
-
-  /** Vérifier liens internes critiques */
-  function checkLinks() {
-    var critical = ['/conditions.html', '/confidentialite.html', '/manifest.json'];
-    critical.forEach(function (path) {
-      fetch(path, { method: 'HEAD', cache: 'no-store' }).catch(function () {});
-    });
   }
 
   function removeFantomesSalon() {
@@ -211,7 +270,7 @@
       '<div style="margin-top:12px;padding:12px;border:1px solid rgba(212,175,55,0.35);background:rgba(212,175,55,0.06);font-size:0.46rem;letter-spacing:1px;color:rgba(255,255,255,0.7);font-family:Share Tech Mono,monospace;line-height:1.8">' +
       '\u2726 <b style="color:#D4AF37">PIONNIER</b> \u2014 500 places \u00b7 <b style="color:#D4AF37">' +
       TARIFS.pionnier +
-      ' CAD</b> \u00b7 <b>1 seul versement</b> \u00b7 1 an complet \u00b7 pas de renouvellement automatique' +
+      ' CAD</b> \u00b7 <b>1 seul versement</b> \u00b7 1 an complet' +
       '</div>';
     plan.insertAdjacentElement('afterend', box);
   }
@@ -236,11 +295,6 @@
       p.textContent = prices[key];
       btn.insertAdjacentElement('afterend', p);
     });
-    section.querySelectorAll('div').forEach(function (d) {
-      if (d.textContent && /Invisible dans D\u00e9couverte pendant 7 jours/.test(d.textContent)) {
-        d.textContent = 'Brume dense sur ta photo 7 jours \u2014 tu choisis quand te montrer';
-      }
-    });
   }
 
   function legalBanner() {
@@ -255,35 +309,6 @@
     else document.body.insertBefore(bar, document.body.firstChild);
   }
 
-  function patchChargerDecouverte() {
-    if (typeof window.chargerDecouverte !== 'function' || window.chargerDecouverte._vibePatched) return;
-    var orig = window.chargerDecouverte;
-    window.chargerDecouverte = async function () {
-      var r = await orig.apply(this, arguments);
-      try {
-        document.querySelectorAll('#annuaire-membres > div').forEach(function (card) {
-          var photoWrap = card.querySelector('div[style*="aspect-ratio"]');
-          if (!photoWrap) return;
-          if (card.dataset.modeFantome === '1' || card.classList.contains('mode-fantome')) {
-            if (!photoWrap.querySelector('.fog-overlay')) {
-              var fog = document.createElement('div');
-              fog.className = 'fog-overlay';
-              photoWrap.appendChild(fog);
-            }
-          }
-        });
-      } catch (e) {}
-      return r;
-    };
-    window.chargerDecouverte._vibePatched = true;
-  }
-
-  window.dissiperBrouillard = function (el) {
-    var root = el && el.closest ? el.closest('[style*="aspect-ratio"]') : null;
-    var fog = root ? root.querySelector('.fog-overlay') : document.querySelector('.fog-overlay');
-    if (fog) fog.classList.add('dissipating');
-  };
-
   function reinforceTribunal25() {
     document.querySelectorAll('.vtxt').forEach(function (el) {
       if (/25\s*\$/.test(el.textContent) && !/CAD/.test(el.textContent)) {
@@ -296,6 +321,8 @@
     injectCSS();
     injectSEO();
     wireStripe();
+    patchLoadStats();
+    fixPioneerCounter();
     removeFantomesSalon();
     fixModeFantomeText();
     badgeAngeGratuit();
@@ -303,14 +330,13 @@
     addTarifsSuite();
     addExtraPrices();
     legalBanner();
-    patchChargerDecouverte();
     reinforceTribunal25();
   }
 
   ready(function () {
     runAll();
-    checkLinks();
-    setTimeout(runAll, 800);
-    setTimeout(runAll, 2500);
+    setTimeout(runAll, 600);
+    setTimeout(fixPioneerCounter, 1200);
+    setTimeout(fixPioneerCounter, 3000);
   });
 })();
