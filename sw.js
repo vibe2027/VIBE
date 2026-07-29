@@ -1,6 +1,17 @@
-const CACHE = 'vibe-v3-perfect';
-const SHELL = ['/', '/index.html', '/icon-192.png', '/icon-512.png', '/js/vibe-fixes.js'];
-const FIX_TAG = '<script src="/js/vibe-fixes.js?v=3" defer><\/script>';
+const CACHE = 'vibe-v4-stripe-seo';
+const SHELL = [
+  '/',
+  '/index.html',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/js/vibe-fixes.js',
+  '/js/stripe-config.js',
+  '/robots.txt',
+  '/sitemap.xml'
+];
+const INJECT =
+  '<script src="/js/stripe-config.js?v=4"><\/script>' +
+  '<script src="/js/vibe-fixes.js?v=4" defer><\/script>';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
@@ -12,30 +23,19 @@ self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    ).then(() => self.clients.claim()).then(() =>
-      self.clients.matchAll({ type: 'window' }).then((clients) => {
-        clients.forEach((c) => {
-          try { c.navigate(c.url); } catch (err) {}
-        });
-      })
-    )
+    ).then(() => self.clients.claim())
   );
 });
 
 function injectFixes(html) {
   if (!html || html.indexOf('vibe-fixes.js') !== -1) return html;
-  if (html.indexOf('</head>') !== -1) {
-    return html.replace('</head>', FIX_TAG + '\n</head>');
-  }
-  if (html.indexOf('</body>') !== -1) {
-    return html.replace('</body>', FIX_TAG + '\n</body>');
-  }
-  return html + FIX_TAG;
+  if (html.indexOf('</head>') !== -1) return html.replace('</head>', INJECT + '\n</head>');
+  if (html.indexOf('</body>') !== -1) return html.replace('</body>', INJECT + '\n</body>');
+  return html + INJECT;
 }
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
-
   const url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
 
@@ -43,8 +43,7 @@ self.addEventListener('fetch', (e) => {
     e.request.mode === 'navigate' ||
     (e.request.headers.get('accept') || '').includes('text/html') ||
     url.pathname === '/' ||
-    url.pathname.endsWith('.html') ||
-    url.pathname === '/index.html';
+    url.pathname.endsWith('.html');
 
   if (isHTML) {
     e.respondWith(
@@ -53,8 +52,7 @@ self.addEventListener('fetch', (e) => {
           if (!res.ok) {
             const cached = await caches.match(e.request);
             if (cached) {
-              const t = await cached.text();
-              return new Response(injectFixes(t), {
+              return new Response(injectFixes(await cached.text()), {
                 status: 200,
                 headers: { 'Content-Type': 'text/html; charset=utf-8' }
               });
@@ -64,11 +62,10 @@ self.addEventListener('fetch', (e) => {
           const ct = res.headers.get('content-type') || '';
           if (!ct.includes('text/html') && !ct.includes('text/plain')) return res;
           const text = await res.text();
-          const fixed = injectFixes(text);
           const headers = new Headers(res.headers);
           headers.set('Content-Type', 'text/html; charset=utf-8');
           headers.set('Cache-Control', 'no-cache');
-          return new Response(fixed, {
+          return new Response(injectFixes(text), {
             status: res.status,
             statusText: res.statusText,
             headers: headers
@@ -77,8 +74,7 @@ self.addEventListener('fetch', (e) => {
         .catch(async () => {
           const cached = await caches.match(e.request);
           if (cached) {
-            const t = await cached.text();
-            return new Response(injectFixes(t), {
+            return new Response(injectFixes(await cached.text()), {
               status: 200,
               headers: { 'Content-Type': 'text/html; charset=utf-8' }
             });
@@ -89,11 +85,8 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // JS fixes : toujours réseau d'abord, pas de vieux cache
-  if (url.pathname.indexOf('vibe-fixes.js') !== -1) {
-    e.respondWith(
-      fetch(e.request, { cache: 'no-store' }).catch(() => caches.match(e.request))
-    );
+  if (url.pathname.indexOf('/js/') === 0) {
+    e.respondWith(fetch(e.request, { cache: 'no-store' }).catch(() => caches.match(e.request)));
     return;
   }
 
