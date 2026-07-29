@@ -1,17 +1,16 @@
 /**
- * VIBE — Corrections plateforme (vibegay.ca)
- * Tarifs finaux + Mode Fantôme + 2 salons + identité + Ange gratuit + légal
+ * VIBE — Corrections plateforme (vibegay.ca) v4
+ * Tarifs finaux + Mode Fantôme + 2 salons + identité + Ange + légal
  */
 (function () {
   'use strict';
 
-  /* ── TARIFS VERROUILLÉS ── */
   var TARIFS = {
     pionnier: '99 $',
-    mois1: '14,99 $',
-    mois3: '34,99 $',
-    mois6: '59,99 $',
-    an1: '89,99 $',
+    mois1: '19,99 $',
+    mois3: '49,99 $',
+    mois6: '89,99 $',
+    an1: '139,99 $',
     boost: '8,99 $ CAD',
     fantome: '9,99 $ CAD',
     visites: '6,99 $ CAD',
@@ -33,17 +32,15 @@
       '.fog-overlay{position:absolute;inset:0;z-index:2;background:rgba(180,180,220,0.55);backdrop-filter:blur(28px) saturate(0.55);-webkit-backdrop-filter:blur(28px) saturate(0.55);transition:opacity .9s ease,backdrop-filter .9s ease;pointer-events:none}',
       '.fog-overlay.dissipating{opacity:0;backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0)}',
       '.vibe-legal-bar{position:relative;z-index:10;text-align:center;padding:10px 16px;font-family:Share Tech Mono,monospace;font-size:0.42rem;letter-spacing:2px;color:rgba(212,175,55,0.75);border-bottom:0.5px solid rgba(212,175,55,0.12);background:rgba(0,0,0,0.6)}',
-      '.tarif-card-v{border:1px solid rgba(0,170,255,0.3);padding:14px 10px;text-align:center;background:rgba(0,40,70,0.25)}',
+      '.tarif-card-v{border:1px solid rgba(0,170,255,0.35);padding:14px 10px;text-align:center;background:rgba(0,40,70,0.3)}',
       '.tarif-card-v .t-lbl{font-size:0.42rem;color:rgba(255,255,255,0.5);letter-spacing:1px;margin-bottom:6px}',
-      '.tarif-card-v .t-prc{font-size:1.15rem;color:#3bb6ff;font-family:Playfair Display,serif;font-weight:700}'
+      '.tarif-card-v .t-prc{font-size:1.2rem;color:#3bb6ff;font-family:Playfair Display,serif;font-weight:700}'
     ].join('');
     document.head.appendChild(s);
   }
 
   function removeFantomesSalon() {
-    document.querySelectorAll('.salon-card[data-salon="fantomes"]').forEach(function (el) {
-      el.remove();
-    });
+    document.querySelectorAll('.salon-card[data-salon="fantomes"]').forEach(function (el) { el.remove(); });
   }
 
   function fixModeFantomeText() {
@@ -76,7 +73,6 @@
     if (!villeGroup) return;
     var parent = villeGroup.closest('.form-group');
     if (!parent) return;
-
     var wrap = document.createElement('div');
     wrap.className = 'form-group';
     wrap.innerHTML =
@@ -84,31 +80,19 @@
       '<div id="signup-identites" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">' +
       ['gay', 'lesbienne', 'bi', 'trans', 'nonbinaire', 'queer', 'autre']
         .map(function (id) {
-          var labels = {
-            gay: 'Gay',
-            lesbienne: 'Lesbienne',
-            bi: 'Bi',
-            trans: 'Trans',
-            nonbinaire: 'Non-binaire',
-            queer: 'Queer',
-            autre: 'Autre'
-          };
+          var labels = { gay: 'Gay', lesbienne: 'Lesbienne', bi: 'Bi', trans: 'Trans', nonbinaire: 'Non-binaire', queer: 'Queer', autre: 'Autre' };
           return '<button type="button" data-id="' + id + '" class="id-chip">' + labels[id] + '</button>';
         })
         .join('') +
       '</div>';
     parent.insertAdjacentElement('afterend', wrap);
-
     document.getElementById('signup-identites').addEventListener('click', function (e) {
       var b = e.target.closest('[data-id]');
       if (!b) return;
       var id = b.getAttribute('data-id');
       var arr = window.signupIdentites;
-      if (arr.indexOf(id) >= 0) {
-        window.signupIdentites = arr.filter(function (x) { return x !== id; });
-      } else {
-        window.signupIdentites.push(id);
-      }
+      if (arr.indexOf(id) >= 0) window.signupIdentites = arr.filter(function (x) { return x !== id; });
+      else window.signupIdentites.push(id);
       b.classList.toggle('on', window.signupIdentites.indexOf(id) >= 0);
     });
   }
@@ -134,8 +118,8 @@
         })
         .join('') +
       '</div>' +
-      '<div style="margin-top:12px;font-size:0.44rem;letter-spacing:1px;color:rgba(255,255,255,0.5);font-family:Share Tech Mono,monospace;line-height:1.8">' +
-      '\u2726 <b style="color:#D4AF37">Pionnier</b> (500 places) : <b style="color:#D4AF37">' + TARIFS.pionnier + ' CAD</b> \u2014 <b>1 seul versement</b> \u00b7 1 an complet \u00b7 pas de renouvellement auto' +
+      '<div style="margin-top:12px;padding:12px;border:1px solid rgba(212,175,55,0.35);background:rgba(212,175,55,0.06);font-size:0.46rem;letter-spacing:1px;color:rgba(255,255,255,0.7);font-family:Share Tech Mono,monospace;line-height:1.8">' +
+      '\u2726 <b style="color:#D4AF37">PIONNIER</b> \u2014 500 places \u00b7 <b style="color:#D4AF37">' + TARIFS.pionnier + ' CAD</b> \u00b7 <b>1 seul versement</b> \u00b7 1 an complet \u00b7 pas de renouvellement automatique' +
       '</div>';
     plan.insertAdjacentElement('afterend', box);
   }
@@ -145,23 +129,15 @@
     if (!section || section.dataset.pricesDone) return;
     section.dataset.pricesDone = '1';
     var prices = { boost: TARIFS.boost, fantome: TARIFS.fantome, visites: TARIFS.visites };
-    var colors = {
-      boost: 'rgba(0,238,255,0.85)',
-      fantome: 'rgba(180,180,255,0.9)',
-      visites: '#D4AF37'
-    };
+    var colors = { boost: 'rgba(0,238,255,0.9)', fantome: 'rgba(180,180,255,0.95)', visites: '#D4AF37' };
     section.querySelectorAll('button[onclick*="acheterExtra"]').forEach(function (btn) {
       var m = (btn.getAttribute('onclick') || '').match(/acheterExtra\('(\w+)'\)/);
       if (!m) return;
       var key = m[1];
-      if (!prices[key]) return;
-      if (btn.parentElement.querySelector('.extra-price')) return;
+      if (!prices[key] || btn.parentElement.querySelector('.extra-price')) return;
       var p = document.createElement('div');
       p.className = 'extra-price';
-      p.style.cssText =
-        'margin-top:8px;font-size:0.52rem;font-weight:700;color:' +
-        colors[key] +
-        ';font-family:Share Tech Mono,monospace;letter-spacing:1px';
+      p.style.cssText = 'margin-top:8px;font-size:0.55rem;font-weight:700;color:' + colors[key] + ';font-family:Share Tech Mono,monospace;letter-spacing:1px';
       p.textContent = prices[key];
       btn.insertAdjacentElement('afterend', p);
     });
@@ -179,14 +155,13 @@
     bar.id = 'vibe-legal-bar';
     bar.className = 'vibe-legal-bar';
     bar.innerHTML =
-      'R\u00c9SERV\u00c9 AUX <b style="color:#D4AF37">18 ANS ET PLUS</b> \u00b7 Aucune donn\u00e9e vendue \u00b7 Loi 25 (Qu\u00e9bec) \u00b7 LPRPDE \u00b7 <a href="/conditions.html" style="color:rgba(0,170,255,0.85)">Conditions</a> \u00b7 <a href="/confidentialite.html" style="color:rgba(0,170,255,0.85)">Confidentialit\u00e9</a>';
+      'R\u00c9SERV\u00c9 AUX <b style="color:#D4AF37">18 ANS ET PLUS</b> \u00b7 Aucune donn\u00e9e vendue \u00b7 Loi 25 \u00b7 LPRPDE \u00b7 <a href="/conditions.html" style="color:rgba(0,170,255,0.85)">Conditions</a> \u00b7 <a href="/confidentialite.html" style="color:rgba(0,170,255,0.85)">Confidentialit\u00e9</a>';
     if (hud && hud.parentNode) hud.insertAdjacentElement('afterend', bar);
     else document.body.insertBefore(bar, document.body.firstChild);
   }
 
   function patchChargerDecouverte() {
-    if (typeof window.chargerDecouverte !== 'function') return;
-    if (window.chargerDecouverte._vibePatched) return;
+    if (typeof window.chargerDecouverte !== 'function' || window.chargerDecouverte._vibePatched) return;
     var orig = window.chargerDecouverte;
     window.chargerDecouverte = async function () {
       var r = await orig.apply(this, arguments);
@@ -209,11 +184,8 @@
   }
 
   window.dissiperBrouillard = function (el) {
-    var fog =
-      el && el.closest
-        ? (el.closest('[style*="aspect-ratio"]') || {}).querySelector &&
-          el.closest('[style*="aspect-ratio"]').querySelector('.fog-overlay')
-        : document.querySelector('.fog-overlay');
+    var root = el && el.closest ? el.closest('[style*="aspect-ratio"]') : null;
+    var fog = root ? root.querySelector('.fog-overlay') : document.querySelector('.fog-overlay');
     if (fog) fog.classList.add('dissipating');
   };
 
