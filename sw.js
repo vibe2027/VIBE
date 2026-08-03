@@ -1,9 +1,11 @@
-const CACHE = 'vibe-v5-live';
+const CACHE = 'vibe-v6-live';
 const SHELL = [
   '/',
   '/index.html',
   '/icon-192.png',
   '/icon-512.png',
+  '/js/salons.js',
+  '/js/vibe-fix.js',
   '/js/vibe-fixes.js',
   '/js/stripe-config.js',
   '/js/vibe-live.js',
@@ -11,9 +13,10 @@ const SHELL = [
   '/sitemap.xml'
 ];
 const INJECT =
-  '<script src="/js/stripe-config.js?v=5"><\/script>' +
-  '<script src="/js/vibe-fixes.js?v=5" defer><\/script>' +
-  '<script src="/js/vibe-live.js?v=5" defer><\/script>';
+  '<script src="/js/stripe-config.js?v=6"><\/script>' +
+  '<script src="/js/salons.js?v=6"><\/script>' +
+  '<script src="/js/vibe-live.js?v=6"><\/script>' +
+  '<script src="/js/vibe-fix.js?v=6"><\/script>';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
