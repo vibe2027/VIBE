@@ -1966,7 +1966,8 @@ async function handleSignup(e){
       const {data:preStats}=await _supa.rpc('stats_publiques');
       if((preStats?.membres||0)>=MAX_FOUNDERS){showError('⚠ Toutes les places fondateur sont prises.');if(btn){btn.disabled=false;btn.querySelector('span').textContent='Réserver ma place — 99 $ / an';}return;}
     }
-    const {data:authData,error:authError}=await _supa.auth.signUp({email,password:mdp,options:{data:{prenom,ville,plan}}});
+    const identitesInscription=Array.isArray(window.signupIdentites)?window.signupIdentites.slice(0,7):[];
+    const {data:authData,error:authError}=await _supa.auth.signUp({email,password:mdp,options:{data:{prenom,ville,plan,identites:identitesInscription}}});
     if(authError)throw authError;
     await _supa.from('landing_inscriptions').insert({prenom,email,ville,statut:estFondateur?'inscrit':'membre_gratuit'});
     document.getElementById('signup-form').style.display='none';
@@ -2938,7 +2939,7 @@ async function chargerAnnuaire(){
 // PROFILS · DÉCOUVERTE · BLOCAGE
 // ══════════════════════════════════════════
 const INTENTIONS={jaser:'💬 Jaser',rencontre:'☕ Rencontre',cesoir:'🔥 Ce soir',amitie:'🤝 Amitié',serieux:'💛 Sérieux'};
-const IDENTITES={gay:'Gay',lesbienne:'Lesbienne',bi:'Bi',trans:'Trans',nonbinaire:'Non-binaire'};
+const IDENTITES={gay:'Gay',lesbienne:'Lesbienne',bi:'Bi',trans:'Trans',nonbinaire:'Non-binaire',queer:'Queer',autre:'Autre'};
 let decFiltreIdentite=null;
 let decFiltreIntention=null, pfIntention='jaser', pfIdentites=[], fmCourant=null;
 
@@ -2960,12 +2961,12 @@ function ouvrirMonProfil(){
       document.getElementById('pf-partage-distance').checked=data.partage_distance!==false;
       document.getElementById('pf-carte-lien').style.display=data.is_founder?'block':'none';
       pfIntention=data.intention||'jaser';
-      pfIdentites=Array.isArray(data.identites)?data.identites:[];
+      pfIdentites=Array.isArray(data.identites)&&data.identites.length?data.identites:(Array.isArray(CURRENT_USER.user_metadata?.identites)?CURRENT_USER.user_metadata.identites:[]);
       if(data.photo_url)document.getElementById('pf-photo-prev').innerHTML='<img src="'+escHtml(data.photo_url)+'" alt="Photo de profil" style="width:100%;height:100%;object-fit:cover">';
     }else{
       document.getElementById('pf-nom').value=CURRENT_USER.user_metadata?.prenom||'';
       document.getElementById('pf-ville').value=CURRENT_USER.user_metadata?.ville||'';
-      pfIdentites=[];
+      pfIdentites=Array.isArray(CURRENT_USER.user_metadata?.identites)?CURRENT_USER.user_metadata.identites:[];
     }
     majIntBtns();
     majIdentBtns();
