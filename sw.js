@@ -1,4 +1,4 @@
-const CACHE = 'vibe-v5-live';
+const CACHE = 'vibe-v6-live';
 const SHELL = [
   '/',
   '/index.html',
@@ -11,9 +11,9 @@ const SHELL = [
   '/sitemap.xml'
 ];
 const INJECT =
-  '<script src="/js/stripe-config.js?v=5"><\/script>' +
-  '<script src="/js/vibe-fixes.js?v=5" defer><\/script>' +
-  '<script src="/js/vibe-live.js?v=5" defer><\/script>';
+  '<script src="/js/stripe-config.js?v=6"><\/script>' +
+  '<script src="/js/vibe-fixes.js?v=6" defer><\/script>' +
+  '<script src="/js/vibe-live.js?v=6" defer><\/script>';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
@@ -30,7 +30,7 @@ self.addEventListener('activate', (e) => {
 });
 
 function injectFixes(html) {
-  if (!html || html.indexOf('vibe-live.js') !== -1) return html;
+  if (!html || html.indexOf('vibe-fixes.js') !== -1) return html;
   if (html.indexOf('</head>') !== -1) return html.replace('</head>', INJECT + '\n</head>');
   if (html.indexOf('</body>') !== -1) return html.replace('</body>', INJECT + '\n</body>');
   return html + INJECT;
