@@ -8,13 +8,13 @@
   var MAX_PIONNIERS = 500;
   var TARIFS = {
     pionnier: '99 $',
-    mois1: '19,99 $',
-    mois3: '49,99 $',
-    mois6: '89,99 $',
-    an1: '139,99 $',
-    boost: '8,99 $ CAD',
-    fantome: '9,99 $ CAD',
-    visites: '6,99 $ CAD',
+    mois1: '14 $',
+    mois3: '35 $',
+    mois6: '59 $',
+    an1: '99 $',
+    boost: '4,99 $ CAD',
+    fantome: '6,99 $ CAD',
+    visites: '3,99 $ CAD',
     tribunal: '25 $ CAD'
   };
 
