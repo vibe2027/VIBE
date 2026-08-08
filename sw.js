@@ -13,10 +13,10 @@ const SHELL = [
   '/sitemap.xml'
 ];
 const INJECT =
-  '<script src="/js/stripe-config.js?v=6"><\/script>' +
-  '<script src="/js/salons.js?v=6"><\/script>' +
-  '<script src="/js/vibe-live.js?v=6"><\/script>' +
-  '<script src="/js/vibe-fix.js?v=6"><\/script>';
+  '<script src="/js/stripe-config.js" defer><\/script>' +
+  '<script src="/js/salons.js" defer><\/script>' +
+  '<script src="/js/vibe-live.js" defer><\/script>' +
+  '<script src="/js/vibe-fix.js" defer><\/script>';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
