@@ -341,6 +341,7 @@ body{
   border:0.5px solid rgba(212,175,55,0.15);padding:16px 32px;
   font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;
   font-family:'Share Tech Mono',monospace;cursor:pointer;transition:all 0.3s;
+  text-decoration:none;display:inline-flex;align-items:center;justify-content:center;
 }
 .btn-outline:hover{color:var(--gold);border-color:rgba(212,175,55,0.4)}
 
@@ -433,6 +434,30 @@ body{
 .astat{padding:18px 14px;background:rgba(0,0,0,0.8);text-align:center}
 .astat-n{font-size:1.6rem;color:var(--gold);font-weight:700;display:block;margin-bottom:3px;font-family:'Share Tech Mono',monospace;text-shadow:0 0 15px rgba(212,175,55,0.3)}
 .astat-l{font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.55);text-transform:uppercase}
+.ange-status-panel{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+  margin:0 0 18px;
+}
+.ange-status-card{
+  padding:14px 16px;border:0.5px solid rgba(212,175,55,0.16);
+  background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);
+}
+.ange-status-label{
+  display:block;font-size:0.42rem;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(212,175,55,0.5);margin-bottom:8px;font-family:'Share Tech Mono',monospace;
+}
+.ange-status-value{
+  display:flex;align-items:center;gap:8px;font-size:0.6rem;letter-spacing:2px;
+  color:#fff;font-family:'Share Tech Mono',monospace;text-transform:uppercase;
+}
+.ange-status-dot{
+  width:9px;height:9px;border-radius:50%;background:rgba(212,175,55,0.45);
+  box-shadow:0 0 0 0 rgba(212,175,55,0.4);transition:background .25s ease, box-shadow .25s ease;
+}
+.ange-status-dot.is-ready{background:#2ecc71;box-shadow:0 0 12px rgba(46,204,113,0.35)}
+.ange-status-dot.is-busy{background:#ffaa00;box-shadow:0 0 12px rgba(255,170,0,0.35)}
+.ange-status-dot.is-alert{background:#DC3232;box-shadow:0 0 12px rgba(220,50,50,0.35)}
+.ange-status-dot.is-muted{background:rgba(255,255,255,0.28);box-shadow:none}
 .sos-btn{
   display:flex;align-items:center;justify-content:center;gap:12px;
   border:1px solid rgba(255,51,51,0.4);padding:18px 32px;
@@ -448,6 +473,7 @@ body{
   animation:sos-p 1.5s ease-in-out infinite;flex-shrink:0;
 }
 @keyframes sos-p{0%,100%{transform:scale(1);opacity:1;box-shadow:0 0 0 0 rgba(255,51,51,0.4)}50%{transform:scale(1.5);opacity:.5;box-shadow:0 0 0 8px rgba(255,51,51,0)}}
+@media(max-width:640px){.ange-status-panel{grid-template-columns:1fr}}
 
 /* ══ SALON IMMERSIF ══ */
 #salon-section{
@@ -963,7 +989,7 @@ footer{
 
     <div class="hero-btns">
       <a href="#inscription" class="btn-gold"><span data-i18n="btn_founder">Devenir Pionnier</span></a>
-      <button class="btn-outline" onclick="openLogin()" data-i18n="btn_login">Se connecter</button>
+      <a href="#salon-section" class="btn-outline">Entrer dans le Salon</a>
     </div>
   </div>
 </section>
@@ -971,9 +997,9 @@ footer{
 <!-- STATS -->
 <div class="stats-strip">
   <div class="stat-cell"><span class="stat-n" id="stat-members">0</span><span class="stat-l">Membres inscrits</span></div>
-  <div class="stat-cell"><span class="stat-n" id="stat-spots">500</span><span class="stat-l">Places fondateur</span></div>
+  <div class="stat-cell"><span class="stat-n" id="stat-spots">500</span><span class="stat-l">Places restantes</span></div>
   <div class="stat-cell"><span class="stat-n">5</span><span class="stat-l">Villes actives</span></div>
-  <div class="stat-cell"><span class="stat-n">0</span><span class="stat-l">Données vendues</span></div>
+  <div class="stat-cell"><span class="stat-n" id="stat-sos">0</span><span class="stat-l">SOS actifs</span></div>
 </div>
 
 <!-- TICKER -->
@@ -992,9 +1018,19 @@ footer{
       Trois taps rapides sur l'écran. Ta position GPS exacte et 30 secondes d'audio ambiant partent instantanément à ton contact de confiance. Silencieux. Invisible. Toujours actif en arrière-plan.
     </p>
     <div class="ange-stats-row">
-      <div class="astat"><span class="astat-n">3</span><span class="astat-l">Taps pour activer</span></div>
-      <div class="astat"><span class="astat-n">30s</span><span class="astat-l">Audio enregistré</span></div>
       <div class="astat"><span class="astat-n" id="sos-count">0</span><span class="astat-l">Alertes envoyées</span></div>
+      <div class="astat"><span class="astat-n" id="ange-members-protected">0</span><span class="astat-l">Membres protégés</span></div>
+      <div class="astat"><span class="astat-n">&lt; 3s</span><span class="astat-l">Temps de réponse</span></div>
+    </div>
+    <div class="ange-status-panel">
+      <div class="ange-status-card">
+        <span class="ange-status-label">GPS</span>
+        <span class="ange-status-value"><span class="ange-status-dot is-muted" id="ange-gps-dot"></span><span id="ange-gps-status">En attente</span></span>
+      </div>
+      <div class="ange-status-card">
+        <span class="ange-status-label">Statut</span>
+        <span class="ange-status-value"><span class="ange-status-dot is-ready" id="ange-flow-dot"></span><span id="ange-flow-status">Prêt</span></span>
+      </div>
     </div>
     <div class="ange-features">
       <div class="af-row"><span class="af-icon">📍</span><div><div class="af-title">GPS Instantané</div><div class="af-text">Position exacte transmise en temps réel. Précision à quelques mètres. Fonctionne en mode silencieux.</div></div></div>
@@ -1802,10 +1838,12 @@ async function loadStats(){
 
     // Stats
     const ss=document.getElementById('stat-spots');if(ss)ss.textContent=restants;
+    const sa=document.getElementById('stat-sos');if(sa)sa.textContent=sos||0;
     const sl=document.getElementById('spots-left');if(sl)sl.textContent=restants;
     const sf=document.getElementById('spots-fill');if(sf)sf.style.width=`${100-parseFloat(pct)}%`;
     const fs=document.getElementById('form-spots');if(fs)fs.textContent=`${restants} places restantes`;
     const sc=document.getElementById('sos-count');if(sc)sc.textContent=sos||0;
+    const ap=document.getElementById('ange-members-protected');if(ap)ap.textContent=m;
     const tc=document.getElementById('trib-count');if(tc)tc.textContent=trib||0;
 
     // Live HUD
@@ -1876,6 +1914,20 @@ async function handleMagicLink(){
 // SOS MODE ANGE
 // ══════════════════════════════════════════
 let sosActive=false;
+function setAngelStatus(type,label,tone){
+  const labelEl=document.getElementById(type==='gps'?'ange-gps-status':'ange-flow-status');
+  const dotEl=document.getElementById(type==='gps'?'ange-gps-dot':'ange-flow-dot');
+  if(labelEl)labelEl.textContent=label;
+  if(dotEl){
+    dotEl.className='ange-status-dot';
+    dotEl.classList.add(
+      tone==='ready'?'is-ready':
+      tone==='busy'?'is-busy':
+      tone==='alert'?'is-alert':
+      'is-muted'
+    );
+  }
+}
 async function activateSOS(){
   if(sosActive)return;
   sosActive=true;
@@ -1883,13 +1935,17 @@ async function activateSOS(){
   const txt=document.getElementById('sos-btn-text');
   btn.style.borderColor='#D4AF37';btn.style.color='#D4AF37';
   txt.textContent='⟳ Obtention GPS...';
+  setAngelStatus('flow','Envoi en cours','busy');
+  setAngelStatus('gps','Recherche GPS','busy');
 
   let gpsData={lat:null,lng:null,accuracy:null};
   try{
     const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:8000}));
     gpsData={lat:pos.coords.latitude.toFixed(6),lng:pos.coords.longitude.toFixed(6),accuracy:Math.round(pos.coords.accuracy)+'m'};
     txt.textContent='✦ GPS obtenu — envoi en cours...';
+    setAngelStatus('gps','GPS OK · '+gpsData.accuracy,'ready');
   }catch(e){txt.textContent='✦ Ange activé (GPS non disponible)';}
+  if(!gpsData.accuracy)setAngelStatus('gps','GPS indisponible','muted');
 
   try{
     const user=await _supa.auth.getUser();
@@ -1912,11 +1968,14 @@ async function activateSOS(){
   setTimeout(()=>{flash.remove();style.remove()},2000);
 
   txt.textContent='✦ Ange gardien activé — aide en route';
+  setAngelStatus('flow','Alerte envoyée','alert');
   showSuccess('✦ Mode Ange activé — alerte envoyée !');
   loadStats();
   setTimeout(()=>{
     txt.textContent='⚡ Activer Mode Ange Gardien';
     btn.style.borderColor='';btn.style.color='';sosActive=false;
+    setAngelStatus('flow','Prêt','ready');
+    if(gpsData.accuracy)setAngelStatus('gps','GPS OK · '+gpsData.accuracy,'ready');
   },8000);
 }
 
