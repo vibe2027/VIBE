@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<meta name="description" content="VIBE — L'application LGBTQ+ de nouvelle génération, née à Québec.">
-<meta property="og:title" content="VIBE — Réseau LGBTQ+ Canadien">
-<meta property="og:description" content="VIBE — L'application LGBTQ+ de nouvelle génération, née à Québec.">
+<meta name="description" content="VIBE — L'app de rencontre LGBTQ+ plus sûre : audio d'abord, Mode Ange, web app immédiate.">
+<meta property="og:title" content="VIBE — Rencontre LGBTQ+ plus sûre">
+<meta property="og:description" content="Teste VIBE d'abord en audio : une rencontre LGBTQ+ plus sûre, née à Québec.">
 <meta property="og:image" content="https://vibegay.ca/bg.png">
 <meta property="og:url" content="https://vibegay.ca">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="VIBE — Réseau LGBTQ+ Canadien">
-<meta name="twitter:description" content="VIBE — L'application LGBTQ+ de nouvelle génération, née à Québec.">
+<meta name="twitter:title" content="VIBE — Rencontre LGBTQ+ plus sûre">
+<meta name="twitter:description" content="Teste VIBE d'abord en audio : une rencontre LGBTQ+ plus sûre, née à Québec.">
 <meta name="twitter:image" content="https://vibegay.ca/bg.png">
-<title>VIBE — Réseau LGBTQ+ Canadien</title>
+<title>VIBE — Rencontre LGBTQ+ plus sûre</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/icon-192.png">
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -290,36 +290,33 @@ body{
 .pb7{background:#FFAFC8;animation-delay:.6s}.pb8{background:#74D7EE;animation-delay:.7s}
 @keyframes pp{0%,100%{opacity:.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(3)}}
 
-/* FOUNDER BLOCK */
-.founder-block{
+/* HERO VALUE BLOCK */
+.hero-value-block{
   border:1px solid rgba(212,175,55,0.5);padding:22px 36px;
   background:rgba(0,0,0,0.8);margin-bottom:24px;
   position:relative;overflow:hidden;
   backdrop-filter:blur(10px);
   box-shadow:0 0 30px rgba(212,175,55,0.12),0 0 60px rgba(212,175,55,0.05);
 }
-.founder-block::before{
+.hero-value-block::before{
   content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
   background:linear-gradient(90deg,transparent,rgba(212,175,55,0.1),transparent);
   animation:shimmer 4s ease-in-out infinite;
 }
 @keyframes shimmer{0%{left:-100%}100%{left:100%}}
-.founder-block::after{
+.hero-value-block::after{
   content:'';position:absolute;inset:0;
   border:1px solid rgba(212,175,55,0);
   animation:border-pulse 3s ease-in-out infinite;
 }
 @keyframes border-pulse{0%,100%{border-color:rgba(212,175,55,0.55);box-shadow:none}50%{border-color:rgba(212,175,55,0.7);box-shadow:0 0 30px rgba(212,175,55,0.1) inset}}
-.f-label{font-size:0.44rem;letter-spacing:6px;color:rgba(212,175,55,0.45);text-transform:uppercase;margin-bottom:8px;font-family:'Share Tech Mono',monospace}
-.f-price{font-family:'Playfair Display',serif;font-size:3rem;color:var(--gold);font-weight:700;line-height:1;text-shadow:0 0 30px rgba(212,175,55,0.35),0 0 60px rgba(212,175,55,0.12)}
-.f-period{font-size:0.5rem;color:rgba(255,255,255,0.62);letter-spacing:4px;margin-top:4px;font-family:'Share Tech Mono',monospace}
-.f-spots{
-  font-size:0.46rem;color:rgba(212,175,55,0.5);letter-spacing:3px;
-  margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px;
-  font-family:'Share Tech Mono',monospace;
-}
-.spots-bar{width:100px;height:2px;background:rgba(255,255,255,0.38);border-radius:2px;overflow:hidden}
-.spots-fill{height:100%;background:var(--gold);border-radius:2px;transition:width 1s ease}
+.hero-kicker{font-size:0.44rem;letter-spacing:6px;color:rgba(212,175,55,0.55);text-transform:uppercase;margin-bottom:10px;font-family:'Share Tech Mono',monospace}
+.hero-promise{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.7rem);color:var(--gold);font-weight:700;line-height:1.15;text-shadow:0 0 30px rgba(212,175,55,0.28)}
+.hero-copy{max-width:700px;margin:14px auto 0;font-size:0.68rem;line-height:1.8;color:rgba(255,255,255,0.78)}
+.hero-points{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:18px}
+.hero-point{padding:10px 14px;border:0.5px solid rgba(212,175,55,0.18);background:rgba(255,255,255,0.03);font-size:0.48rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.76);font-family:'Share Tech Mono',monospace}
+.hero-transition-note{margin-top:16px;font-size:0.46rem;letter-spacing:3px;color:rgba(212,175,55,0.5);text-transform:uppercase;font-family:'Share Tech Mono',monospace}
+.hero-inline-note{margin-top:-20px;margin-bottom:34px;font-size:0.46rem;letter-spacing:3px;color:rgba(255,255,255,0.42);text-transform:uppercase;font-family:'Share Tech Mono',monospace}
 
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
 .btn-gold{
@@ -364,6 +361,7 @@ body{
   text-shadow:0 0 20px rgba(212,175,55,0.3);
 }
 .stat-l{display:block;font-size:0.42rem;letter-spacing:3px;color:rgba(255,255,255,0.55);text-transform:uppercase}
+.stat-l strong{display:block;font-size:0.58rem;letter-spacing:2px;color:var(--gold);margin-bottom:6px}
 
 /* TICKER */
 .ticker{
@@ -936,7 +934,7 @@ footer{
   <div class="hud-right">
     <div class="hud-status">
       <div class="pulse-dot"></div>
-      <span id="hud-online">0 EN LIGNE</span>
+      <span id="hud-online">ESSAI AUDIO PRÊT</span>
     </div>
     <button class="hud-connexion" onclick="openLogin()">Connexion</button>
   </div>
@@ -944,11 +942,11 @@ footer{
 
 <!-- LIVE DATA HUD -->
 <div class="live-hud">
-  <div class="lhud-item"><span class="lhud-val" id="lh-membres">0</span><span class="lhud-lbl">Membres</span></div>
-  <div class="lhud-item"><span class="lhud-val" id="lh-places">500</span><span class="lhud-lbl">Places</span></div>
-  <div class="lhud-item"><span class="lhud-val" id="lh-villes">5</span><span class="lhud-lbl">Villes</span></div>
-  <div class="lhud-item"><span class="lhud-val" id="lh-sos">0</span><span class="lhud-lbl">SOS actifs</span></div>
-  <div class="lhud-item"><span class="lhud-val" style="color:#00eeff">STABLE</span><span class="lhud-lbl">Réseau</span></div>
+  <div class="lhud-item"><span class="lhud-val">AUDIO</span><span class="lhud-lbl">Avant photo</span></div>
+  <div class="lhud-item"><span class="lhud-val">ANGE</span><span class="lhud-lbl">Protection active</span></div>
+  <div class="lhud-item"><span class="lhud-val">PRIVÉ</span><span class="lhud-lbl">Sans swipe</span></div>
+  <div class="lhud-item"><span class="lhud-val">WEB</span><span class="lhud-lbl">Essai immédiat</span></div>
+  <div class="lhud-item"><span class="lhud-val" style="color:#00eeff">NATIF</span><span class="lhud-lbl">iPhone + Android bientôt</span></div>
 </div>
 
 <!-- HERO -->
@@ -968,8 +966,8 @@ footer{
     <h1 class="hero-title">
       <span class="ht-v">V</span><span class="ht-ibe">IBE</span>
     </h1>
-    <p class="hero-sub" data-i18n="hero_sub">Réseau LGBTQ+ Canadien</p>
-    <p class="hero-origin" data-i18n="hero_origin">Né à Québec · Canada · 2026</p>
+    <p class="hero-sub" data-i18n="hero_sub">Rencontre LGBTQ+ plus sûre</p>
+    <p class="hero-origin" data-i18n="hero_origin">Teste l'audio d'abord · photo ensuite · Québec → Canada</p>
 
     <div class="pride-bar">
       <div class="pb pb1"></div><div class="pb pb2"></div><div class="pb pb3"></div>
@@ -977,29 +975,54 @@ footer{
       <div class="pb pb7"></div><div class="pb pb8"></div>
     </div>
 
-    <div class="founder-block">
-      <div class="f-label" data-i18n="f_label">✦ Pass Pionnier — Édition Limitée</div>
-      <div class="f-price">99 $<span style="font-size:1.2rem;color:rgba(212,175,55,0.5)">CAD</span></div>
-      <div class="f-period" data-i18n="f_period">/ an · Renouvelable · Accès complet à la plateforme</div>
-      <div class="f-spots">
-        <span id="spots-left">...</span>&nbsp;<span data-i18n="f_spots">places restantes sur 500</span>
-        <div class="spots-bar"><div class="spots-fill" id="spots-fill"></div></div>
+    <div class="hero-value-block">
+      <div class="hero-kicker">Essai immédiat · aucune photo requise</div>
+      <div class="hero-promise">Teste un salon audio en 1 clic.<br>Rencontre avec plus de contrôle.</div>
+      <p class="hero-copy">VIBE te laisse écouter avant de voir, entrer dans des salons privés sans swipe, puis activer ton Mode Ange si une rencontre devient inconfortable.</p>
+      <div class="hero-points">
+        <div class="hero-point">🎙 Audio avant photo</div>
+        <div class="hero-point">🛡️ Mode Ange en 3 taps</div>
+        <div class="hero-point">🔒 Contrôle · discrétion · modération</div>
       </div>
+      <div class="hero-transition-note">Disponible maintenant en web app · apps iPhone et Android en préparation</div>
     </div>
 
     <div class="hero-btns">
-      <a href="#inscription" class="btn-gold"><span data-i18n="btn_founder">Devenir Pionnier</span></a>
-      <a href="#salon-section" class="btn-outline">Entrer dans le Salon</a>
+      <a href="#voix-section" class="btn-gold"><span data-i18n="btn_founder">Tester l'audio maintenant</span></a>
+      <a href="#inscription" class="btn-outline">Continuer sur le web</a>
+    </div>
+    <div class="hero-inline-note">1 clic pour écouter · inscription ensuite</div>
+  </div>
+</section>
+
+<!-- SALON DE LA VOIX -->
+<section id="voix-section">
+  <p class="section-tag" data-i18n="tag_voix">// Test immédiat · La voix d'abord</p>
+  <h2 class="section-title" data-i18n-html="title_voix">Essaie<br><em>avant de t'inscrire</em></h2>
+  <p class="section-body" style="max-width:620px;margin:0 auto 8px">Pas de photo. Pas de bio à juger. Lance l'audio, écoute l'ambiance, puis décide si VIBE est pour toi.</p>
+
+  <div class="voix-demo">
+    <div class="voix-demo-head">
+      <span class="voix-demo-tag">✦ Démo immédiate · Salon à voix</span>
+      <span class="voix-demo-status"><span class="voix-dot" id="voixDot"></span><span id="voixStatus">PRÊT</span></span>
+    </div>
+    <div class="voix-wavebox" id="voixWave"></div>
+    <div class="voix-transcript" id="voixTranscript">
+      <span class="voix-idle">— Appuie sur ▶ pour entendre comment une rencontre peut commencer sans photo. —</span>
+    </div>
+    <div class="voix-demo-foot">
+      <button class="voix-play" id="voixPlay" onclick="toggleVoixDemo()"><span id="voixPlayIcon">▶</span>&nbsp;<span id="voixPlayLabel">Tester le salon audio</span></button>
+      <span class="voix-demo-meta">audio immersif · sans photo · sans swipe</span>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
+<!-- PROOFS -->
 <div class="stats-strip">
-  <div class="stat-cell"><span class="stat-n" id="stat-members">0</span><span class="stat-l">Membres inscrits</span></div>
-  <div class="stat-cell"><span class="stat-n" id="stat-spots">500</span><span class="stat-l">Places restantes</span></div>
-  <div class="stat-cell"><span class="stat-n">5</span><span class="stat-l">Villes actives</span></div>
-  <div class="stat-cell"><span class="stat-n" id="stat-sos">0</span><span class="stat-l">SOS actifs</span></div>
+  <div class="stat-cell"><span class="stat-l"><strong>Audio d'abord</strong>Écoute avant de voir</span></div>
+  <div class="stat-cell"><span class="stat-l"><strong>Mode Ange</strong>Protection active en 3 taps</span></div>
+  <div class="stat-cell"><span class="stat-l"><strong>Salons privés</strong>Présence en temps réel, plus discrète</span></div>
+  <div class="stat-cell"><span class="stat-l"><strong>Web → natif</strong>Commence maintenant, continue plus tard sur stores</span></div>
 </div>
 
 <!-- TICKER -->
@@ -1061,28 +1084,6 @@ footer{
   </div>
 </section>
 
-<!-- SALON DE LA VOIX -->
-<section id="voix-section">
-  <p class="section-tag" data-i18n="tag_voix">// La voix d'abord</p>
-  <h2 class="section-title" data-i18n-html="title_voix">Écoute<br><em>avant de voir</em></h2>
-  <p class="section-body" style="max-width:480px;margin:0 auto 8px">Pas de photo. Pas de bio. Juste des voix vraies. Clique sur ▶ pis vis l'expérience.</p>
-
-  <div class="voix-demo">
-    <div class="voix-demo-head">
-      <span class="voix-demo-tag">✦ Démo live · Salon à Voix</span>
-      <span class="voix-demo-status"><span class="voix-dot" id="voixDot"></span><span id="voixStatus">PRÊT</span></span>
-    </div>
-    <div class="voix-wavebox" id="voixWave"></div>
-    <div class="voix-transcript" id="voixTranscript">
-      <span class="voix-idle">— Silence. Le salon attend ta présence. —</span>
-    </div>
-    <div class="voix-demo-foot">
-      <button class="voix-play" id="voixPlay" onclick="toggleVoixDemo()"><span id="voixPlayIcon">▶</span>&nbsp;<span id="voixPlayLabel">Écouter le salon</span></button>
-      <span class="voix-demo-meta">5 voix · 0 image · 100 % vrai</span>
-    </div>
-  </div>
-</section>
-
 <!-- SALON FLOTTANT -->
 <section id="salon-section">
   <div class="salon-header">
@@ -1125,7 +1126,7 @@ footer{
     <div class="salon-hud">
       <div class="salon-badge">
         <div class="online-dot"></div>
-        <span id="online-count">0</span>&nbsp;membres en ligne
+        <span id="online-count">quelques</span>&nbsp;présences actives
       </div>
       <div class="salon-mode">MODE SALON · TEMPS RÉEL</div>
     </div>
@@ -1262,28 +1263,29 @@ footer{
     <div id="signup-success"></div>
 
     <div class="plan-choice">
-      <button type="button" class="plan-card plan-founder selected" id="planFounder" onclick="choisirPlan('founder')">
+      <button type="button" class="plan-card plan-free selected" id="planFree" onclick="choisirPlan('free')">
+        <div class="plan-tag">Membre Gratuit</div>
+        <div class="plan-price">0 $<span>pour toujours</span></div>
+        <div class="plan-desc">Commence sur le web · Salon · Profil · Communauté</div>
+        <div class="plan-check">✓ Choisi</div>
+      </button>
+      <button type="button" class="plan-card plan-founder" id="planFounder" onclick="choisirPlan('founder')">
         <div class="plan-tag">✦ Pionnier</div>
         <div class="plan-price">99 $<span>CAD/an</span></div>
         <div class="plan-desc">Accès complet · Édition limitée · 500 places</div>
         <div class="plan-check">✓ Choisi</div>
       </button>
-      <button type="button" class="plan-card plan-free" id="planFree" onclick="choisirPlan('free')">
-        <div class="plan-tag">Membre Gratuit</div>
-        <div class="plan-price">0 $<span>pour toujours</span></div>
-        <div class="plan-desc">Accès de base · Salon · Profil · Communauté</div>
-        <div class="plan-check">✓ Choisi</div>
-      </button>
     </div>
 
     <form id="signup-form" onsubmit="handleSignup(event)">
-      <input type="hidden" id="plan-choisi" value="founder">
-      <div class="fbadge" id="founder-badge">
+      <input type="hidden" id="plan-choisi" value="free">
+      <div class="fbadge" id="founder-badge" style="display:none">
         <div class="fb-l">✦ Pass Pionnier</div>
         <div class="fb-p">99 $<span style="font-size:0.9rem;color:rgba(212,175,55,0.45)">CAD</span></div>
         <div class="fb-s">par année · Accès complet · Renouvelable</div>
         <div class="fb-r" id="form-spots">... places restantes</div>
       </div>
+      <p class="form-sub" style="margin:-6px 0 18px">Commence gratuitement sur la web app. Active le Pass Pionnier ensuite si tu veux tout débloquer.</p>
       <div class="form-group">
         <label class="form-label">Prénom</label>
         <input id="prenom" class="form-field" type="text" placeholder="Ton prénom" required maxlength="50">
@@ -1313,8 +1315,8 @@ footer{
         <input type="checkbox" id="cgu" required>
         <label for="cgu">J'accepte les <a href="/conditions.html" target="_blank">conditions d'utilisation</a> et la <a href="/confidentialite.html" target="_blank">politique de confidentialité</a> (Loi 25 · LPRPDE)</label>
       </div>
-      <button type="submit" class="btn-submit" id="submit-btn"><span id="submit-label">Réserver ma place — 99 $ / an</span></button>
-      <p class="form-note">Paiement sécurisé · SSL · Aucune donnée vendue · Loi 25 conforme</p>
+      <button type="submit" class="btn-submit" id="submit-btn"><span id="submit-label">Créer mon compte gratuit</span></button>
+      <p class="form-note">Inscription web immédiate · Paiement sécurisé si tu passes Pionnier · Aucune donnée vendue · Loi 25 conforme</p>
     </form>
   </div>
 </section>
@@ -1331,19 +1333,20 @@ footer{
     <a href="#tribunal-section">Tribunal</a>
   </div>
   <div class="footer-copy">© 2026 VIBE · Québec, Canada · Tous droits réservés · vibegay.ca</div>
+  <div style="font-size:0.46rem;letter-spacing:2px;color:rgba(255,255,255,0.55);margin-top:12px;line-height:1.8;font-family:Share Tech Mono,monospace;text-transform:uppercase">Commence aujourd'hui sur la web app · reçois la transition prioritaire quand les apps natives arrivent</div>
   <div style="display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap">
-    <div style="border:1px solid rgba(212,175,55,0.35);border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:8px;opacity:0.75;cursor:default" title="Application pas encore disponible">
+    <div style="border:1px solid rgba(212,175,55,0.35);border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:8px;opacity:0.85;cursor:default" title="Transition native en préparation">
       <span style="font-size:1.1rem"></span>
       <div style="text-align:left;line-height:1.2">
-        <div style="font-size:0.32rem;letter-spacing:1px;color:rgba(255,255,255,0.5);font-family:Share Tech Mono,monospace">BIENTÔT SUR</div>
-        <div style="font-size:0.56rem;color:rgba(255,255,255,0.85);font-family:Share Tech Mono,monospace">App Store</div>
+        <div style="font-size:0.32rem;letter-spacing:1px;color:rgba(255,255,255,0.5);font-family:Share Tech Mono,monospace">WEB MAINTENANT · NATIF ENSUITE</div>
+        <div style="font-size:0.56rem;color:rgba(255,255,255,0.85);font-family:Share Tech Mono,monospace">App Store en préparation</div>
       </div>
     </div>
-    <div style="border:1px solid rgba(212,175,55,0.35);border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:8px;opacity:0.75;cursor:default" title="Application pas encore disponible">
+    <div style="border:1px solid rgba(212,175,55,0.35);border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:8px;opacity:0.85;cursor:default" title="Transition native en préparation">
       <span style="font-size:1.1rem">▶</span>
       <div style="text-align:left;line-height:1.2">
-        <div style="font-size:0.32rem;letter-spacing:1px;color:rgba(255,255,255,0.5);font-family:Share Tech Mono,monospace">BIENTÔT SUR</div>
-        <div style="font-size:0.56rem;color:rgba(255,255,255,0.85);font-family:Share Tech Mono,monospace">Google Play</div>
+        <div style="font-size:0.32rem;letter-spacing:1px;color:rgba(255,255,255,0.5);font-family:Share Tech Mono,monospace">WEB MAINTENANT · NATIF ENSUITE</div>
+        <div style="font-size:0.56rem;color:rgba(255,255,255,0.85);font-family:Share Tech Mono,monospace">Google Play en préparation</div>
       </div>
     </div>
   </div>
@@ -1828,33 +1831,16 @@ async function loadStats(){
     const {data:stats}=await _supa.rpc('stats_publiques');
     const membres=stats?.membres||0, sos=stats?.sos||0, trib=stats?.dossiers||0;
     const m=membres||0,restants=Math.max(0,MAX_FOUNDERS-m);
-    const pct=((m/MAX_FOUNDERS)*100).toFixed(0);
-
-    // Animer compteur
-    const cel=document.getElementById('stat-members');
-    let c=0;const inc=Math.max(1,Math.ceil(m/40));
-    const anim=()=>{c=Math.min(c+inc,m);cel.textContent=c.toLocaleString('fr-CA');if(c<m)setTimeout(anim,30)};
-    anim();
-
-    // Stats
-    const ss=document.getElementById('stat-spots');if(ss)ss.textContent=restants;
-    const sa=document.getElementById('stat-sos');if(sa)sa.textContent=sos||0;
-    const sl=document.getElementById('spots-left');if(sl)sl.textContent=restants;
-    const sf=document.getElementById('spots-fill');if(sf)sf.style.width=`${100-parseFloat(pct)}%`;
     const fs=document.getElementById('form-spots');if(fs)fs.textContent=`${restants} places restantes`;
     const sc=document.getElementById('sos-count');if(sc)sc.textContent=sos||0;
     const ap=document.getElementById('ange-members-protected');if(ap)ap.textContent=m;
     const tc=document.getElementById('trib-count');if(tc)tc.textContent=trib||0;
 
-    // Live HUD
-    document.getElementById('lh-membres').textContent=m;
-    document.getElementById('lh-places').textContent=restants;
-    document.getElementById('lh-sos').textContent=sos||0;
-
     // Online estimé
     const online=Math.max(1,Math.floor(m*0.08)+Math.floor(Math.random()*3));
-    document.getElementById('online-count').textContent=online;
-    document.getElementById('hud-online').textContent=`${online} EN LIGNE`;
+    const onlineText=online<=2?'quelques':online<=5?'plusieurs':'ça bouge';
+    const onlineEl=document.getElementById('online-count');if(onlineEl)onlineEl.textContent=onlineText;
+    const hudEl=document.getElementById('hud-online');if(hudEl)hudEl.textContent='ESSAI AUDIO PRÊT';
 
   }catch(e){}
 }
@@ -2001,7 +1987,7 @@ function choisirPlan(plan){
 
 async function handleSignup(e){
   e.preventDefault();
-  const plan=document.getElementById('plan-choisi')?.value||'founder';
+  const plan=document.getElementById('plan-choisi')?.value||'free';
   const estFondateur=(plan==='founder');
   const prenom=document.getElementById('prenom').value.trim();
   const email=document.getElementById('email').value.trim();
@@ -2417,120 +2403,120 @@ async function adminSuspendreProfil(id,btn){
 const I18N={
   fr:{
     nav_home:"Accueil",nav_ange:"Mode Ange",nav_voix:"Voix",nav_reseau:"Réseau",nav_salon:"Salon",nav_tribunal:"Tribunal",
-    hero_sub:"Réseau LGBTQ+ Canadien",hero_origin:"Né à Québec · Canada · 2026",
+    hero_sub:"Rencontre LGBTQ+ plus sûre",hero_origin:"Teste l'audio d'abord · photo ensuite · Québec → Canada",
     f_label:"✦ Pass Pionnier — Édition Limitée",f_period:"/ an · Renouvelable · Accès complet à la plateforme",f_spots:"places restantes sur 500",
-    btn_founder:"Devenir Pionnier",btn_login:"Se connecter",
+    btn_founder:"Tester l'audio maintenant",btn_login:"Se connecter",
     tag_ange:"// Protection · Mode Ange Gardien",title_ange:"Triple-tap.<br><em>Ta sécurité,</em><br>en 3 secondes.",
     tag_reseau:"// Le réseau s'étend",title_reseau:"Une communauté<br><em>qui grandit</em>",
-    tag_voix:"// La voix d'abord",title_voix:"Écoute<br><em>avant de voir</em>",
+    tag_voix:"// Test immédiat · La voix d'abord",title_voix:"Essaie<br><em>avant de t'inscrire</em>",
     tag_salon:"// Communauté · Salon Flottant · Temps Réel",title_salon:"Profils qui <em>flottent.</em><br>Connexions qui se créent.",
     title_tribunal:"Une justice rendue<br><em>par la communauté.</em>",
     tag_events:"// Communauté · Événements à venir",title_events:"La scène LGBTQ+<br><em>s'anime.</em>"
   },
   en:{
     nav_home:"Home",nav_ange:"Angel Mode",nav_voix:"Voice",nav_reseau:"Network",nav_salon:"Lounge",nav_tribunal:"Tribunal",
-    hero_sub:"Canadian LGBTQ+ Network",hero_origin:"Born in Québec · Canada · 2026",
+    hero_sub:"Safer LGBTQ+ dating",hero_origin:"Try audio first · photo later · Québec → Canada",
     f_label:"✦ Founder Pass — Limited Edition",f_period:"/ year · Renewable · Full platform access",f_spots:"spots left out of 500",
-    btn_founder:"Become a Founder",btn_login:"Log in",
+    btn_founder:"Try audio now",btn_login:"Log in",
     tag_ange:"// Protection · Guardian Angel Mode",title_ange:"Triple-tap.<br><em>Your safety,</em><br>in 3 seconds.",
     tag_reseau:"// The network grows",title_reseau:"A community<br><em>that's growing</em>",
-    tag_voix:"// Voice first",title_voix:"Listen<br><em>before you see</em>",
+    tag_voix:"// Instant demo · Voice first",title_voix:"Try it<br><em>before you sign up</em>",
     tag_salon:"// Community · Floating Lounge · Real Time",title_salon:"Profiles that <em>float.</em><br>Connections that form.",
     title_tribunal:"Justice delivered<br><em>by the community.</em>",
     tag_events:"// Community · Upcoming Events",title_events:"The LGBTQ+ scene<br><em>comes alive.</em>"
   },
   zh:{
     nav_home:"首页",nav_ange:"天使模式",nav_voix:"语音",nav_reseau:"网络",nav_salon:"沙龙",nav_tribunal:"仲裁",
-    hero_sub:"加拿大 LGBTQ+ 网络",hero_origin:"诞生于魁北克 · 加拿大 · 2026",
+    hero_sub:"更安全的 LGBTQ+ 约会",hero_origin:"先听音频 · 后看照片 · 魁北克 → 加拿大",
     f_label:"✦ 创始会员通行证 — 限量版",f_period:"/ 年 · 可续费 · 完整平台权限",f_spots:"剩余名额（共500个）",
-    btn_founder:"成为创始会员",btn_login:"登录",
+    btn_founder:"立即试听音频",btn_login:"登录",
     tag_ange:"// 保护 · 守护天使模式",title_ange:"轻点三下。<br><em>您的安全，</em><br>三秒内启动。",
     tag_reseau:"// 网络正在扩展",title_reseau:"一个<br><em>不断成长</em>的社区",
-    tag_voix:"// 语音优先",title_voix:"先聆听<br><em>后见面</em>",
+    tag_voix:"// 即时体验 · 语音优先",title_voix:"先试用<br><em>再注册</em>",
     tag_salon:"// 社区 · 漂浮沙龙 · 实时",title_salon:"漂浮的<em>个人资料。</em><br>建立的联系。",
     title_tribunal:"由社区<br><em>主持的正义。</em>",
     tag_events:"// 社区 · 即将举行的活动",title_events:"LGBTQ+ 场景<br><em>活跃起来。</em>"
   },
   pa:{
     nav_home:"ਮੁੱਖ",nav_ange:"ਏਂਜਲ ਮੋਡ",nav_voix:"ਆਵਾਜ਼",nav_reseau:"ਨੈੱਟਵਰਕ",nav_salon:"ਸੈਲੂਨ",nav_tribunal:"ਟ੍ਰਿਬਿਊਨਲ",
-    hero_sub:"ਕੈਨੇਡੀਅਨ LGBTQ+ ਨੈੱਟਵਰਕ",hero_origin:"ਕਿਊਬੈਕ ਵਿੱਚ ਜਨਮਿਆ · ਕੈਨੇਡਾ · 2026",
+    hero_sub:"ਹੋਰ ਸੁਰੱਖਿਅਤ LGBTQ+ ਡੇਟਿੰਗ",hero_origin:"ਪਹਿਲਾਂ ਆਡੀਓ · ਫਿਰ ਫੋਟੋ · ਕਿਉਬੈਕ → ਕੈਨੇਡਾ",
     f_label:"✦ ਫਾਊਂਡਰ ਪਾਸ — ਸੀਮਿਤ ਐਡੀਸ਼ਨ",f_period:"/ ਸਾਲ · ਨਵਿਆਉਣਯੋਗ · ਪੂਰੀ ਪਲੇਟਫਾਰਮ ਪਹੁੰਚ",f_spots:"500 ਵਿੱਚੋਂ ਬਾਕੀ ਥਾਵਾਂ",
-    btn_founder:"ਫਾਊਂਡਰ ਬਣੋ",btn_login:"ਲੌਗ ਇਨ ਕਰੋ",
+    btn_founder:"ਹੁਣੇ ਆਡੀਓ ਅਜ਼ਮਾਓ",btn_login:"ਲੌਗ ਇਨ ਕਰੋ",
     tag_ange:"// ਸੁਰੱਖਿਆ · ਗਾਰਡੀਅਨ ਏਂਜਲ ਮੋਡ",title_ange:"ਤਿੰਨ ਵਾਰ ਟੈਪ ਕਰੋ।<br><em>ਤੁਹਾਡੀ ਸੁਰੱਖਿਆ,</em><br>3 ਸਕਿੰਟਾਂ ਵਿੱਚ।",
     tag_reseau:"// ਨੈੱਟਵਰਕ ਵਧ ਰਿਹਾ ਹੈ",title_reseau:"ਇੱਕ ਕਮਿਊਨਿਟੀ<br><em>ਜੋ ਵਧ ਰਹੀ ਹੈ</em>",
-    tag_voix:"// ਪਹਿਲਾਂ ਆਵਾਜ਼",title_voix:"ਸੁਣੋ<br><em>ਵੇਖਣ ਤੋਂ ਪਹਿਲਾਂ</em>",
+    tag_voix:"// ਤੁਰੰਤ ਡੈਮੋ · ਪਹਿਲਾਂ ਆਵਾਜ਼",title_voix:"ਅਜ਼ਮਾਓ<br><em>ਸਾਈਨ ਅੱਪ ਤੋਂ ਪਹਿਲਾਂ</em>",
     tag_salon:"// ਕਮਿਊਨਿਟੀ · ਫਲੋਟਿੰਗ ਸੈਲੂਨ · ਰੀਅਲ ਟਾਈਮ",title_salon:"ਪ੍ਰੋਫਾਈਲ ਜੋ <em>ਤੈਰਦੇ ਹਨ।</em><br>ਕਨੈਕਸ਼ਨ ਜੋ ਬਣਦੇ ਹਨ।",
     title_tribunal:"ਕਮਿਊਨਿਟੀ ਵੱਲੋਂ<br><em>ਦਿੱਤਾ ਗਿਆ ਨਿਆਂ।</em>",
     tag_events:"// ਕਮਿਊਨਿਟੀ · ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ",title_events:"LGBTQ+ ਸੀਨ<br><em>ਜੀਵੰਤ ਹੁੰਦਾ ਹੈ।</em>"
   },
   es:{
     nav_home:"Inicio",nav_ange:"Modo Ángel",nav_voix:"Voz",nav_reseau:"Red",nav_salon:"Salón",nav_tribunal:"Tribunal",
-    hero_sub:"Red LGBTQ+ Canadiense",hero_origin:"Nacido en Quebec · Canadá · 2026",
+    hero_sub:"Citas LGBTQ+ más seguras",hero_origin:"Prueba el audio primero · foto después · Quebec → Canadá",
     f_label:"✦ Pase Fundador — Edición Limitada",f_period:"/ año · Renovable · Acceso completo a la plataforma",f_spots:"plazas restantes de 500",
-    btn_founder:"Hazte Fundador",btn_login:"Iniciar sesión",
+    btn_founder:"Probar audio ahora",btn_login:"Iniciar sesión",
     tag_ange:"// Protección · Modo Ángel Guardián",title_ange:"Triple toque.<br><em>Tu seguridad,</em><br>en 3 segundos.",
     tag_reseau:"// La red se expande",title_reseau:"Una comunidad<br><em>que crece</em>",
-    tag_voix:"// La voz primero",title_voix:"Escucha<br><em>antes de ver</em>",
+    tag_voix:"// Demo inmediata · Voz primero",title_voix:"Pruébalo<br><em>antes de registrarte</em>",
     tag_salon:"// Comunidad · Salón Flotante · Tiempo Real",title_salon:"Perfiles que <em>flotan.</em><br>Conexiones que se crean.",
     title_tribunal:"Justicia impartida<br><em>por la comunidad.</em>",
     tag_events:"// Comunidad · Próximos Eventos",title_events:"La escena LGBTQ+<br><em>cobra vida.</em>"
   },
   tl:{
     nav_home:"Home",nav_ange:"Angel Mode",nav_voix:"Boses",nav_reseau:"Network",nav_salon:"Salon",nav_tribunal:"Tribunal",
-    hero_sub:"Canadian LGBTQ+ Network",hero_origin:"Ipinanganak sa Quebec · Canada · 2026",
+    hero_sub:"Mas ligtas na LGBTQ+ dating",hero_origin:"Unahin ang audio · larawan mamaya · Quebec → Canada",
     f_label:"✦ Founder Pass — Limited Edition",f_period:"/ taon · Renewable · Buong access sa platform",f_spots:"natitirang puwesto sa 500",
-    btn_founder:"Maging Founder",btn_login:"Mag-log in",
+    btn_founder:"Subukan ang audio ngayon",btn_login:"Mag-log in",
     tag_ange:"// Proteksyon · Guardian Angel Mode",title_ange:"Triple-tap.<br><em>Ang iyong kaligtasan,</em><br>sa 3 segundo.",
     tag_reseau:"// Lumalago ang network",title_reseau:"Isang komunidad<br><em>na lumalago</em>",
-    tag_voix:"// Boses muna",title_voix:"Makinig<br><em>bago makita</em>",
+    tag_voix:"// Agarang demo · Boses muna",title_voix:"Subukan muna<br><em>bago mag-sign up</em>",
     tag_salon:"// Komunidad · Floating Salon · Real Time",title_salon:"Mga profile na <em>lumulutang.</em><br>Mga koneksyong nabubuo.",
     title_tribunal:"Hustisyang ibinibigay<br><em>ng komunidad.</em>",
     tag_events:"// Komunidad · Mga Paparating na Event",title_events:"Ang LGBTQ+ scene<br><em>ay nabubuhay.</em>"
   },
   it:{
     nav_home:"Home",nav_ange:"Modalità Angelo",nav_voix:"Voce",nav_reseau:"Rete",nav_salon:"Salotto",nav_tribunal:"Tribunale",
-    hero_sub:"Rete LGBTQ+ Canadese",hero_origin:"Nato in Québec · Canada · 2026",
+    hero_sub:"Dating LGBTQ+ più sicuro",hero_origin:"Prova prima l'audio · foto dopo · Québec → Canada",
     f_label:"✦ Pass Fondatore — Edizione Limitata",f_period:"/ anno · Rinnovabile · Accesso completo alla piattaforma",f_spots:"posti rimasti su 500",
-    btn_founder:"Diventa Fondatore",btn_login:"Accedi",
+    btn_founder:"Prova l'audio ora",btn_login:"Accedi",
     tag_ange:"// Protezione · Modalità Angelo Custode",title_ange:"Triplo tocco.<br><em>La tua sicurezza,</em><br>in 3 secondi.",
     tag_reseau:"// La rete si espande",title_reseau:"Una comunità<br><em>che cresce</em>",
-    tag_voix:"// Prima la voce",title_voix:"Ascolta<br><em>prima di vedere</em>",
+    tag_voix:"// Demo immediata · Prima la voce",title_voix:"Provala<br><em>prima di registrarti</em>",
     tag_salon:"// Comunità · Salotto Fluttuante · Tempo Reale",title_salon:"Profili che <em>fluttuano.</em><br>Connessioni che nascono.",
     title_tribunal:"Giustizia resa<br><em>dalla comunità.</em>",
     tag_events:"// Comunità · Prossimi Eventi",title_events:"La scena LGBTQ+<br><em>prende vita.</em>"
   },
   de:{
     nav_home:"Start",nav_ange:"Engel-Modus",nav_voix:"Stimme",nav_reseau:"Netzwerk",nav_salon:"Salon",nav_tribunal:"Tribunal",
-    hero_sub:"Kanadisches LGBTQ+ Netzwerk",hero_origin:"Geboren in Québec · Kanada · 2026",
+    hero_sub:"Sichereres LGBTQ+ Dating",hero_origin:"Erst Audio · dann Foto · Québec → Kanada",
     f_label:"✦ Gründer-Pass — Limitierte Edition",f_period:"/ Jahr · Verlängerbar · Voller Plattformzugang",f_spots:"verbleibende Plätze von 500",
-    btn_founder:"Gründer werden",btn_login:"Anmelden",
+    btn_founder:"Audio jetzt testen",btn_login:"Anmelden",
     tag_ange:"// Schutz · Schutzengel-Modus",title_ange:"Dreifach tippen.<br><em>Deine Sicherheit,</em><br>in 3 Sekunden.",
     tag_reseau:"// Das Netzwerk wächst",title_reseau:"Eine Gemeinschaft<br><em>die wächst</em>",
-    tag_voix:"// Stimme zuerst",title_voix:"Höre zu<br><em>bevor du siehst</em>",
+    tag_voix:"// Sofort-Demo · Stimme zuerst",title_voix:"Teste es<br><em>bevor du dich anmeldest</em>",
     tag_salon:"// Gemeinschaft · Schwebender Salon · Echtzeit",title_salon:"Profile die <em>schweben.</em><br>Verbindungen die entstehen.",
     title_tribunal:"Gerechtigkeit<br><em>durch die Gemeinschaft.</em>",
     tag_events:"// Gemeinschaft · Kommende Events",title_events:"Die LGBTQ+ Szene<br><em>erwacht.</em>"
   },
   pt:{
     nav_home:"Início",nav_ange:"Modo Anjo",nav_voix:"Voz",nav_reseau:"Rede",nav_salon:"Salão",nav_tribunal:"Tribunal",
-    hero_sub:"Rede LGBTQ+ Canadense",hero_origin:"Nascido em Quebec · Canadá · 2026",
+    hero_sub:"Dating LGBTQ+ mais seguro",hero_origin:"Teste o áudio primeiro · foto depois · Quebec → Canadá",
     f_label:"✦ Passe Fundador — Edição Limitada",f_period:"/ ano · Renovável · Acesso completo à plataforma",f_spots:"vagas restantes de 500",
-    btn_founder:"Torne-se Fundador",btn_login:"Entrar",
+    btn_founder:"Testar áudio agora",btn_login:"Entrar",
     tag_ange:"// Proteção · Modo Anjo da Guarda",title_ange:"Toque triplo.<br><em>Sua segurança,</em><br>em 3 segundos.",
     tag_reseau:"// A rede se expande",title_reseau:"Uma comunidade<br><em>que cresce</em>",
-    tag_voix:"// A voz primeiro",title_voix:"Ouça<br><em>antes de ver</em>",
+    tag_voix:"// Demo imediata · A voz primeiro",title_voix:"Teste<br><em>antes de se inscrever</em>",
     tag_salon:"// Comunidade · Salão Flutuante · Tempo Real",title_salon:"Perfis que <em>flutuam.</em><br>Conexões que se criam.",
     title_tribunal:"Justiça feita<br><em>pela comunidade.</em>",
     tag_events:"// Comunidade · Próximos Eventos",title_events:"A cena LGBTQ+<br><em>ganha vida.</em>"
   },
   ru:{
     nav_home:"Главная",nav_ange:"Режим Ангела",nav_voix:"Голос",nav_reseau:"Сеть",nav_salon:"Салон",nav_tribunal:"Трибунал",
-    hero_sub:"Канадская ЛГБТК+ сеть",hero_origin:"Создано в Квебеке · Канада · 2026",
+    hero_sub:"Более безопасные LGBTQ+ знакомства",hero_origin:"Сначала аудио · потом фото · Квебек → Канада",
     f_label:"✦ Пропуск Основателя — Лимитированный",f_period:"/ год · Продлеваемый · Полный доступ к платформе",f_spots:"мест осталось из 500",
-    btn_founder:"Стать Основателем",btn_login:"Войти",
+    btn_founder:"Попробовать аудио",btn_login:"Войти",
     tag_ange:"// Защита · Режим Ангела-Хранителя",title_ange:"Тройное касание.<br><em>Ваша безопасность,</em><br>за 3 секунды.",
     tag_reseau:"// Сеть расширяется",title_reseau:"Сообщество<br><em>которое растёт</em>",
-    tag_voix:"// Сначала голос",title_voix:"Слушай<br><em>прежде чем увидеть</em>",
+    tag_voix:"// Мгновенное демо · Сначала голос",title_voix:"Попробуй<br><em>до регистрации</em>",
     tag_salon:"// Сообщество · Плавающий салон · В реальном времени",title_salon:"Профили, которые <em>парят.</em><br>Связи, которые рождаются.",
     title_tribunal:"Правосудие<br><em>от сообщества.</em>",
     tag_events:"// Сообщество · Предстоящие события",title_events:"ЛГБТК+ сцена<br><em>оживает.</em>"
@@ -2614,7 +2600,7 @@ function setLang(lang){
     transcript.innerHTML='<div class="voix-who">'+line.who+'</div><div class="voix-said">« '+line.text+' »</div>';
   }
   function setIdle(){
-    transcript.innerHTML='<span class="voix-idle">— Silence. Le salon attend ta présence. —</span>';
+    transcript.innerHTML='<span class="voix-idle">— Appuie sur ▶ pour entendre comment une rencontre peut commencer sans photo. —</span>';
   }
   async function play(){
     cancelled=false;playing=true;
@@ -2634,7 +2620,7 @@ function setLang(lang){
     cancelled=true;playing=false;
     synth.cancel();stopWave();
     dot.classList.remove('live');statusEl.textContent='PRÊT';
-    playIcon.textContent='▶';playLabel.textContent='Écouter le salon';
+    playIcon.textContent='▶';playLabel.textContent='Tester le salon audio';
     setIdle();
   }
   window.toggleVoixDemo=function(){ playing?stop():play(); };
