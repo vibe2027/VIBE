@@ -9,14 +9,15 @@ const SHELL = [
   '/js/vibe-fixes.js',
   '/js/stripe-config.js',
   '/js/vibe-live.js',
+  '/js/vibe-security.js',
   '/robots.txt',
   '/sitemap.xml'
 ];
 const INJECT =
-  '<script src="/js/stripe-config.js" defer><\/script>' +
-  '<script src="/js/salons.js" defer><\/script>' +
-  '<script src="/js/vibe-live.js" defer><\/script>' +
-  '<script src="/js/vibe-fix.js" defer><\/script>';
+  '<script src="/js/stripe-config.js?v=6"><\/script>' +
+  '<script src="/js/vibe-fixes.js?v=6" defer><\/script>' +
+  '<script src="/js/vibe-live.js?v=6" defer><\/script>' +
+  '<script src="/js/vibe-security.js?v=6" defer><\/script>';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
@@ -33,7 +34,7 @@ self.addEventListener('activate', (e) => {
 });
 
 function injectFixes(html) {
-  if (!html || html.indexOf('vibe-live.js') !== -1) return html;
+  if (!html || html.indexOf('vibe-security.js') !== -1) return html;
   if (html.indexOf('</head>') !== -1) return html.replace('</head>', INJECT + '\n</head>');
   if (html.indexOf('</body>') !== -1) return html.replace('</body>', INJECT + '\n</body>');
   return html + INJECT;
