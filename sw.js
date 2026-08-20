@@ -4,6 +4,8 @@ const SHELL = [
   '/index.html',
   '/icon-192.png',
   '/icon-512.png',
+  '/js/salons.js',
+  '/js/vibe-fix.js',
   '/js/vibe-fixes.js',
   '/js/stripe-config.js',
   '/js/vibe-live.js',

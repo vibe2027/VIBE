@@ -31,16 +31,20 @@ VIBE/
 ├── _redirects                # Config de redirection
 ├── CNAME                    # Domaine custom (GitHub Pages)
 ├── bg.png, icon-*.png       # Ressources visuelles
-├── js/                      # Fichiers non utilisés actuellement (non chargés par index.html) —
-│   │                          conservés pour référence future, à nettoyer ou réintégrer
-│   ├── config.js
-│   ├── salons.js
-│   └── ui-salons.js
+├── js/                      # Scripts statiques et placeholders de code mort
+│   ├── config.js           # Placeholder désactivé
+│   ├── salons.js           # Placeholder désactivé chargé pour compat
+│   ├── stripe-config.js
+│   ├── ui-salons.js        # Placeholder désactivé
+│   ├── vibe-fix.js
+│   ├── vibe-fixes.js
+│   └── vibe-live.js
 └── README.md
 ```
 
-> ⚠️ Les fichiers dans `js/` ne sont **pas** chargés par `index.html`. Toute la logique
-> Supabase/salons/auth actuellement en production est inline dans `index.html`.
+> ℹ️ `index.html` charge directement `/js/stripe-config.js`, `/js/salons.js`,
+> `/js/vibe-live.js` et `/js/vibe-fix.js`. Les fichiers `config.js`,
+> `salons.js` et `ui-salons.js` sont conservés comme placeholders désactivés.
 
 ## 🔧 Déploiement
 
