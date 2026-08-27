@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
+const { sanitizeResults } = require('../utils/response-sanitizer');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -107,10 +108,7 @@ router.get('/active/:salon', async (req, res) => {
 
     const { data, error } = await supabase
       .from('pubs')
-      .select(`
-        *,
-        user:users!pubs_user_id_fk(id, full_name, email)
-      `)
+      .select('*')
       .eq('salon', salon)
       .eq('status', 'active')
       .gte('end_date', new Date().toISOString())
@@ -118,9 +116,12 @@ router.get('/active/:salon', async (req, res) => {
 
     if (error) throw error;
 
+    // Sanitize response: hide personal user info, show VIBE brand
+    const sanitized = sanitizeResults(data);
+
     res.json({
-      pubs: data,
-      total: data.length,
+      pubs: sanitized,
+      total: sanitized.length,
       salon
     });
 

@@ -229,6 +229,8 @@ class AdvancedSearchEngine {
         id: hit._id,
         score: hit._score,
         ...hit._source,
+        // Sanitize author name for public display
+        author_name: 'VIBE',
         highlight: hit.highlight || {}
       }))
     };
