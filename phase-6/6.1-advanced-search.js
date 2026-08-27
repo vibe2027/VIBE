@@ -4,6 +4,7 @@
  */
 
 const { Client } = require('@elastic/elasticsearch');
+const { sanitizeAuthor } = require('../utils/response-sanitizer');
 
 class AdvancedSearchEngine {
   constructor(elasticsearchUrl = process.env.ELASTICSEARCH_URL) {

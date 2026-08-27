@@ -1,22 +1,32 @@
 /**
  * Response Sanitizer
  * Ensures all public-facing API responses hide personal information
- * and display "VIBE" as the brand name instead
+ * Only founder (vibeqbc2026@hotmail.com) gets "VIBE" branding
  */
+
+const FOUNDER_EMAIL = 'vibeqbc2026@hotmail.com';
 
 /**
  * Sanitize user/author information for public display
- * Replaces personal names with "VIBE" platform branding
+ * Replaces founder's name with "VIBE" but keeps email visible
  */
 function sanitizeAuthor(data) {
   if (!data) return data;
 
-  return {
-    ...data,
-    author_name: 'VIBE',
-    full_name: 'VIBE',
-    display_name: 'VIBE'
-  };
+  // Only replace name if it's the founder
+  if (data.email === FOUNDER_EMAIL || data.real_email === FOUNDER_EMAIL) {
+    return {
+      ...data,
+      author_name: 'VIBE',
+      full_name: 'VIBE',
+      display_name: 'VIBE',
+      name: 'VIBE'
+      // Email stays visible
+    };
+  }
+
+  // Other users keep their names unchanged
+  return data;
 }
 
 /**
@@ -25,12 +35,19 @@ function sanitizeAuthor(data) {
 function sanitizeUser(user) {
   if (!user) return user;
 
-  return {
-    id: user.id,
-    // Hide personal information, show brand name
-    name: 'VIBE',
-    brand: 'VIBE'
-  };
+  // Only replace name if it's the founder
+  if (user.email === FOUNDER_EMAIL || user.real_email === FOUNDER_EMAIL) {
+    return {
+      ...user,
+      name: 'VIBE',
+      full_name: 'VIBE',
+      display_name: 'VIBE',
+      // Email stays visible
+    };
+  }
+
+  // Other users keep their data unchanged
+  return user;
 }
 
 /**
