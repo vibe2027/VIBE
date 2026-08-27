@@ -8,8 +8,11 @@
   ],
   "routes": [
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
-      "destination": "server.js"
+      "destination": "/server.js"
     }
   ],
   "env": {
