@@ -1,40 +1,4 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "destination": "/server.js"
-    }
-  ],
-  "env": {
-    "SUPABASE_URL": "@supabase_url",
-    "SUPABASE_KEY": "@supabase_key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
-    "ELASTICSEARCH_URL": "@elasticsearch_url",
-    "ELASTICSEARCH_USERNAME": "@elasticsearch_username",
-    "ELASTICSEARCH_PASSWORD": "@elasticsearch_password",
-    "OPENAI_API_KEY": "@openai_api_key",
-    "TURN_SERVER_URL": "@turn_server_url",
-    "TURN_USERNAME": "@turn_username",
-    "TURN_PASSWORD": "@turn_password",
-    "STRIPE_PUBLIC_KEY": "@stripe_public_key",
-    "STRIPE_SECRET_KEY": "@stripe_secret_key",
-    "STRIPE_WEBHOOK_SECRET": "@stripe_webhook_secret",
-    "SENDGRID_API_KEY": "@sendgrid_api_key",
-    "FEATURE_FLAG_REALTIME_COLLAB": "true",
-    "FEATURE_FLAG_ADVANCED_SEARCH": "true",
-    "FEATURE_FLAG_RECOMMENDATIONS": "true",
-    "FEATURE_FLAG_MOBILE_APP": "true",
-    "FEATURE_FLAG_WEBRTC_VIDEO": "true",
-    "FEATURE_FLAG_NLP_MODERATION": "true"
-  }
+  "outputDirectory": ".",
+  "cleanUrls": true
 }
