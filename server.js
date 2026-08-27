@@ -1,12 +1,15 @@
 /**
  * VIBE Backend Server
- * Handles Stripe checkout + webhooks + role management
+ * Complete platform: Auth + Admin Dashboard + Stripe + Realtime Salons
  */
 
 const express = require('express');
 const crypto = require('crypto');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
+
+const authRoutes = require('./auth/auth-routes');
+const adminRoutes = require('./dashboard/admin-routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +34,13 @@ app.post('/api/webhooks/stripe',
 
 // Regular JSON parser for other routes
 app.use(express.json());
+
+// ─────────────────────────────────────────────────────────────
+// Mount Routes
+// ─────────────────────────────────────────────────────────────
+
+app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 
 // Simple auth middleware (optional — add if you want to verify requests)
 function verifyAuth(req, res, next) {
