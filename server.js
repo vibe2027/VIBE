@@ -14,6 +14,7 @@ const authRoutes = require('./auth/auth-routes');
 const adminRoutes = require('./dashboard/admin-routes');
 const pubsRoutes = require('./pubs/pubs-routes');
 const searchRoutes = require('./search/search-routes');
+const contactRoutes = require('./contact/contact-routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -47,6 +48,7 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/pubs', pubsRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Simple auth middleware (optional — add if you want to verify requests)
 function verifyAuth(req, res, next) {
