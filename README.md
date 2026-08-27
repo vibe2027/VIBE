@@ -9,6 +9,16 @@ Une plateforme communautaire sécurisée conçue pour les personnes LGBTQ+ au Ca
 - 👑 **Accès Fondateurs** — Plan d'édition limitée
 - ⚖️ **Tribunal Communautaire** — Modération par la communauté
 
+---
+
+## 🚀 Déployer sur Vercel (Phase 6)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvibe2027%2FVIBE&project-name=vibe&repository-name=vibe&branch=claude%2Fvibe-v1-architecture-53i2dd&env=NODE_ENV,APP_URL,SUPABASE_URL,SUPABASE_KEY,SUPABASE_SERVICE_ROLE_KEY,STRIPE_PUBLIC_KEY,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,SENDGRID_API_KEY,SENDGRID_FROM_EMAIL&envDescription=API%20keys%20required%20for%20deployment&envLink=https%3A%2F%2Fgithub.com%2Fvibe2027%2FVIBE%2Fblob%2Fclaude%2Fvibe-v1-architecture-53i2dd%2FVERCEL_DEPLOYMENT_STEPS.md)
+
+**Après le déploiement :** Voir [**VERCEL_DEPLOYMENT_STEPS.md**](./VERCEL_DEPLOYMENT_STEPS.md) pour configurer les variables d'environnement et les DNS.
+
+---
+
 ## 🚀 Stack Technique
 
 - **Frontend:** un seul fichier `index.html` (HTML5, CSS3, JavaScript vanilla — pas de framework, pas de build)
