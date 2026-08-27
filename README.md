@@ -70,9 +70,11 @@ UPDATE ouvertes, exécution anonyme de fonctions privilégiées, et une politiqu
 récursive sur `profiles`.
 
 ## 📝 Licence
-vibeqbc2026@hotmail.com
 
 VIBE est propriétaire. © 2026 VIBE Network.
+
+**Fondateurs:** Pascal Laurendeau & Marc Reid  
+**Contact:** jmarcreid@gmail.com
 
 ## 📞 Support
 
