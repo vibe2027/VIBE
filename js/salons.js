@@ -47,8 +47,13 @@
   async function joinSalon(salonId) {
     if (!SALONS[salonId]) throw new Error('Salon inexistant');
 
-    _currentSalon = salonId;
     const client = sb();
+
+    // ✅ Vérifie que l'utilisateur est toujours connecté
+    const { data: { user }, error: authError } = await client.auth.getUser();
+    if (authError || !user) throw new Error('Session expirée');
+
+    _currentSalon = salonId;
 
     if (_realtimeSubscription) {
       client.removeChannel(_realtimeSubscription);
@@ -83,9 +88,10 @@
             });
           }
 
+          // ✅ Track présence avec l'utilisateur actuel (pas le cache)
           await _realtimeSubscription.track({
             online_at: new Date().toISOString(),
-            user_id: _userId
+            user_id: user.id
           });
         }
       });
@@ -94,12 +100,17 @@
   }
 
   async function sendMessage(text) {
-    if (!_userId || !_currentSalon) throw new Error('Utilisateur ou salon manquant');
+    if (!_currentSalon) throw new Error('Salon manquant');
 
     const client = sb();
+
+    // ✅ Récupère l'utilisateur DIRECTEMENT de la session active (pas de cache)
+    const { data: { user }, error: authError } = await client.auth.getUser();
+    if (authError || !user) throw new Error('Session expirée, reconnecte-toi');
+
     const { data, error } = await client.from('salons_messages').insert({
       salon: _currentSalon,
-      user_id: _userId,
+      user_id: user.id,  // ✅ Depuis la session active, pas du cache
       texte: text,
       created_at: new Date().toISOString()
     }).select();
