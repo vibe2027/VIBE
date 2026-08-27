@@ -47,7 +47,7 @@ VIBE is a complete, production-ready web platform designed specifically for the 
 - Capabilities: User management, tribunal resolution, pubs approval, billets adjustment
 
 **Co-Founder Account**
-- Email: `jmarcreid@gmail.com`
+- Email: `admin@vibegay.ca`
 - 1000 billets per month maximum
 - Hidden access (not visible to public for 6-12 months)
 - Can send pubs/advertisements
@@ -336,7 +336,7 @@ CREATE TABLE blocked_users (
 1. Validate input (email, password, fullName required)
 2. Auto-detect role based on email:
    - If email === `support@vibegay.ca` → role = `admin`
-   - If email === `jmarcreid@gmail.com` → role = `co_founder`
+   - If email === `admin@vibegay.ca` → role = `co_founder`
    - Otherwise → role = `user`
 3. Create Supabase Auth user
 4. Create user record in database

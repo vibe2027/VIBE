@@ -84,11 +84,9 @@ Expected output:
 node setup-admins.js
 ```
 
-This creates:
-- **Admin**: support@vibegay.ca
-- **Co-Founder**: jmarcreid@gmail.com
+This creates admin and special accounts.
 
-Check your Gmail inbox for verification emails.
+Check your email inbox for verification emails.
 
 ## 7. Access Platform
 

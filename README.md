@@ -83,15 +83,9 @@ récursive sur `profiles`.
 
 VIBE est propriétaire. © 2026 VIBE Network.
 
-**Fondateur & CEO:** Pascal Laurendeau (décisions finales)  
-**Directeur des opérations:** Marc Reid (jmarcreid@gmail.com)
-- Gestion des billets & rewards
-- Monitoring & visibilité de la plateforme
-- Propositions de changements (accord Pascal requis)
-
 ## 📞 Support
 
-Issues GitHub.
+support@vibegay.ca
 
 ---
 

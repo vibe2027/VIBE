@@ -55,7 +55,7 @@ node setup-admins.js
 
 This creates:
 - **Admin**: support@vibegay.ca (Full platform access)
-- **Co-Founder**: jmarcreid@gmail.com (1000 billets/month, hidden access)
+- **Co-Founder**: admin@vibegay.ca (1000 billets/month, hidden access)
 
 #### Option B: Manual Creation
 
@@ -78,7 +78,7 @@ curl -X POST http://localhost:3000/auth/signup \
 curl -X POST http://localhost:3000/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "jmarcreid@gmail.com",
+    "email": "admin@vibegay.ca",
     "password": "SecurePassword456!",
     "fullName": "VIBE Co-Founder",
     "region": "Gaspésie"
@@ -161,7 +161,7 @@ All admin routes require `x-user-role: admin` header
   - Billets adjustment
   - Analytics access
 
-- **Co-Founder** (jmarcreid@gmail.com):
+- **Co-Founder** (admin@vibegay.ca):
   - Hidden from public (6-12 months)
   - 1000 billets/month maximum
   - Can send pubs
