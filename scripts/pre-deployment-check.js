@@ -74,13 +74,17 @@ requiredEnvVars.forEach(varName => {
 
 separator();
 
-// ============================================
-// CHECK 2: Supabase Connection
-// ============================================
+// Only run if this file is executed directly (not imported)
+if (require.main === module) {
+  runValidation();
+}
 
-console.log(`${colors.blue}🔍 Vérification Supabase${colors.reset}\n`);
+async function runValidation() {
+  // ============================================
+  // CHECK 2: Supabase Connection
+  // ============================================
 
-(async () => {
+  console.log(`${colors.blue}🔍 Vérification Supabase${colors.reset}\n`);
   try {
     const supabase = createClient(
       process.env.SUPABASE_URL,
@@ -269,4 +273,4 @@ console.log(`${colors.blue}🔍 Vérification Supabase${colors.reset}\n`);
     console.log(`${colors.red}Veuillez corriger les erreurs avant le déploiement.${colors.reset}\n`);
     process.exit(1);
   }
-})();
+}
