@@ -886,6 +886,53 @@ footer{
 #verdict-close.appear{animation:verdict-sub-in 1s ease 3.6s forwards}
 #verdict-overlay.shake #verdict-fx{animation:verdict-shake 0.6s ease-in-out 3}
 @keyframes verdict-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-10px,5px)}40%{transform:translate(9px,-6px)}60%{transform:translate(-6px,-5px)}80%{transform:translate(8px,6px)}}
+
+/* ══ GLASSMORPHISM & SALONS STYLE ══ */
+.glass-panel {
+  background: rgba(20, 20, 30, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 14px;
+}
+
+.salon-card {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.salon-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.5);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+#salon-chatbox {
+  background: rgba(20, 20, 30, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 238, 255, 0.1);
+}
+
+.msg-item {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(5px);
+}
+
+#live-chat-msgs::-webkit-scrollbar {
+  width: 4px;
+}
+#live-chat-msgs::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
 </style>
 <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 </head>
@@ -1759,6 +1806,10 @@ function entrerSalon(nom,cardEl){
     c.style.background=actif?'rgba(212,175,55,0.12)':'rgba(255,255,255,0.02)';
   });
   switchSalon(nom);
+  // Initialiser le salon temps réel si l'utilisateur est connecté
+  if(window.salonUI && window.CURRENT_USER){
+    window.salonUI.selectSalon(nom).catch(e=>console.warn('Erreur salon temps réel:', e.message));
+  }
   const box=document.getElementById('salon-chatbox');
   if(box)box.scrollIntoView({behavior:'smooth',block:'center'});
   const inp=document.getElementById('chat-input');
@@ -3353,8 +3404,27 @@ window.addEventListener('appinstalled',()=>{document.getElementById('pwa-install
 })();
 </script>
 <script src="/js/stripe-config.js" defer></script>
+<script src="/js/salon-effects.js" defer></script>
 <script src="/js/salons.js" defer></script>
+<script src="/js/ui-salons.js" defer></script>
+<script src="/js/haptic.js" defer></script>
 <script src="/js/vibe-live.js" defer></script>
 <script src="/js/vibe-fix.js" defer></script>
+<script>
+// Initialiser les salons temps réel au chargement
+document.addEventListener('DOMContentLoaded', async function() {
+  // Attendre que l'utilisateur soit authentifié
+  const checkAuth = setInterval(async function() {
+    if (window.CURRENT_USER && window.vibeSalons) {
+      clearInterval(checkAuth);
+      try {
+        await window.vibeSalons.init(window.CURRENT_USER.id);
+      } catch (e) {
+        console.warn('Erreur initialisation salons:', e.message);
+      }
+    }
+  }, 500);
+});
+</script>
 </body>
 </html>
