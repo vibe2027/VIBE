@@ -147,7 +147,7 @@
         '@type': 'Organization',
         name: 'Vibegay.ca',
         url: 'https://vibegay.ca',
-        email: 'vibeqbc2026@hotmail.com',
+        email: 'support@vibegay.ca',
         address: { '@type': 'PostalAddress', addressLocality: 'Québec', addressRegion: 'QC', addressCountry: 'CA' }
       }
     });

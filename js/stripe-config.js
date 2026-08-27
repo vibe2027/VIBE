@@ -23,7 +23,7 @@ window.VIBE_STRIPE = {
 
   paypal_pionnier:
     'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=vibeqbc2026%40hotmail.com&item_name=Pass%20Pionnier%20VIBE%20%E2%80%94%201%20an&amount=99.00&currency_code=CAD',
-  interac_email: 'vibeqbc2026@hotmail.com'
+  interac_email: 'support@vibegay.ca'
 };
 
 window.vibeCheckout = function (key) {

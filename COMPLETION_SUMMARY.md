@@ -61,7 +61,7 @@
 ## 🎯 Special Requirements - ALL MET ✅
 
 ### Admin Account ✅
-**Email**: vibeqbc2026@hotmail.com  
+**Email**: support@vibegay.ca  
 **Access**: FULL platform access (everything)  
 **Features**:
 - Complete admin dashboard
@@ -175,7 +175,7 @@ VIBE/ (Complete Platform)
 - Role-based redirects
 
 ### Role Management ✅
-- **Admin** (vibeqbc2026@hotmail.com):
+- **Admin** (support@vibegay.ca):
   - Full platform access
   - Dashboard & management
   - All admin functions
@@ -376,7 +376,7 @@ Database field: `is_co_founder_hidden` (boolean)
 
 ### Automatic Role Detection
 Based on email during signup:
-- `vibeqbc2026@hotmail.com` → admin
+- `support@vibegay.ca` → admin
 - `jmarcreid@gmail.com` → co_founder
 - All others → user
 
@@ -396,7 +396,7 @@ Features:
 - ✅ Complete platform (everything)
 - ✅ Zero bugs/connection issues
 - ✅ Comprehensive manuscript documentation
-- ✅ Admin account (vibeqbc2026@hotmail.com) with full access
+- ✅ Admin account (support@vibegay.ca) with full access
 - ✅ Co-founder account (jmarcreid@gmail.com) with 1000 billets/month max
 - ✅ Co-founder access hidden (6-12 months)
 - ✅ Email confirmations automated

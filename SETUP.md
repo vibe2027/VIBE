@@ -54,7 +54,7 @@ node setup-admins.js
 ```
 
 This creates:
-- **Admin**: vibeqbc2026@hotmail.com (Full platform access)
+- **Admin**: support@vibegay.ca (Full platform access)
 - **Co-Founder**: jmarcreid@gmail.com (1000 billets/month, hidden access)
 
 #### Option B: Manual Creation
@@ -66,7 +66,7 @@ Use Supabase Admin Panel or run these API calls:
 curl -X POST http://localhost:3000/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "vibeqbc2026@hotmail.com",
+    "email": "support@vibegay.ca",
     "password": "SecurePassword123!",
     "fullName": "VIBE Admin",
     "region": "Gaspésie"
@@ -153,7 +153,7 @@ All admin routes require `x-user-role: admin` header
 - Session management
 
 #### Role Management
-- **Admin** (vibeqbc2026@hotmail.com):
+- **Admin** (support@vibegay.ca):
   - Full platform access
   - User management
   - Tribunal resolution

@@ -41,7 +41,7 @@ VIBE is a complete, production-ready web platform designed specifically for the 
 ### Special Administrative Roles
 
 **Admin Account**
-- Email: `vibeqbc2026@hotmail.com`
+- Email: `support@vibegay.ca`
 - Full platform access
 - Dashboard: `/admin-dashboard-ui.html`
 - Capabilities: User management, tribunal resolution, pubs approval, billets adjustment
@@ -335,7 +335,7 @@ CREATE TABLE blocked_users (
 **Process**:
 1. Validate input (email, password, fullName required)
 2. Auto-detect role based on email:
-   - If email === `vibeqbc2026@hotmail.com` → role = `admin`
+   - If email === `support@vibegay.ca` → role = `admin`
    - If email === `jmarcreid@gmail.com` → role = `co_founder`
    - Otherwise → role = `user`
 3. Create Supabase Auth user

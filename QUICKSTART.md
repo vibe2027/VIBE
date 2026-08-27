@@ -85,7 +85,7 @@ node setup-admins.js
 ```
 
 This creates:
-- **Admin**: vibeqbc2026@hotmail.com
+- **Admin**: support@vibegay.ca
 - **Co-Founder**: jmarcreid@gmail.com
 
 Check your Gmail inbox for verification emails.
