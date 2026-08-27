@@ -1,252 +1,88 @@
-# 🌊 VIBE - Authentic Connection for LGBTQ+ Community
+# VIBE 🏳️‍🌈
 
-**VIBE** is a complete, production-ready web platform designed specifically for the LGBTQ+ community. It combines real-time communication (chat salons), community moderation (tribunal system), advertising capabilities (pubs), and a unique billing system (billets) into one cohesive, respectful, and inclusive platform.
+**VIBE** — Réseau LGBTQ+ canadien nouvelle génération, né à Québec.
 
-## ✨ Key Features
+Une plateforme communautaire sécurisée conçue pour les personnes LGBTQ+ au Canada, combinant:
+- 🎙️ **Salons à voix** — Écoute avant de voir
+- 🛡️ **Mode Ange Gardien** — Protection active avec alerte SOS en 3 taps
+- 💬 **Salons privés** — Communautés par villes et thèmes
+- 👑 **Accès Fondateurs** — Plan d'édition limitée
+- ⚖️ **Tribunal Communautaire** — Modération par la communauté
 
-### 🔐 Authentication & Roles
-- Email/password authentication with Supabase
-- Three roles: User, Co-Founder, Admin
-- Automatic role detection based on email
-- Email verification required
-- Session management with JWT
+## 🚀 Stack Technique
 
-### 💬 Real-Time Communication
-- **4 Community Salons**:
-  - **Flottant**: General conversation
-  - **Voix**: Serious topics & announcements
-  - **Fantômes**: Private/anonymous messages
-  - **Tribunal**: Moderation discussions
-- Live message updates via Supabase Realtime
-- Edit & soft-delete functionality
+- **Frontend:** un seul fichier `index.html` (HTML5, CSS3, JavaScript vanilla — pas de framework, pas de build)
+- **Backend:** Supabase (PostgreSQL + Realtime + Auth)
+- **Auth:** Supabase Auth (Email/Password)
+- **Paiements:** Stripe (Payment Link), PayPal, virement Interac — activation manuelle du statut Fondateur, aucune réconciliation automatique pour l'instant
+- **Hosting:** GitHub Pages
+- **Domain:** vibegay.ca (DNS via Namecheap)
 
-### ⚖️ Tribunal System
-- Community-driven moderation
-- Case types: harassment, inappropriate content, scam, other
-- Admin resolution with detailed notes
-- Automated notifications to all parties
-- Transparent case history
-
-### 💸 Billets Currency System
-- Internal platform currency
-- Monthly limits (co-founder: 1000/month max)
-- Hidden billets for co-founders
-- Full transaction audit trail
-- Admin adjustment capability
-
-### 📢 Advertising System
-- Users can create promotional content (pubs)
-- Target specific salons
-- Admin approval workflow
-- Billet-based cost system
-
-### 👨‍💼 Admin Dashboard
-- User management
-- Tribunal case resolution
-- Pubs approval/rejection
-- Billets adjustment
-- Activity monitoring & analytics
-
-### 🔑 Co-Founder Dashboard
-- Restricted access (1000 billets/month)
-- Hidden from public (6-12 months)
-- Send billets to community
-- Create & manage pubs
-- Transaction history
-
-## 🚀 Quick Start
-
-### 1. Setup (5 minutes)
-
-```bash
-npm install express cors supabase nodemailer stripe dotenv
-cp .env.example .env
-# Edit .env with your Supabase, Email, Stripe credentials
-```
-
-### 2. Database
-
-Run SQL schema in Supabase dashboard - see `sql/complete-schema.sql`
-
-### 3. Start Server
-
-```bash
-node server.js
-# Visit http://localhost:3000/login.html
-```
-
-### 4. Create Admin Accounts (Optional)
-
-```bash
-node setup-admins.js
-```
-
-Creates:
-- Admin: vibeqbc2026@hotmail.com
-- Co-Founder: jmarcreid@gmail.com
-
-## 📚 Documentation
-
-- **[QUICKSTART.md](QUICKSTART.md)** - Get running in 5 minutes
-- **[SETUP.md](SETUP.md)** - Detailed setup & configuration  
-- **[docs/MANUSCRIPT.md](docs/MANUSCRIPT.md)** - Complete 4000+ line manuscript with full API reference, database schema, security architecture, and deployment instructions
-
-## 🏗️ Architecture
-
-### Technology Stack
-- **Backend**: Node.js + Express.js
-- **Database**: PostgreSQL (Supabase)
-- **Auth**: Supabase Auth + JWT
-- **Real-time**: Supabase Realtime
-- **Email**: Nodemailer + Gmail SMTP
-- **Frontend**: HTML5 + CSS3 + Vanilla JS
-
-### Database (10 Tables)
-1. **users** - Accounts with roles
-2. **billets** - Currency system
-3. **billet_transactions** - Audit trail
-4. **tribunal_cases** - Moderation
-5. **tribunal_votes** - Community voting
-6. **salons_messages** - Real-time chat
-7. **pubs** - Advertising
-8. **user_profiles** - Extended profiles
-9. **email_logs** - Email audit
-10. **blocked_users** - Blocking
-
-## 🎨 Frontend URLs
-
-| URL | Purpose |
-|-----|---------|
-| `/login.html` | Login/signup |
-| `/admin-dashboard-ui.html` | Admin panel |
-| `/co-founder-dashboard.html` | Co-founder panel |
-| `/index.html` | Main app |
-
-## 🔌 API Endpoints
-
-### Auth
-- `POST /auth/signup` - Create account
-- `POST /auth/login` - Login
-- `POST /auth/verify-email` - Verify email
-- `POST /auth/send-billets` - Send billets
-- `POST /auth/tribunal-case` - Create case
-
-### Admin (requires x-user-role: admin)
-- `GET /admin/stats` - Dashboard
-- `GET /admin/users` - List users
-- `PUT /admin/users/:id/role` - Change role
-- `POST /admin/users/:id/suspend` - Suspend
-- `GET /admin/tribunal` - View cases
-- `PUT /admin/tribunal/:id/resolve` - Resolve case
-- `GET /admin/pubs` - List pubs
-- `PUT /admin/pubs/:id/approve` - Approve
-- `PUT /admin/pubs/:id/reject` - Reject
-- `POST /admin/billets/:id/adjust` - Adjust
-- `GET /admin/activity` - Activity log
-
-### Pubs
-- `POST /pubs` - Create pub
-- `GET /pubs/my` - User's pubs
-- `GET /pubs/active/:salon` - Active pubs
-- `DELETE /pubs/:id` - Delete
-
-## 🔐 Security
-
-- Supabase Auth with RLS
-- Role-based access control
-- HMAC-SHA256 webhook verification
-- Environment variable protection
-- Database constraints & indexes
-- Session tokens
-
-## 📧 Email System
-
-Automated emails for:
-- Account verification
-- Role confirmation
-- Tribunal notifications
-- Pubs approval
-
-**Provider**: Gmail SMTP
-
-## 🌍 Deployment
-
-### Local
-```bash
-npm install
-node server.js
-```
-
-### Production (Heroku/Railway/Render)
-See [SETUP.md](SETUP.md) for detailed instructions
-
-## 📊 File Structure
+## 📁 Structure du Projet
 
 ```
 VIBE/
-├── server.js                    # Express server
-├── sql/complete-schema.sql      # Database
-├── auth/                        # Authentication
-│   ├── auth-service.js
-│   └── auth-routes.js
-├── dashboard/                   # Admin dashboard
-│   ├── admin-dashboard.js
-│   └── admin-routes.js
-├── pubs/                        # Advertising
-│   └── pubs-routes.js
-├── login.html                   # Login UI
-├── admin-dashboard-ui.html      # Admin panel
-├── co-founder-dashboard.html    # Co-founder panel
-├── index.html                   # Main app
-├── docs/MANUSCRIPT.md           # Full documentation
-├── QUICKSTART.md                # Quick start
-├── SETUP.md                     # Setup guide
-├── setup-admins.js              # Setup script
-└── README.md                    # This file
+├── index.html              # Page principale (tout le site : HTML/CSS/JS)
+├── bande-annonce.html       # Page bande-annonce
+├── conditions.html          # Conditions d'utilisation
+├── confidentialite.html     # Politique de confidentialité (Loi 25 / LPRPDE)
+├── manifest.json            # Manifest PWA
+├── sw.js                    # Service worker PWA
+├── _redirects                # Config de redirection
+├── CNAME                    # Domaine custom (GitHub Pages)
+├── bg.png, icon-*.png       # Ressources visuelles
+├── js/                      # Scripts statiques et placeholders de code mort
+│   ├── config.js           # Placeholder désactivé
+│   ├── salons.js           # Placeholder désactivé chargé pour compat
+│   ├── stripe-config.js
+│   ├── ui-salons.js        # Placeholder désactivé
+│   ├── vibe-fix.js
+│   ├── vibe-fixes.js
+│   └── vibe-live.js
+└── README.md
 ```
 
-## 🛡️ Special Features
+> ℹ️ `index.html` charge directement `/js/stripe-config.js`, `/js/salons.js`,
+> `/js/vibe-live.js` et `/js/vibe-fix.js`. Les fichiers `config.js`,
+> `salons.js` et `ui-salons.js` sont conservés comme placeholders désactivés.
 
-### Hidden Co-Founder Access
-- Account hidden from public (6-12 months)
-- Billets hidden via `is_co_founder_hidden` flag
-- Only admin can see true status
+## 🔧 Déploiement
 
-### Monthly Billet Limits
-- Co-founder: 1000/month maximum
-- Enforced in API
-- Reset at UTC midnight
-- Full transaction tracking
+Le site est un fichier statique servi par **GitHub Pages** (repo `vibe2027/VIBE`, branche `main`).
+Pousser sur `main` déploie automatiquement.
 
-## 🤝 Contributing
+Les credentials Supabase (URL + clé anon) sont codés en dur dans `index.html` (c'est
+normal et attendu pour la clé **anon** de Supabase — la sécurité repose sur les
+règles RLS côté base de données, pas sur le secret de cette clé).
 
-Platform values:
-- **Humilité Totale** (Complete Humility)
-- **Respect** (LGBTQ+ community)
-- **Authenticité** (Real connections)
+## 💳 Paiements — état actuel
 
-## 📝 License
+Le plan Fondateur (99 $CAD/an) propose 3 méthodes : Stripe (lien de paiement direct),
+PayPal, et virement Interac. **Aucune de ces méthodes ne met à jour automatiquement**
+le statut dans la table `landing_inscriptions` — la réconciliation entre paiement
+reçu et statut Fondateur confirmé se fait manuellement.
 
-VIBE Platform © 2026 - All rights reserved
+## 🔐 Sécurité & RLS
+
+Les tables Supabase utilisent Row Level Security (RLS). Un audit de sécurité a corrigé :
+GPS exposé dans les alertes SOS, emails exposés dans les inscriptions, permissions
+UPDATE ouvertes, exécution anonyme de fonctions privilégiées, et une politique RLS
+récursive sur `profiles`.
+
+## 📝 Licence
+
+VIBE est propriétaire. © 2026 VIBE Network.
+
+**Fondateur & CEO:** Pascal Laurendeau (décisions finales)  
+**Directeur des opérations:** Marc Reid (jmarcreid@gmail.com)
+- Gestion des billets & rewards
+- Monitoring & visibilité de la plateforme
+- Propositions de changements (accord Pascal requis)
 
 ## 📞 Support
 
-- **Quick Start**: [QUICKSTART.md](QUICKSTART.md)
-- **Setup**: [SETUP.md](SETUP.md)
-- **Full Docs**: [docs/MANUSCRIPT.md](docs/MANUSCRIPT.md)
+Issues GitHub.
 
 ---
 
-## 🌊 VIBE - Avec Humilité et Respect
-
-*Authentic Connection for LGBTQ+ Community*
-
-**Start Today**: http://localhost:3000/login.html
-
----
-
-**Version**: 1.0.0  
-**Created**: August 27, 2026  
-**Status**: Production Ready ✅
-
-Built with Node.js, Express, Supabase, PostgreSQL, and ❤️
+**Mise à jour:** 25 juillet 2026
