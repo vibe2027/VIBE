@@ -73,8 +73,8 @@ récursive sur `profiles`.
 
 VIBE est propriétaire. © 2026 VIBE Network.
 
-**Fondateurs:** Pascal Laurendeau & Marc Reid  
-**Contact:** jmarcreid@gmail.com
+**Fondateur & CEO:** Pascal Laurendeau  
+**Directeur des opérations:** Marc Reid (jmarcreid@gmail.com)
 
 ## 📞 Support
 
