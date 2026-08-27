@@ -3,6 +3,8 @@
  * Complete platform: Auth + Admin Dashboard + Stripe + Realtime Salons
  */
 
+require('dotenv').config();
+
 const express = require('express');
 const crypto = require('crypto');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
