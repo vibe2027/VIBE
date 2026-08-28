@@ -123,12 +123,14 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
       }, 3000);
     } else {
       showMessage('❌ ' + (data.error || 'Erreur lors de l\'envoi'), 'error');
+      showMailtoFallback(formData);
       button.disabled = false;
       button.textContent = 'Envoyer le message';
     }
   } catch (err) {
     console.error('Erreur:', err);
     showMessage('❌ Erreur réseau. Veuillez réessayer.', 'error');
+    showMailtoFallback(formData);
     button.disabled = false;
     button.textContent = 'Envoyer le message';
   }
@@ -139,6 +141,27 @@ function showMessage(text, type) {
   message.textContent = text;
   message.className = 'message ' + type;
   message.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Si l'envoi automatique échoue, proposer l'envoi direct par courriel
+// avec le message déjà rempli, pour qu'aucun message ne soit perdu.
+function showMailtoFallback(formData) {
+  const message = document.getElementById('responseMessage');
+
+  const corps =
+    'De : ' + formData.name + '\n' +
+    'Courriel : ' + formData.email + '\n\n' +
+    formData.message;
+
+  const lien = document.createElement('a');
+  lien.href = 'mailto:support@vibegay.ca'
+    + '?subject=' + encodeURIComponent('[Contact] ' + formData.subject)
+    + '&body=' + encodeURIComponent(corps);
+  lien.textContent = '📧 Envoyer directement par courriel';
+  lien.style.cssText = 'display:inline-block;margin-top:12px;color:#D4AF37;font-weight:600';
+
+  message.appendChild(document.createElement('br'));
+  message.appendChild(lien);
 }
 </script>
 </body>
