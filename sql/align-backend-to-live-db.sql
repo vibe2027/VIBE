@@ -293,12 +293,29 @@ BEGIN
     is_verified       = EXCLUDED.is_verified;
 
   RETURN NEW;
+
+EXCEPTION
+  -- `users` est une projection : elle ne doit JAMAIS pouvoir faire échouer
+  -- une écriture sur `profiles`. Les contraintes UNIQUE sur users.email et
+  -- users.auth_id peuvent entrer en conflit avec une ligne créée par le
+  -- backend ; sans ce garde-fou, la transaction remonterait et empêcherait
+  -- un utilisateur réel de modifier son profil sur le site vivant.
+  WHEN OTHERS THEN
+    RAISE WARNING 'sync_profile_to_user a échoué pour profiles.id=% : %', NEW.id, SQLERRM;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- Le trigger n'écoute QUE les colonnes réellement projetées.
+-- `profiles` est écrite en continu par le système de présence
+-- (is_online, derniere_activite) ; sans cette restriction, chaque
+-- battement de présence déclencherait une resynchronisation inutile.
 DROP TRIGGER IF EXISTS profiles_sync_to_users ON public.profiles;
 CREATE TRIGGER profiles_sync_to_users
-  AFTER INSERT OR UPDATE ON public.profiles
+  AFTER INSERT OR UPDATE OF
+    real_email, display_name, username, city,
+    is_admin, is_cofondateur, membership_tier, photo_verifiee
+  ON public.profiles
   FOR EACH ROW EXECUTE FUNCTION public.sync_profile_to_user();
 
 -- ═══════════════════════════════════════════════════════════════════
