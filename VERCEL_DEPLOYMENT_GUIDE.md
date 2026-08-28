@@ -1,123 +1,76 @@
-# VIBE — Guide de Déploiement Vercel (Phase 6)
+# VIBE — Déploiement Vercel
 
-## État actuel
-✅ **Code**: Prêt pour production (Elasticsearch optionnel, toutes dépendances résolues)
-✅ **Sécurité**: Zéro identifiant personnel public, clés Stripe récupérées
-⏳ **Déploiement**: Clés Supabase et SendGrid manquantes
+État vérifié en production le 2026-08-28 via `https://www.vibegay.ca/health`
+et des requêtes réelles sur les routes de l'API.
 
----
+## Ce qui fonctionne déjà
 
-## Clés DISPONIBLES MAINTENANT
+- Le serveur Express tourne en production (`x-powered-by: Express`, `/health` → 200).
+- `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` sont **déjà présentes** dans Vercel :
+  elles ont été injectées automatiquement par l'intégration Vercel–Supabase.
+  Preuve : `GET /pubs/active/voix` renvoie « Could not find the table 'public.pubs' »,
+  une erreur de schéma — donc Supabase a accepté la clé. Une clé absente ou invalide
+  aurait renvoyé une erreur d'authentification.
+- Le domaine `vibegay.ca` est vérifié pour l'envoi sur Resend.
 
-### STRIPE (✅ Récupérées - Voir credentials.txt)
-```
-STRIPE_PUBLIC_KEY=pk_test_51U8PSb6J6CxrJ9ySJdfDnfHCDv3cVHu8LLeGzjhcmp4tvwQa6mVTBPMn1HZKOnWF62MYNYgQVXdZks42Te235Uhs00mByqEMHa
-STRIPE_SECRET_KEY=<voir credentials.txt>
-```
+## Variables à ajouter dans Vercel
 
-✅ **Note**: Les clés Stripe complètes sont dans `credentials.txt` (non-public).
+Réglages → Environment Variables → Production :
+https://vercel.com/vibe2026applis-projects/project-ne5p9/settings/environment-variables
 
-### SUPABASE (✅ Partiellement)
-```
-SUPABASE_URL=https://vdqamjtzksiifnsnztki.supabase.co
-SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkcWFtanR6a3NpaWZuc256dGtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwODA0MjAsImV4cCI6MjEwMjY1NjQyMH0.6vwQwinxLeGXHKQ1VRPwRHtaIM6ZTXFYpfeVaW-7aoA
-```
+| Variable | Pourquoi |
+|---|---|
+| `RESEND_API_KEY` | Formulaire de contact. Voir `credentials.txt` (non versionné). |
+| `STRIPE_SECRET_KEY` | `/health` rapporte `stripe: false` — la clé manque. |
+| `STRIPE_PUBLIC_KEY` | Idem. |
+| `STRIPE_WEBHOOK_SECRET` | Optionnel. Endpoint : `https://www.vibegay.ca/api/webhooks/stripe` |
 
-### CONFIGURATION
-```
-SENDGRID_FROM_EMAIL=support@vibegay.ca
-NODE_ENV=production
-```
+`SENDGRID_API_KEY` n'est plus nécessaire : le code utilise Resend.
 
----
+## Vérification après déploiement
 
-## Clés MANQUANTES
+    GET https://www.vibegay.ca/health
 
-### 1. SUPABASE_SERVICE_ROLE_KEY
-**Où**: https://dashboard.supabase.com/project/vdqamjtzksiifnsnztki/settings/api
-**Procédure**:
-1. Accéde à Settings → API
-2. Copie la clé sous "service_role" (commence par "eyJh...")
-3. Ajoute à Vercel (voir étape 3 ci-dessous)
+Renvoie un bloc `config` avec un booléen par variable (aucune valeur exposée) :
 
-### 2. SENDGRID_API_KEY
-**Où**: https://app.sendgrid.com/settings/api_keys
-**Procédure**:
-1. Clique sur "Create API Key"
-2. Donne-lui le nom "Vercel Production"
-3. Full Access ou Mail Send seulement
-4. Copie la clé complète (commence par "SG.")
-5. Ajoute à Vercel (voir étape 3 ci-dessous)
-
-### 3. STRIPE_WEBHOOK_SECRET (optionnel pour v1)
-**Où**: https://dashboard.stripe.com/webhooks
-**Procédure**:
-1. Create endpoint: `https://vibegay.ca/api/webhooks/stripe`
-2. Sélectionne événements: `payment_intent.succeeded`, `invoice.payment_succeeded`
-3. Copie "Signing Secret" (commence par "whsec_")
-4. Ajoute à Vercel
-
----
-
-## Ajout des variables à Vercel
-
-### Option A: Dashboard Vercel (Plus simple)
-1. Va à https://vercel.com/dashboard/vibegay/settings/environment-variables
-2. Pour chaque clé manquante:
-   - Clique "Add"
-   - Colle le nom (ex: `SUPABASE_SERVICE_ROLE_KEY`)
-   - Colle la valeur
-   - Sélectionne "Production"
-   - Clique "Save"
-3. **Redéploie automatiquement** (Vercel va rebuilder)
-
-### Option B: Ligne de commande (Si tu as accès local à Vercel CLI)
-```bash
-# D'abord, configure les clés dans .env.local
-cat > .env.local << 'EOF'
-SUPABASE_SERVICE_ROLE_KEY=<paste-key-here>
-SENDGRID_API_KEY=<paste-key-here>
-STRIPE_WEBHOOK_SECRET=<paste-key-here-or-skip>
-EOF
-
-# Puis utilise le script
-VERCEL_TOKEN=<your-token> ./configure-vercel.sh "$(grep SUPABASE_SERVICE_ROLE_KEY .env.local | cut -d= -f2)" "$(grep STRIPE_SECRET_KEY .env.local | cut -d= -f2)" "$(grep STRIPE_WEBHOOK_SECRET .env.local | cut -d= -f2)" "$(grep SENDGRID_API_KEY .env.local | cut -d= -f2)"
+```json
+{
+  "status": "ok",
+  "config": {
+    "supabase_url": true,
+    "supabase_service_role": true,
+    "stripe_secret": true,
+    "stripe_webhook": false,
+    "resend": true,
+    "elasticsearch": false
+  }
+}
 ```
 
----
+Tout ce qui doit être à `true` ci-dessus l'est une fois les variables ajoutées.
+`elasticsearch` à `false` est normal : la recherche se désactive proprement
+(503 sur les routes `/api/search/*`) sans empêcher le reste de fonctionner.
 
-## Déploiement en Direct
+## Points à trancher avant la mise en service
 
-La branche `claude/vibe-v1-architecture-53i2dd` est **déjà pushée et prête**.
+Trois problèmes de configuration de base de données ont été constatés. Ils ne
+bloquent pas le déploiement mais empêchent les routes qui lisent Supabase de
+fonctionner. Ils demandent une décision, pas un correctif automatique.
 
-Vercel va redéployer automatiquement quand tu ajoutes les variables.
+1. **Deux bases distinctes, une seule contient les données.**
+   - `fhksytcoyjtcrkmhnoyw` (us-east-1) : 37 tables avec des données réelles
+     (`profiles`, `salons`, `founder_codes`, `members`…).
+   - `vdqamjtzksiifnsnztki` (ca-central-1) : **aucune table**.
 
----
+   Il faut décider laquelle est la base de référence, puis pointer
+   `SUPABASE_URL` dessus.
 
-## Vérification post-déploiement
+2. **Le schéma attendu par ce backend n'existe nulle part.**
+   Le code interroge `pubs` et `users` (voir `sql/complete-schema.sql` et
+   `sql/users_schema.sql`), alors que la base peuplée utilise un schéma
+   différent (`profiles`, `salons`, `salon_messages`…). Il faut soit appliquer
+   les fichiers SQL du dépôt, soit adapter le code au schéma existant.
 
-Une fois les clés ajoutées, teste:
-
-```bash
-# Contact form
-curl -X POST https://vibegay.ca/api/contact \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test","email":"test@example.com","message":"Test message"}'
-
-# Health check
-curl https://vibegay.ca/api/health
-
-# Search (si Elasticsearch disponible)
-curl https://vibegay.ca/api/search/full-text?q=test
-```
-
----
-
-## Résumé
-✅ **Code**: Production-ready  
-✅ **Stripe**: Configuré  
-❌ **Supabase service role**: Besoin de dashboard  
-❌ **SendGrid**: Besoin de dashboard ou nouvelle clé API  
-⏳ **Stripe webhooks**: Optionnel (peut être fait après v1)  
-
-**Prochaine action**: Ajoute les 2 clés manquantes au dashboard Vercel → redéploiement automatique.
+3. **`js/supabase-config.js` pointe vers un projet inexistant.**
+   La référence `depblhxmrzjqnvkszbbl` ne correspond à aucun projet du compte.
+   À corriger vers le projet retenu au point 1.
