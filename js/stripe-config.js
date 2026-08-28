@@ -32,73 +32,15 @@ window.VIBE_STRIPE = {
   interac_email: 'support@vibegay.ca'
 };
 
-/* Montants affichés dans les instructions de virement */
-window.VIBE_MONTANTS = {
-  pionnier: '99 $', founder_onetime: '99 $', an1: '99 $',
-  mois1: '14 $', mois3: '35 $', mois6: '59 $',
-  boost: '4,99 $', fantome: '6,99 $', visites: '3,99 $', tribunal: '25 $'
-};
-
-/**
- * Affiche les instructions de virement Interac.
- * Autonome : ne dépend d'aucun système de fenêtre de la page.
- */
-window.vibeInterac = function (montant) {
-  var existant = document.getElementById('vibe-interac-overlay');
-  if (existant) existant.remove();
-
-  var fond = document.createElement('div');
-  fond.id = 'vibe-interac-overlay';
-  fond.style.cssText =
-    'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.88);' +
-    'display:flex;align-items:center;justify-content:center;padding:20px';
-
-  var boite = document.createElement('div');
-  boite.style.cssText =
-    'max-width:420px;width:100%;background:#0a0a10;border:1px solid rgba(212,175,55,0.4);' +
-    'border-radius:6px;padding:30px 26px;text-align:center;' +
-    "font-family:'Share Tech Mono',monospace;color:rgba(255,255,255,0.85);line-height:1.9";
-
-  var titre = document.createElement('div');
-  titre.textContent = 'Paiement par virement Interac';
-  titre.style.cssText =
-    'color:#D4AF37;font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:18px';
-
-  var corps = document.createElement('div');
-  corps.style.cssText = 'font-size:0.62rem;letter-spacing:1px;margin-bottom:18px';
-  corps.appendChild(document.createTextNode('Envoie un virement Interac' + (montant ? ' de ' + montant : '') + ' à :'));
-  corps.appendChild(document.createElement('br'));
-
-  var courriel = document.createElement('span');
-  courriel.textContent = window.VIBE_STRIPE.interac_email;
-  courriel.style.cssText = 'color:#fff;font-size:0.8rem;user-select:all;display:inline-block;margin:10px 0';
-  corps.appendChild(courriel);
-  corps.appendChild(document.createElement('br'));
-  corps.appendChild(document.createTextNode(
-    "Indique ton courriel d'inscription dans le message du virement. Ton accès est activé dès réception (maximum 24 h)."
-  ));
-
-  var fermer = document.createElement('button');
-  fermer.textContent = 'Compris';
-  fermer.style.cssText =
-    'margin-top:8px;padding:12px 30px;background:#D4AF37;color:#000;border:none;cursor:pointer;' +
-    "font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:3px;font-weight:700;border-radius:3px";
-  fermer.onclick = function () { fond.remove(); };
-
-  boite.appendChild(titre);
-  boite.appendChild(corps);
-  boite.appendChild(fermer);
-  fond.appendChild(boite);
-  fond.onclick = function (e) { if (e.target === fond) fond.remove(); };
-  document.body.appendChild(fond);
-};
+/* Page expliquant le virement Interac, utilisée tant que `enabled` est faux */
+window.VIBE_PAGE_PAIEMENT = '/paiement.html';
 
 window.vibeCheckout = function (key) {
   var cfg = window.VIBE_STRIPE || {};
 
-  // Compte marchand fermé : rediriger vers Interac plutôt que vers un lien mort.
+  // Compte marchand fermé : envoyer vers la page Interac plutôt que vers un lien mort.
   if (!cfg.enabled) {
-    window.vibeInterac((window.VIBE_MONTANTS || {})[key]);
+    window.location.href = window.VIBE_PAGE_PAIEMENT + (key ? '?p=' + encodeURIComponent(key) : '');
     return;
   }
 
