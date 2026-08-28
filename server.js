@@ -367,7 +367,16 @@ app.get('/health', (req, res) => {
     status: 'ok',
     timestamp: new Date().toISOString(),
     stripe: !!process.env.STRIPE_SECRET_KEY,
-    supabase: !!process.env.SUPABASE_URL
+    supabase: !!process.env.SUPABASE_URL,
+    // Présence des variables d'environnement (booléens seulement, aucune valeur exposée)
+    config: {
+      supabase_url: !!process.env.SUPABASE_URL,
+      supabase_service_role: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      stripe_secret: !!process.env.STRIPE_SECRET_KEY,
+      stripe_webhook: !!process.env.STRIPE_WEBHOOK_SECRET,
+      resend: !!process.env.RESEND_API_KEY,
+      elasticsearch: !!process.env.ELASTICSEARCH_URL
+    }
   });
 });
 

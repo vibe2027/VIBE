@@ -4,12 +4,22 @@
  */
 
 const express = require('express');
-const sgMail = require('@sendgrid/mail');
 
 const router = express.Router();
 
-// Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const RESEND_ENDPOINT = 'https://api.resend.com/emails';
+const CONTACT_TO = process.env.CONTACT_TO_EMAIL || 'support@vibegay.ca';
+const CONTACT_FROM = process.env.CONTACT_FROM_EMAIL || 'VIBE <noreply@vibegay.ca>';
+
+// Échappe le contenu fourni par l'utilisateur avant de l'insérer dans le HTML
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 /**
  * POST /contact
@@ -34,25 +44,37 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Le message doit avoir au moins 10 caractères' });
     }
 
-    // Envoyer via SendGrid
-    const msg = {
-      to: 'support@vibegay.ca',
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@vibegay.ca',
-      replyTo: email,
+    if (!process.env.RESEND_API_KEY) {
+      console.error('❌ RESEND_API_KEY absente — envoi impossible');
+      return res.status(503).json({
+        error: 'Service d\'envoi indisponible. Veuillez réessayer plus tard.'
+      });
+    }
+
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeSubject = escapeHtml(subject);
+    const safeMessage = escapeHtml(message);
+
+    // Envoyer via Resend
+    const payload = {
+      to: [CONTACT_TO],
+      from: CONTACT_FROM,
+      reply_to: email,
       subject: `[Contact] ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>📧 Nouveau message de contact</h2>
 
           <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <p><strong>De :</strong> ${name}</p>
-            <p><strong>Email :</strong> <a href="mailto:${email}">${email}</a></p>
-            <p><strong>Sujet :</strong> ${subject}</p>
+            <p><strong>De :</strong> ${safeName}</p>
+            <p><strong>Email :</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
+            <p><strong>Sujet :</strong> ${safeSubject}</p>
           </div>
 
           <div style="background: #fff; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0;">
             <p><strong>Message :</strong></p>
-            <p style="white-space: pre-wrap; word-break: break-word;">${message}</p>
+            <p style="white-space: pre-wrap; word-break: break-word;">${safeMessage}</p>
           </div>
 
           <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
@@ -64,7 +86,19 @@ router.post('/', async (req, res) => {
       text: `Nouveau message de contact\n\nDe: ${name}\nEmail: ${email}\nSujet: ${subject}\n\nMessage:\n${message}`
     };
 
-    await sgMail.send(msg);
+    const response = await fetch(RESEND_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(`Resend ${response.status}: ${detail}`);
+    }
 
     console.log(`✅ Email de contact reçu de ${email}`);
     res.status(200).json({
