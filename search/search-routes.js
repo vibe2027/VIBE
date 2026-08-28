@@ -4,11 +4,19 @@
  */
 
 const express = require('express');
-const AdvancedSearchEngine = require('../phase-6/6.1-advanced-search');
 const { sanitizeResults } = require('../utils/response-sanitizer');
 
 const router = express.Router();
-const searchEngine = new AdvancedSearchEngine(process.env.ELASTICSEARCH_URL);
+
+let searchEngine = null;
+if (process.env.ELASTICSEARCH_URL) {
+  const AdvancedSearchEngine = require('../phase-6/6.1-advanced-search');
+  try {
+    searchEngine = new AdvancedSearchEngine(process.env.ELASTICSEARCH_URL);
+  } catch (err) {
+    console.warn('⚠️ Elasticsearch initialization failed:', err.message);
+  }
+}
 
 /**
  * POST /search/full-text
@@ -16,6 +24,10 @@ const searchEngine = new AdvancedSearchEngine(process.env.ELASTICSEARCH_URL);
  */
 router.post('/full-text', async (req, res) => {
   try {
+    if (!searchEngine) {
+      return res.status(503).json({ error: 'Search service unavailable' });
+    }
+
     const { query, salon, type, limit = 20, offset = 0 } = req.body;
 
     if (!query) {
@@ -48,6 +60,10 @@ router.post('/full-text', async (req, res) => {
  */
 router.post('/semantic', async (req, res) => {
   try {
+    if (!searchEngine) {
+      return res.status(503).json({ error: 'Search service unavailable' });
+    }
+
     const { queryVector, limit = 20, threshold = 0.7 } = req.body;
 
     if (!queryVector || !Array.isArray(queryVector)) {
@@ -78,6 +94,10 @@ router.post('/semantic', async (req, res) => {
  */
 router.post('/hybrid', async (req, res) => {
   try {
+    if (!searchEngine) {
+      return res.status(503).json({ error: 'Search service unavailable' });
+    }
+
     const { query, queryVector, limit = 20 } = req.body;
 
     if (!query || !queryVector) {
@@ -105,6 +125,10 @@ router.post('/hybrid', async (req, res) => {
  */
 router.get('/trending', async (req, res) => {
   try {
+    if (!searchEngine) {
+      return res.status(503).json({ error: 'Search service unavailable' });
+    }
+
     const { salon, limit = 20 } = req.query;
 
     const results = await searchEngine.trendingSearch({
@@ -131,6 +155,10 @@ router.get('/trending', async (req, res) => {
  */
 router.get('/autocomplete', async (req, res) => {
   try {
+    if (!searchEngine) {
+      return res.status(503).json({ error: 'Search service unavailable' });
+    }
+
     const { prefix, field = 'content' } = req.query;
 
     if (!prefix || prefix.length < 2) {
