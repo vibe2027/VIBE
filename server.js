@@ -41,9 +41,14 @@ app.post('/api/webhooks/stripe',
 app.use(express.json());
 
 // ─────────────────────────────────────────────────────────────
-// Serve Static Files (HTML pages)
+// Fichiers statiques
 // ─────────────────────────────────────────────────────────────
-app.use(express.static('.'));
+// Servis par Vercel (voir le handler "filesystem" dans vercel.json), qui
+// les livre avant que la requête n'atteigne cette fonction.
+//
+// Ne PAS remettre express.static('.') ici : il servait tout le contenu du
+// paquet de la fonction, code backend compris — server.js était
+// téléchargeable publiquement sur /server.js.
 
 // ─────────────────────────────────────────────────────────────
 // Mount Routes
