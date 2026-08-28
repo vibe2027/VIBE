@@ -21,8 +21,6 @@ window.VIBE_STRIPE = {
   visites: 'https://buy.stripe.com/eVq9AVgjE8Un0qs6DJ9R60c',
   tribunal: 'https://buy.stripe.com/dRmcN79VgeeHc9aaTZ9R607',
 
-  paypal_pionnier:
-    'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=vibeqbc2026%40hotmail.com&item_name=Pass%20Pionnier%20VIBE%20%E2%80%94%201%20an&amount=99.00&currency_code=CAD',
   interac_email: 'support@vibegay.ca'
 };
 
