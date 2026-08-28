@@ -323,3 +323,52 @@ CREATE TRIGGER profiles_sync_to_users
 --   select count(*) from public.users;                  -- 4
 --   select role, subscription_tier from public.users;   -- 1 admin/founder, 3 user/basic
 -- ═══════════════════════════════════════════════════════════════════
+
+-- ═══════════════════════════════════════════════════════════════════
+-- ANNULATION
+--
+-- Ce script étant purement additif, le rollback consiste à supprimer ce
+-- qu'il a créé. Aucune table préexistante n'ayant été lue ni modifiée,
+-- il n'y a rien à restaurer.
+--
+-- Ne PAS restaurer un snapshot pour annuler cette migration : cela
+-- ferait perdre toute l'activité survenue depuis (messages de salon,
+-- inscriptions, signalements). Les instructions ci-dessous ramènent la
+-- base exactement à son état antérieur, sans perte.
+--
+--   DROP TRIGGER IF EXISTS profiles_sync_to_users ON public.profiles;
+--   DROP FUNCTION IF EXISTS public.sync_profile_to_user();
+--
+--   DROP TABLE IF EXISTS public.blocked_users;
+--   DROP TABLE IF EXISTS public.email_logs;
+--   DROP TABLE IF EXISTS public.user_profiles;
+--   DROP TABLE IF EXISTS public.pubs;
+--   DROP TABLE IF EXISTS public.salons_messages;
+--   DROP TABLE IF EXISTS public.tribunal_cases;
+--   DROP TABLE IF EXISTS public.billet_transactions;
+--   DROP TABLE IF EXISTS public.billets;
+--   DROP TABLE IF EXISTS public.users;
+--
+-- (ordre inverse des dépendances de clés étrangères)
+--
+-- Ne pas supprimer public.update_updated_at() sans vérifier qu'aucune
+-- autre table de la base ne s'en sert.
+-- ═══════════════════════════════════════════════════════════════════
+
+-- ═══════════════════════════════════════════════════════════════════
+-- RÉPÉTITION GÉNÉRALE — exécutée le 2026-08-28 sur une base jetable,
+-- avec des données synthétiques reproduisant la distribution réelle
+-- (1 admin/founder, 3 free, 1 profil sans email). Résultats :
+--
+--   Backfill                    → 1 admin/founder + 3 user/basic   OK
+--   Profil sans email           → ignoré, 4 lignes et non 5        OK
+--   INSERT sur profiles         → propagé vers users               OK
+--   UPDATE display_name         → propagé vers users               OK
+--   UPDATE is_online            → trigger NON déclenché            OK
+--   Conflit UNIQUE provoqué     → écriture sur profiles réussie,
+--                                 synchro abandonnée en WARNING    OK
+--
+-- Le dernier point est la garantie centrale : une collision dans la
+-- projection ne peut pas bloquer une écriture sur la table source.
+-- Environnement de test entièrement supprimé après vérification.
+-- ═══════════════════════════════════════════════════════════════════
