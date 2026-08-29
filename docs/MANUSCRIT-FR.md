@@ -613,6 +613,83 @@ await supabase.from('salons_messages')
 
 ---
 
+## Messagerie privée et traduction automatique
+
+> **Ajout au manuscrit d'origine** — cette section était absente de la version
+> anglaise, alors que la fonction est en service dans le site public. Elle est
+> documentée ici d'après le code réellement déployé (`index.html`, fonctions
+> `ouvrirPrive`, `chargerPrive`, `envoyerPrive`, `envoyerPhotoPrive`).
+
+### Le chuchotement
+
+Dans le salon, le nom de l'auteur de chaque message est cliquable. Un clic ouvre
+une conversation privée avec cette personne. C'est le geste central du produit :
+on entend l'ambiance de la pièce, puis on prend quelqu'un à part.
+
+**Table** : `messages_prives`
+
+| Champ | Rôle |
+|---|---|
+| `expediteur` | Identifiant de l'auteur |
+| `destinataire` | Identifiant du destinataire |
+| `expediteur_pseudo` | Prénom affiché de l'auteur |
+| `contenu` | Texte du message |
+| `contenu_traduit` | Traduction, si la langue du destinataire diffère |
+| `langue_cible` | Langue du destinataire |
+| `photo_path` | Chemin de la photo dans le stockage, le cas échéant |
+| `created_at` | Horodatage |
+
+**Ouverture d'une conversation** — `ouvrirPrive(uid, nom)` exige une session
+active, refuse l'auto-conversation, charge les 80 derniers messages échangés
+entre les deux personnes par ordre chronologique, puis ouvre un canal temps réel
+`mp_<uid>` filtré sur les seuls messages concernant les deux parties.
+
+**Photos** — téléversées dans le compartiment de stockage `messages-photos`,
+puis référencées par `photo_path`.
+
+### Règles d'accès
+
+Deux restrictions sont appliquées par le code, et non seulement par la politique.
+
+**Mode Fantôme** — un membre en Mode Fantôme s'affiche sous la mention
+« 👻 Fantôme » plutôt que sous son nom, et son nom n'est pas cliquable : il ne
+peut pas être abordé en privé. Il participe sans être sollicitable.
+
+**Verdict du Tribunal** — avant tout envoi, le champ
+`profiles.lecture_seule_jusqu` est vérifié. Si la date est encore à venir,
+l'envoi est refusé et le membre reçoit la date de fin de sa restriction ainsi
+que la marche à suivre pour le pardon (25 $ CAD par virement Interac).
+
+### Traduction automatique
+
+La plateforme prend en charge dix langues. À chaque envoi d'un message privé :
+
+1. La langue du destinataire est obtenue par la fonction
+   `obtenir_langue_membre(p_id)`
+2. Elle est comparée à la langue de l'expéditeur (`profiles.langue`, `fr` par
+   défaut)
+3. Si elles diffèrent, la fonction Edge `translate-message` est appelée
+4. La traduction est stockée dans `contenu_traduit`, à côté du texte d'origine
+
+```javascript
+const { data: langueDest } = await _supa.rpc('obtenir_langue_membre', { p_id: priveAvec });
+const mesLangue = monProfil?.langue || 'fr';
+langue_cible = langueDest || 'fr';
+
+if (langue_cible && langue_cible !== mesLangue) {
+  const { data: tr } = await _supa.functions.invoke('translate-message',
+    { body: { texte: txt, langue_cible } });
+  if (tr?.traduit) contenu_traduit = tr.traduit;
+}
+```
+
+**Dégradation contrôlée** — l'appel de traduction est encadré par un `try/catch`
+qui n'interrompt rien. Si le service est indisponible, le message part dans sa
+langue d'origine. Une panne de traduction n'empêche jamais une conversation
+d'avoir lieu.
+
+---
+
 ## Système du Tribunal
 
 ### Raison d'être
