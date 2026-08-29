@@ -650,32 +650,47 @@ Les photos sont téléversées dans le compartiment de stockage `messages-photos
 et référencées par `photo_path`. Leur affichage obéit à trois règles.
 
 **1. Floutage à l'arrivée.** Une photo reçue s'affiche derrière un flou de 22 px,
-recouverte de l'invite « 👁 Appuie pour révéler ». Aucune image ne se dévoile
-d'elle-même : il faut un geste volontaire du destinataire.
+recouverte de l'invite « 👁 Maintiens le doigt pour révéler ». Aucune image ne se
+dévoile d'elle-même.
+
+**2. Révélation par maintien du doigt.** La photo n'est nette que tant que le
+pointeur reste enfoncé. Au relâchement, à la sortie du cadre ou à l'interruption
+du geste, le flou revient immédiatement. Il est donc impossible de laisser une
+photo explicite affichée à l'écran.
 
 ```javascript
-box.innerHTML =
-  '<img src="' + data.signedUrl + '" alt="Photo privée floutée" ' +
-  'style="width:100%;height:100%;object-fit:cover;filter:blur(22px);transition:filter .3s">' +
-  '<div class="reveal-hint" ...>👁 Appuie pour révéler</div>';
+const devoiler   = e => { e.preventDefault(); img.style.filter = ''; hint.style.display = 'none'; };
+const refloutter = ()  => { img.style.filter = 'blur(22px)'; hint.style.display = 'flex'; };
+
+box.addEventListener('pointerdown',   devoiler);
+box.addEventListener('pointerup',     refloutter);
+box.addEventListener('pointerleave',  refloutter);
+box.addEventListener('pointercancel', refloutter);
+box.addEventListener('contextmenu', e => e.preventDefault());
 ```
 
-**2. Dévoilement non conservé.** Le clic retire le flou pour la session en cours
-uniquement — aucun état n'est enregistré. À la réouverture de la conversation,
-`chargerPrive()` reconstruit l'affichage et la photo est **de nouveau floutée**.
-Le voile se remet en place à chaque consultation.
+**3. Refloutage au passage en arrière-plan.** Dès que la page perd le premier
+plan — bascule d'application, changement d'onglet, verrouillage de l'écran —
+toutes les photos privées sont refloutées. La plupart des captures et des
+enregistrements d'écran passent par cet état.
 
 ```javascript
-box.onclick = function () {
-  const img = box.querySelector('img');
-  if (img && img.style.filter) {
-    img.style.filter = '';
-    box.querySelector('.reveal-hint').style.display = 'none';
-  }
-};
+function floutterPhotosPrivees() {
+  document.querySelectorAll('#prive-msgs img[data-floutable]').forEach(img => {
+    img.style.filter = 'blur(22px)';
+    const hint = img.parentElement && img.parentElement.querySelector('.reveal-hint');
+    if (hint) hint.style.display = 'flex';
+  });
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) floutterPhotosPrivees(); });
+window.addEventListener('blur', floutterPhotosPrivees);
 ```
 
-**3. Lien signé à durée limitée.** Les photos ne sont jamais servies par une
+**4. Dévoilement non conservé.** Aucun état n'est enregistré. À la réouverture de
+la conversation, `chargerPrive()` reconstruit l'affichage et la photo est de
+nouveau floutée.
+
+**5. Lien signé à durée limitée.** Les photos ne sont jamais servies par une
 adresse publique. Chaque affichage demande une URL signée valable **une heure**,
 après quoi elle expire. Une photo ne peut donc pas circuler hors de la
 conversation par simple partage du lien.
@@ -683,6 +698,23 @@ conversation par simple partage du lien.
 ```javascript
 _supa.storage.from('messages-photos').createSignedUrl(m.photo_path, 3600)
 ```
+
+**6. Enregistrement local entravé.** `-webkit-touch-callout:none` supprime le
+menu « Enregistrer l'image » sur iOS et Android, `contextmenu` est intercepté,
+`draggable="false"` et `-webkit-user-drag:none` empêchent le glisser-déposer, et
+`user-select:none` bloque la sélection.
+
+### Limite à connaître : les captures d'écran
+
+**Un navigateur web ne peut pas empêcher une capture d'écran.** Aucune API ne
+l'autorise, sur aucun site. Les mesures ci-dessus rendent la manœuvre difficile —
+il faut maintenir un doigt sur l'image tout en déclenchant la capture, et le
+passage au premier plan d'une autre application refloute tout — mais elles ne la
+rendent pas impossible.
+
+Le blocage effectif exigerait une application native (`FLAG_SECURE` sur Android).
+Aucune communication destinée aux membres ne doit promettre qu'une photo ne peut
+pas être capturée.
 
 ### Règles d'accès
 
