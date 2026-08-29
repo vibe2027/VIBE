@@ -1137,7 +1137,26 @@ en-têtes HSTS.
 > Réglages → Environment Variables, et **un redéploiement manuel est nécessaire**
 > après toute modification : elles ne sont pas prises en compte automatiquement.
 
-### Développement local
+### L'adresse du site
+
+Le site en service est à **https://www.vibegay.ca**
+
+C'est la seule adresse à utiliser pour consulter la plateforme, depuis
+n'importe quel appareil.
+
+> ⚠️ **`localhost` n'est pas une adresse de site.** Le mot signifie « cet
+> appareil-ci ». Ouvrir `localhost:3000` dans un navigateur ne donnera jamais
+> accès à VIBE : le navigateur cherche un serveur sur la machine où il tourne, et
+> répond `ERR_CONNECTION_REFUSED` s'il n'y en a pas.
+>
+> Les adresses `localhost` de la section suivante ne servent qu'à un développeur
+> qui exécute le code sur son propre ordinateur. **Elles ne sont pas cliquables
+> utilement.**
+
+### Développement local — réservé aux développeurs
+
+Cette procédure ne concerne que quelqu'un qui installe le code sur sa machine.
+Elle n'est d'aucune utilité pour consulter le site.
 
 ```bash
 # 1. Préparer l'environnement
@@ -1156,7 +1175,9 @@ node setup-admins.js
 # 5. Démarrer le serveur
 node server.js
 
-# 6. Ouvrir http://localhost:3000/login.html
+# 6. Ouvrir la page de connexion servie par CE serveur local :
+#    localhost:3000/login.html
+#    (adresse valable uniquement sur la machine qui exécute la commande ci-dessus)
 ```
 
 ### Déploiement en production (Heroku — référence historique)
