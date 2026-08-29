@@ -644,8 +644,45 @@ active, refuse l'auto-conversation, charge les 80 derniers messages échangés
 entre les deux personnes par ordre chronologique, puis ouvre un canal temps réel
 `mp_<uid>` filtré sur les seuls messages concernant les deux parties.
 
-**Photos** — téléversées dans le compartiment de stockage `messages-photos`,
-puis référencées par `photo_path`.
+### Photos : floutage par défaut
+
+Les photos sont téléversées dans le compartiment de stockage `messages-photos`
+et référencées par `photo_path`. Leur affichage obéit à trois règles.
+
+**1. Floutage à l'arrivée.** Une photo reçue s'affiche derrière un flou de 22 px,
+recouverte de l'invite « 👁 Appuie pour révéler ». Aucune image ne se dévoile
+d'elle-même : il faut un geste volontaire du destinataire.
+
+```javascript
+box.innerHTML =
+  '<img src="' + data.signedUrl + '" alt="Photo privée floutée" ' +
+  'style="width:100%;height:100%;object-fit:cover;filter:blur(22px);transition:filter .3s">' +
+  '<div class="reveal-hint" ...>👁 Appuie pour révéler</div>';
+```
+
+**2. Dévoilement non conservé.** Le clic retire le flou pour la session en cours
+uniquement — aucun état n'est enregistré. À la réouverture de la conversation,
+`chargerPrive()` reconstruit l'affichage et la photo est **de nouveau floutée**.
+Le voile se remet en place à chaque consultation.
+
+```javascript
+box.onclick = function () {
+  const img = box.querySelector('img');
+  if (img && img.style.filter) {
+    img.style.filter = '';
+    box.querySelector('.reveal-hint').style.display = 'none';
+  }
+};
+```
+
+**3. Lien signé à durée limitée.** Les photos ne sont jamais servies par une
+adresse publique. Chaque affichage demande une URL signée valable **une heure**,
+après quoi elle expire. Une photo ne peut donc pas circuler hors de la
+conversation par simple partage du lien.
+
+```javascript
+_supa.storage.from('messages-photos').createSignedUrl(m.photo_path, 3600)
+```
 
 ### Règles d'accès
 
