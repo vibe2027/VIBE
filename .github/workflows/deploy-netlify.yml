@@ -1,0 +1,61 @@
+name: 🚀 Deploy to Netlify
+
+on:
+  workflow_dispatch:
+    inputs:
+      netlify_site_id:
+        description: "Your Netlify Site ID (from app.netlify.com/sites)"
+        required: true
+      supabase_service_key:
+        description: "Supabase Service Role Key"
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy VIBE to Netlify
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: claude/ayca-suspension-analysis-xi6ee2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v2.1
+        with:
+          publish-dir: "."
+          production-deploy: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          overwrites-pull-request-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ github.token }}
+          NETLIFY_SITE_ID: ${{ github.event.inputs.netlify_site_id }}
+          NODE_ENV: production
+          BASE_URL: https://vibegay.ca
+          SUPABASE_URL: https://fhksytcoyjtcrkmhnoyw.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ github.event.inputs.supabase_service_key }}
+          STRIPE_PUBLIC_KEY: pk_test_123
+          STRIPE_SECRET_KEY: sk_test_123
+          STRIPE_WEBHOOK_SECRET: whsec_test_123
+        timeout-minutes: 30
+
+      - name: Deployment successful
+        if: success()
+        run: |
+          echo "✅ Site deployed successfully!"
+          echo "Check: https://app.netlify.com/sites/${{ github.event.inputs.netlify_site_id }}"
