@@ -7,8 +7,37 @@ require('dotenv').config();
 
 const express = require('express');
 const crypto = require('crypto');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
+
+// ─────────────────────────────────────────────────────────────
+// Environment Validation
+// ─────────────────────────────────────────────────────────────
+const requiredEnvVars = [
+  'SUPABASE_URL',
+  'SUPABASE_SERVICE_ROLE_KEY',
+  'STRIPE_SECRET_KEY',
+  'NODE_ENV',
+  'BASE_URL'
+];
+
+const missingVars = requiredEnvVars.filter(v => !process.env[v]);
+
+if (missingVars.length > 0) {
+  console.error('🚨 CRITICAL: Missing environment variables:');
+  missingVars.forEach(v => console.error(`   - ${v}`));
+  console.error('\n📋 Please add these to Vercel Environment Variables:');
+  console.error('   → Vercel Dashboard → Settings → Environment Variables');
+  console.error('\n⚠️  Server starting in degraded mode...\n');
+}
+
+// Initialize Stripe with error handling
+let stripe;
+try {
+  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_fake');
+} catch (e) {
+  console.warn('⚠️ Stripe initialization warning - check STRIPE_SECRET_KEY');
+  stripe = null;
+}
 
 const authRoutes = require('./auth/auth-routes');
 const adminRoutes = require('./dashboard/admin-routes');
@@ -22,10 +51,16 @@ const PORT = process.env.PORT || 3000;
 // ─────────────────────────────────────────────────────────────
 // Supabase Client (service_role bypasses RLS)
 // ─────────────────────────────────────────────────────────────
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+let supabase;
+try {
+  supabase = createClient(
+    process.env.SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  );
+} catch (e) {
+  console.warn('⚠️ Supabase initialization warning - check credentials');
+  supabase = null;
+}
 
 // ─────────────────────────────────────────────────────────────
 // Middleware
@@ -364,24 +399,75 @@ app.get('/api/user/status', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────
-// ROUTE: Health Check
+// ROUTE: Health Check & Diagnostics
 // ─────────────────────────────────────────────────────────────
 
 app.get('/health', (req, res) => {
+  const env_config = {
+    supabase_url: !!process.env.SUPABASE_URL,
+    supabase_service_role: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    stripe_secret: !!process.env.STRIPE_SECRET_KEY,
+    stripe_webhook: !!process.env.STRIPE_WEBHOOK_SECRET,
+    stripe_price_premium: !!process.env.STRIPE_PRICE_PREMIUM,
+    stripe_price_founder: !!process.env.STRIPE_PRICE_FOUNDER,
+    resend: !!process.env.RESEND_API_KEY,
+    elasticsearch: !!process.env.ELASTICSEARCH_URL,
+    node_env: process.env.NODE_ENV || 'not-set',
+    base_url: process.env.BASE_URL || 'not-set'
+  };
+
+  const missing = Object.entries(env_config)
+    .filter(([k, v]) => !v && ['supabase_url', 'supabase_service_role', 'stripe_secret', 'node_env', 'base_url'].includes(k))
+    .map(([k]) => k);
+
   res.json({
-    status: 'ok',
+    status: missing.length > 0 ? 'degraded' : 'ok',
     timestamp: new Date().toISOString(),
-    stripe: !!process.env.STRIPE_SECRET_KEY,
-    supabase: !!process.env.SUPABASE_URL,
-    // Présence des variables d'environnement (booléens seulement, aucune valeur exposée)
-    config: {
-      supabase_url: !!process.env.SUPABASE_URL,
-      supabase_service_role: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-      stripe_secret: !!process.env.STRIPE_SECRET_KEY,
-      stripe_webhook: !!process.env.STRIPE_WEBHOOK_SECRET,
-      resend: !!process.env.RESEND_API_KEY,
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    domain: process.env.BASE_URL || 'not-configured',
+    services: {
+      stripe: !!process.env.STRIPE_SECRET_KEY,
+      supabase: !!process.env.SUPABASE_URL,
       elasticsearch: !!process.env.ELASTICSEARCH_URL
-    }
+    },
+    config: env_config,
+    ...(missing.length > 0 && {
+      warnings: [
+        '⚠️ Missing critical environment variables detected',
+        `Missing: ${missing.join(', ')}`,
+        'Go to Vercel Dashboard → Settings → Environment Variables to add them'
+      ]
+    })
+  });
+});
+
+// Diagnostic endpoint (for debugging)
+app.get('/api/diagnostics', (req, res) => {
+  const requiredVars = [
+    'NODE_ENV',
+    'BASE_URL',
+    'SUPABASE_URL',
+    'SUPABASE_SERVICE_ROLE_KEY',
+    'STRIPE_SECRET_KEY',
+    'STRIPE_WEBHOOK_SECRET'
+  ];
+
+  const status = {};
+  requiredVars.forEach(v => {
+    status[v] = process.env[v] ? '✅ SET' : '❌ MISSING';
+  });
+
+  res.json({
+    diagnostics: 'VIBE Environment Check',
+    timestamp: new Date().toISOString(),
+    environment_variables: status,
+    tips: [
+      'If any variable shows "MISSING", go to:',
+      'Vercel Dashboard → Project → Settings → Environment Variables',
+      'Add all missing variables',
+      'Then redeploy: Deployments → Latest → Redeploy'
+    ]
   });
 });
 
