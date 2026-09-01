@@ -4,7 +4,7 @@ on:
   schedule:
     # Run every 5 minutes
     - cron: '*/5 * * * *'
-  workflow_dispatch:  # Allow manual trigger
+  workflow_dispatch: # Allow manual trigger
 
 jobs:
   healthcheck:
@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Run healthcheck script
         env:
@@ -44,38 +44,37 @@ jobs:
 
       - name: Slack notification on success
         if: success()
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          payload: |
-            {
-              "text": "✅ VIBE Healthcheck Passed",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "🟢 *VIBE Site Healthcheck* - All systems operational\n\n:white_check_mark: API Health: OK\n:white_check_mark: Homepage: OK\n:white_check_mark: Diagnostics: OK"
-                  }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": "✅ VIBE Healthcheck Passed",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "🟢 *VIBE Site Healthcheck* - All systems operational\n\n:white_check_mark: API Health: OK\n:white_check_mark: Homepage: OK\n:white_check_mark: Diagnostics: OK"
                 }
-              ]
-            }
+              }
+            ]
+          }' "$SLACK_WEBHOOK_URL"
 
       - name: Slack notification on failure
         if: failure()
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          payload: |
-            {
-              "text": "🚨 VIBE Healthcheck Failed",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "🔴 *VIBE Site Healthcheck* - Issues detected\n\n:warning: Some services not responding\n:link: <https://vibegay.ca/api/diagnostics|Check Diagnostics>\n:railway: <https://vibegay-fallback.railway.app|Fallback Site>"
-                  }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": "🚨 VIBE Healthcheck Failed",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "🔴 *VIBE Site Healthcheck* - Issues detected\n\n:warning: Some services not responding\n:link: <https://vibegay.ca/api/diagnostics|Check Diagnostics>\n:railway: <https://vibegay-fallback.railway.app|Fallback Site>"
                 }
-              ]
-            }
+              }
+            ]
+          }' "$SLACK_WEBHOOK_URL"
+          
