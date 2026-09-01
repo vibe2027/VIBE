@@ -6,6 +6,7 @@
     { "src": "*.html", "use": "@vercel/static" },
     { "src": "js/**", "use": "@vercel/static" },
     { "src": "*.png", "use": "@vercel/static" },
+    { "src": "*.webm", "use": "@vercel/static" },
     { "src": "sw.js", "use": "@vercel/static" },
     { "src": "manifest.json", "use": "@vercel/static" },
     { "src": "sitemap.xml", "use": "@vercel/static" },
@@ -13,7 +14,13 @@
   ],
   "routes": [
     { "src": "/", "dest": "/index.html" },
+    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/auth/(.*)", "dest": "/server.js" },
+    { "src": "/admin/(.*)", "dest": "/server.js" },
+    { "src": "/pubs/(.*)", "dest": "/server.js" },
+    { "src": "/search/(.*)", "dest": "/server.js" },
+    { "src": "/contact/(.*)", "dest": "/server.js" },
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/server.js" }
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
