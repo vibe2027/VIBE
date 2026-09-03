@@ -4,7 +4,7 @@
           `<button onclick="adminOffrirAcces(this)" style="background:rgba(180,79,255,0.8);border:none;color:#000;padding:6px 12px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">🎁 OFFRIR</button>`+
         `</div>`+
         `<div style="color:rgba(180,79,255,0.6);margin-bottom:10px">AJOUTER UN CO-FONDATEUR</div>`+
-        `<div style="font-size:0.42rem;color:rgba(255,255,255,0.4);margin-bottom:8px;line-height:1.6">Donne accès complet au panneau admin de la plateforme (vérification photos, signalements, offrir accès). N\'inclut PAS Stripe, Supabase ou GitHub — ces accès se donnent séparément, directement dans ces plateformes.</div>`+
+        `<div style="font-size:0.42rem;color:rgba(255,255,255,0.4);margin-bottom:8px;line-height:1.6">Donne accès complet au panneau admin de la plateforme (vérification photos, signalements, offrir accès). N'inclut PAS Stripe, Supabase ou GitHub — ces accès se donnent séparément, directement dans ces plateformes.</div>`+
         `<div style="display:flex;gap:6px">`+
           `<input id="cofondateur-email" placeholder="courriel du co-fondateur" style="flex:1;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.2);color:#fff;padding:6px 8px;font-size:0.48rem;font-family:Share Tech Mono,monospace">`+
           `<button onclick="adminAjouterCofondateur(this)" style="background:transparent;border:0.5px solid rgba(180,79,255,0.5);color:rgba(180,79,255,0.9);padding:6px 12px;font-size:0.44rem;letter-spacing:1px;cursor:pointer;font-family:Share Tech Mono,monospace">+ AJOUTER</button>`+
@@ -140,7 +140,7 @@ async function adminSuspendreProfil(id,btn){
 
   function render(){
     if(window.VIBE_FX_PAUSE){raf=requestAnimationFrame(render);return;}
-    // Interaction : inertie + reprise de la rotation auto après 2,5 s d\'inactivité
+    // Interaction : inertie + reprise de la rotation auto après 2,5 s d'inactivité
     if(gDragging){/* rot contrôlé par le doigt */}
     else if(Math.abs(gVel)>0.00005){rot+=gVel;gVel*=0.95;}
     else if(Date.now()-gLastTouch>2500){rot+=0.0018;}
