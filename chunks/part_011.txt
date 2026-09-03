@@ -69,7 +69,7 @@ const MUSIC_STYLES={
   afrolatin:{nom:'Chaleur Tropicale',artiste:'VIBE Afro-Latin · Groove',src:''},
   deephouse:{nom:'Pulsation',artiste:'VIBE Deep House · Club',src:''},
   rnb:{nom:'Velours',artiste:'VIBE R&B · Late Night',src:''},
-  popfr:{nom:'Chanson d\\'Ici',artiste:'VIBE Pop Francophone',src:''},
+  popfr:{nom:'Chanson d\'Ici',artiste:'VIBE Pop Francophone',src:''},
   hiphop:{nom:'Rue Principale',artiste:'VIBE Hip-Hop · Urbain',src:''},
 };
 const bgAudio=document.getElementById('bg-audio');
@@ -89,7 +89,7 @@ function majMusicUI(){
 function rendreStylesMusique(){
   const box=document.getElementById('music-styles');if(!box)return;
   box.innerHTML=Object.entries(MUSIC_STYLES).map(([k,v])=>
-    '<button type="button" data-style="'+k+'" onclick="event.stopPropagation();choisirStyleMusique(\\''+k+'\\')" style="background:transparent;border:1px solid rgba(212,175,55,0.4);color:rgba(255,255,255,0.7);padding:6px 10px;font-family:Share Tech Mono,monospace;font-size:0.42rem;letter-spacing:1px;cursor:pointer">'+v.nom+'</button>').join('');
+    '<button type="button" data-style="'+k+'" onclick="event.stopPropagation();choisirStyleMusique(\''+k+'\')" style="background:transparent;border:1px solid rgba(212,175,55,0.4);color:rgba(255,255,255,0.7);padding:6px 10px;font-family:Share Tech Mono,monospace;font-size:0.42rem;letter-spacing:1px;cursor:pointer">'+v.nom+'</button>').join('');
 }
 function choisirStyleMusique(k){
   musicStyle=k;
@@ -128,7 +128,7 @@ const SEED_PAR_SALON={
     {prenom:'Jordan',ville:'MTL',message:'La musique ce soir 🎵',mode:'normal'},
   ],
   voix:[
-    {prenom:'Sam',ville:'YVR',message:'Quelqu\\'un pour un appel vocal ce soir ?',mode:'normal'},
+    {prenom:'Sam',ville:'YVR',message:'Quelqu\'un pour un appel vocal ce soir ?',mode:'normal'},
   ],
   fantomes:[
     {prenom:'👻',ville:'',message:'Je suis là mais vous ne me voyez pas...',mode:'fantome'},
