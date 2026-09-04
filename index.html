@@ -1930,7 +1930,7 @@ async function handleForgotPassword(){
   const email=document.getElementById('login-email').value.trim();
   if(!email){showError('⚠ Entre ton courriel d\'abord.');return;}
   try{
-    await _supa.auth.resetPasswordForEmail(email,{redirectTo:'https://vibegay.ca'});
+    await _supa.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
     showSuccess('✦ Courriel de réinitialisation envoyé !');closeLogin();
   }catch(e){showError('⚠ '+(e.message||'Erreur.'));}
 }
@@ -1939,7 +1939,7 @@ async function handleMagicLink(){
   const email=document.getElementById('login-email').value.trim();
   if(!email){showError('⚠ Entre ton courriel d\'abord.');return;}
   try{
-    const {error}=await _supa.auth.signInWithOtp({email,options:{emailRedirectTo:'https://vibegay.ca'}});
+    const {error}=await _supa.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
     if(error)throw error;
     showSuccess('✦ Lien envoyé à '+email+' — clique dessus pour entrer directement.');closeLogin();
   }catch(e){showError('⚠ '+(e.message||'Erreur.'));}
