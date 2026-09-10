@@ -13,7 +13,13 @@
   ],
   "routes": [
     { "src": "/", "dest": "/index.html" },
+    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/auth/(.*)", "dest": "/server.js" },
+    { "src": "/admin/(.*)", "dest": "/server.js" },
+    { "src": "/pubs/(.*)", "dest": "/server.js" },
+    { "src": "/search/(.*)", "dest": "/server.js" },
+    { "src": "/contact/(.*)", "dest": "/server.js" },
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/server.js" }
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
