@@ -2,6 +2,8 @@
 
 # ═══════════════════════════════════════════════════════════════════════
 # VIBE Site Healthcheck - Run every 5 minutes
+# Site is a static page (GitHub Pages) — only HTTP reachability is checked,
+# there is no backend API to probe.
 # ═══════════════════════════════════════════════════════════════════════
 
 set -e
@@ -33,16 +35,6 @@ check_http_status() {
 
     status=$(curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null || echo "000")
     if [ "$status" = "$expected" ]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-check_api_health() {
-    response=$(curl -s "$SITE/api/health" 2>/dev/null || echo "{}")
-
-    if echo "$response" | grep -q '"status":"ok"'; then
         return 0
     else
         return 1
@@ -94,7 +86,6 @@ send_slack_alert() {
 log "Starting healthcheck for $SITE"
 
 FAILURES=0
-FAILURES_TOTAL=$(grep "FAILED" "$LOG_FILE" 2>/dev/null | wc -l || echo 0)
 
 # Test 1: HTTP Status
 if check_http_status "$SITE" 200; then
@@ -104,15 +95,7 @@ else
     FAILURES=$((FAILURES + 1))
 fi
 
-# Test 2: API Health Endpoint
-if check_api_health; then
-    log "✅ API Health endpoint OK"
-else
-    log "❌ API Health endpoint FAILED"
-    FAILURES=$((FAILURES + 1))
-fi
-
-# Test 3: Homepage Content
+# Test 2: Homepage Content
 if check_homepage; then
     log "✅ Homepage loads correctly"
 else
@@ -132,10 +115,10 @@ if [ $FAILURES -eq 0 ]; then
     # Reset failure counter
     echo "0" > /tmp/vibe-failure-count.txt
 
-elif [ $FAILURES -lt 3 ]; then
+elif [ $FAILURES -lt 2 ]; then
     # Some failures, but not critical yet
-    echo -e "${YELLOW}⚠️  Some tests failed ($FAILURES/3)${NC}"
-    log "STATUS: 🟡 PARTIAL FAILURE ($FAILURES/3)"
+    echo -e "${YELLOW}⚠️  Some tests failed ($FAILURES/2)${NC}"
+    log "STATUS: 🟡 PARTIAL FAILURE ($FAILURES/2)"
 
     # Increment failure counter
     COUNT=$(cat /tmp/vibe-failure-count.txt 2>/dev/null || echo "0")
@@ -153,11 +136,7 @@ else
     log "STATUS: 🔴 CRITICAL FAILURE"
 
     # Send critical alert
-    send_slack_alert "🚨 CRITICAL: VIBE site is DOWN! All healthchecks failed. Failover to Railway: https://vibegay-fallback.railway.app" "critical"
-
-    # Optional: Auto-failover (uncomment to enable)
-    # log "FAILOVER: Switching DNS to Railway fallback"
-    # /home/user/VIBE/scripts/failover-to-railway.sh
+    send_slack_alert "🚨 CRITICAL: VIBE site is DOWN! All healthchecks failed." "critical"
 fi
 
 # ─────────────────────────────────────────────────────────────────────
@@ -167,7 +146,7 @@ fi
 echo ""
 echo "═══════════════════════════════════════════════════════════════════"
 echo "Summary:"
-echo "  Total Failures: $FAILURES/3"
+echo "  Total Failures: $FAILURES/2"
 echo "  Consecutive: $(cat /tmp/vibe-failure-count.txt 2>/dev/null || echo '0')"
 echo "  Last Check: $(date '+%Y-%m-%d %H:%M:%S')"
 echo "═══════════════════════════════════════════════════════════════════"
