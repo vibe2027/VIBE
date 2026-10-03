@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A0F1D"/>
+      <stop offset="0.5" stop-color="#121A2E"/>
+      <stop offset="1" stop-color="#00070F"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="180" y1="180" x2="860" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF4D8D"/>
+      <stop offset="0.38" stop-color="#FF8F70"/>
+      <stop offset="0.7" stop-color="#54C5FF"/>
+      <stop offset="1" stop-color="#7CFFBF"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 430) rotate(90) scale(448 448)">
+      <stop stop-color="#FF7AB6" stop-opacity="0.7"/>
+      <stop offset="0.5" stop-color="#8C7CFF" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#0A0F1D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="200" fill="url(#bg)"/>
+  <circle cx="512" cy="512" r="402" fill="url(#glow)"/>
+  <circle cx="512" cy="512" r="355" stroke="url(#ring)" stroke-width="18"/>
+  <circle cx="512" cy="512" r="286" stroke="url(#ring)" stroke-opacity="0.55" stroke-width="10"/>
+  <path d="M390 670C415 585 462 530 512 530C562 530 609 585 634 670" stroke="url(#ring)" stroke-width="26" stroke-linecap="round"/>
+  <circle cx="512" cy="430" r="120" stroke="url(#ring)" stroke-width="24"/>
+  <path d="M300 760C332 680 390 630 456 618" stroke="url(#ring)" stroke-width="20" stroke-linecap="round" opacity="0.9"/>
+  <path d="M724 760C692 680 634 630 568 618" stroke="url(#ring)" stroke-width="20" stroke-linecap="round" opacity="0.9"/>
+  <path d="M408 790H616" stroke="url(#ring)" stroke-width="20" stroke-linecap="round" opacity="0.82"/>
+  <path d="M432 358L512 266L592 358" stroke="#F4F7FF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+  <path d="M512 266V430" stroke="#F4F7FF" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+  <path d="M274 316L190 420" stroke="#F4F7FF" stroke-opacity="0.7" stroke-width="12" stroke-linecap="round"/>
+  <path d="M750 316L834 420" stroke="#F4F7FF" stroke-opacity="0.7" stroke-width="12" stroke-linecap="round"/>
+  <text x="512" y="870" text-anchor="middle" fill="#F9FAFF" font-family="Segoe UI, Arial, sans-serif" font-size="104" font-weight="800" letter-spacing="10">VIBE</text>
+</svg>
